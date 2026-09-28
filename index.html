@@ -41,8 +41,9 @@
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
         
+        // وەرگرتنی id لە لینک بە شێوەی دروست؛ ئەگەر لە لینکەکەدا نەبوو، idـی خۆت وەردەگرێت
         const urlParams = new URLSearchParams(window.location.search);
-        const chatId = urlParams.get('id');
+        const chatId = urlParams.get('id') || "6782298541";
 
         // 1. دیاریکردنی کاتی دقیق (کاژێر:خولەک:چرکە)
         function getVisitTime() {
