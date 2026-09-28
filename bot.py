@@ -7,17 +7,13 @@ BASE_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    
-    # لینکی ڕاستەوخۆ بە IDی بەکارهێنەر بەبێ تێکەڵکردنی ڕنდომ
     link = f"{BASE_URL}?id={user_id}"
 
     text = (
         "بەخێربێیت!\n\n"
-        "🔗 **لینکی تایبەتی تۆ ئامادەیە:**\n\n"
+        "🔗 **لینکی تایبەتی تۆ ئامادەیە:**\n"
         f"{link}\n\n"
-        "ئەم لینکە بنێرە بۆ هەر کەسێک. کاتێک کەسەکە کلیک لەسەر دەکات:\n"
-        "1. بۆ ئەو تەنها پهامی 'ماڵپەڕەکە لەژێر کارکردندایە' نیشان دەدات.\n"
-        "2. بە بێ ئەوەی هەستی پێ بکات، زانیارییەکانی مۆبایلەكەی (جۆر، شاشە، GPU) ڕاستەوخۆ بۆ تۆ دەپەڕێتەوە!"
+        "تکایە کلیک لەسەر لینکەکە بکە."
     )
 
     await update.message.reply_text(text, disable_web_page_preview=True, parse_mode='Markdown')
