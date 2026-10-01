@@ -16,7 +16,6 @@ def load_users():
         except Exception as e:
             print(f"هەڵە لە خوێندنەوەی users.json: {e}")
     
-    # دڵنیابوونەوە لەوەی ئەگەر ئایدی سەرەکی خۆت لە لیستەکەدا نەبوو، زیادی بکەین بۆ تاقیکردنەوە
     admin_id = 6782298541
     if admin_id not in users_list:
         users_list.append(admin_id)
@@ -50,15 +49,12 @@ def main():
         print("تۆکەنی بۆت بونی نییە!")
         return
 
-    # ۱. هێنانی لیستی بەکارهێنەران (کە ئایدی خۆت تێیدا مسۆگەرە)
     users = load_users()
     print(f"لیستی بەکارهێنەران بۆ ناردن: {users}")
 
-    # ۲. پشکنینی نامە نوێیەکان بۆ دۆزینەوەی کەسانی تریش ئەگەر /startیان کردبێت
     updates = get_updates()
     print(f"وەڵامی getUpdates: {updates}")
 
-    new_user_found = False
     if "result" in updates:
         for update in updates["result"]:
             if "message" in update and "chat" in update["message"]:
@@ -68,13 +64,10 @@ def main():
                 if text == "/start":
                     if chat_id not in users:
                         users.append(chat_id)
-                        new_user_found = True
                         print(f"بەکارهێنەری نوێ دۆزرایەوە و زیادکرا: {chat_id}")
 
-    # ٣. پاشەکەوتکردنی لیستی نوێ لە users.json
     save_users(users)
 
-    # ٤. ناردنی نامە بۆ *هەموو* بەکارهێنەرانی ناو لیستەکە
     announcement_text = "سڵاو! ئەمە پەیامێکی تاقیکارییە لە GitHub Actionsـەوە بۆ تاقیکردنەوەی ناردنی نامە بۆ بەکارهێنەران."
     
     for user_id in users:
