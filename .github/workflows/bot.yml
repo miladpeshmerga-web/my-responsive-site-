@@ -1,26 +1,41 @@
-name: Run Telegram Bot
+name: Run Bot and Save Users
 
 on:
-  push:
-    branches: [ "main" ]
-  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *' # ئەمە هەموو کاتژمێرێک جارێک کار دەکات (دەتوانیت دەستکاری بکەیت)
+  workflow_dispatch: # بۆ ئەوەی بە دەستیش بتوانیت کاری پێ بکەیت لە گیتهەب
 
 jobs:
-  build:
+  run-bot:
     runs-on: ubuntu-latest
+    
+    # زۆر گرنگە: پێدانی دەسەڵاتی خوێندنەوە و نووسین بە گیت هەب ئاکشن
+    permissions:
+      contents: write
 
     steps:
-    - uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
 
-    - name: Run Telegram Bot
-      run: python bot.py
+      - name: Run Bot Script
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
+        run: python bot.py
+
+      - name: Commit and push if users.json changed
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add users.json
+          # پشکنین دەکات ئایا گۆڕانکاری لە فایلی users.json دروست بووە یان نا، ئەگەر نەبوو هەڵە نادات و ڕاوەستێت
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Update users.json automatically [skip ci]" && git push)
