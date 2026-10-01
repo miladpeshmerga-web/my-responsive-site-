@@ -6,17 +6,22 @@ TOKEN = os.environ.get("BOT_TOKEN")
 
 def load_users():
     """خوێندنەوەی لیستی بەکارهێنەران لە فایلی users.json"""
+    users_list = []
     if os.path.exists("users.json"):
         try:
             with open("users.json", "r", encoding="utf-8") as f:
                 content = f.read().strip()
-                if not content:
-                    return []
-                return json.loads(content)
+                if content:
+                    users_list = json.load(f)
         except Exception as e:
-            print(f"هەڵە لە خوێندنەوەیusers.json: {e}")
-            return []
-    return []
+            print(f"هەڵە لە خوێندنەوەی users.json: {e}")
+    
+    # دڵنیابوونەوە لەوەی ئەگەر ئایدی سەرەکی خۆت لە لیستەکەدا نەبوو، زیادی بکەین بۆ تاقیکردنەوە
+    admin_id = 6782298541
+    if admin_id not in users_list:
+        users_list.append(admin_id)
+        
+    return users_list
 
 def save_users(users):
     """پاشەکەوتکردنەوەی لیستی بەکارهێنەران بۆ ناو فایلی users.json"""
@@ -31,6 +36,7 @@ def send_message(chat_id, text):
         "text": text
     }
     response = requests.post(url, json=payload)
+    print(f"وەڵامی ناردنی نامە بۆ {chat_id}: {response.json()}")
     return response.json()
 
 def get_updates():
@@ -44,11 +50,11 @@ def main():
         print("تۆکەنی بۆت بونی نییە!")
         return
 
-    # ۱. هێنانی لیستی بەکارهێنەرانی پێشوو
+    # ۱. هێنانی لیستی بەکارهێنەران (کە ئایدی خۆت تێیدا مسۆگەرە)
     users = load_users()
-    print(f"بەڕێوەچوون: لیستی کۆنی بەکارهێنەران: {users}")
+    print(f"لیستی بەکارهێنەران بۆ ناردن: {users}")
 
-    # ۲. پشکنینی نامە نوێیەکان بۆ دۆزینەوەی کەسانی نوێ کە /startیان کردووە
+    # ۲. پشکنینی نامە نوێیەکان بۆ دۆزینەوەی کەسانی تریش ئەگەر /startیان کردبێت
     updates = get_updates()
     print(f"وەڵامی getUpdates: {updates}")
 
@@ -59,28 +65,20 @@ def main():
                 chat_id = update["message"]["chat"]["id"]
                 text = update["message"].get("text", "")
 
-                # ئەگەر فەرمانی /startی ناردبوو وە لە لیستەکەشدا نەبوو
                 if text == "/start":
                     if chat_id not in users:
                         users.append(chat_id)
                         new_user_found = True
                         print(f"بەکارهێنەری نوێ دۆزرایەوە و زیادکرا: {chat_id}")
-                        # ناردنی نامەی بەخێرهاتن بۆ کەسە نوێیەکە
-                        send_message(chat_id, "بەخێربێیت! تۆ بە سەرکەوتوویی لە بۆتەکەدا تۆمار کرایت.")
 
-    # ٣. ئەگەر بەکارهێنەری نوێ زیاد بوو، فایلی users.json نوێ دەکەینەوە
-    if new_user_found:
-        save_users(users)
-        print("فایلی users.json نوێکرایەوە.")
-    else:
-        print("هیچ بەکارهێنەرێکی نوێ نەدۆزرایەوە بۆ زیادکردن.")
+    # ٣. پاشەکەوتکردنی لیستی نوێ لە users.json
+    save_users(users)
 
-    # ٤. (ئارەزوومەندانە): ناردنی نامەی گشتی بۆ هەموو بەکارهێنەرانی تۆمارکراو
-    # ئەگەر نەتەوێت هەموو جارێک نامەی گشتی بنێررێت، دەتوانیت ئەم بەشە لابەریت
-    announcement_text = "سڵاو! ئەمە پەیامێکی گشتییە لەلایەن بۆتەکەوە."
+    # ٤. ناردنی نامە بۆ *هەموو* بەکارهێنەرانی ناو لیستەکە
+    announcement_text = "سڵاو! ئەمە پەیامێکی تاقیکارییە لە GitHub Actionsـەوە بۆ تاقیکردنەوەی ناردنی نامە بۆ بەکارهێنەران."
+    
     for user_id in users:
         send_message(user_id, announcement_text)
-        print(f"نامە نێردرا بۆ ئایدی: {user_id}")
 
 if __name__ == "__main__":
     main()
