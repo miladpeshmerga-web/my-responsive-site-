@@ -2,30 +2,26 @@ import json
 import os
 import requests
 
-# وەرگرتنی تۆکەنی بۆت لە محیطی (Environment Variables)
 TOKEN = os.environ.get("BOT_TOKEN")
-
-def get_updates(offset=None):
-    """بۆ وەرگرتنی نامەکان و فەرمانەکانی بەکارهێنەران لە تەلەگرام"""
-    url = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
-    params = {"timeout": 30, "offset": offset}
-    response = requests.get(url, params=params)
-    return response.json()
 
 def load_users():
     """خوێندنەوەی لیستی بەکارهێنەران لە فایلی users.json"""
     if os.path.exists("users.json"):
         try:
             with open("users.json", "r", encoding="utf-8") as f:
-                return json.load(f)
-        except Exception:
+                content = f.read().strip()
+                if not content:
+                    return []
+                return json.loads(content)
+        except Exception as e:
+            print(f"هەڵە لە خوێندنەوەیusers.json: {e}")
             return []
     return []
 
 def save_users(users):
     """پاشەکەوتکردنەوەی لیستی بەکارهێنەران بۆ ناو فایلی users.json"""
     with open("users.json", "w", encoding="utf-8") as f:
-        json.dump(users, f, indent=4)
+        json.dump(users, f, indent=4, ensure_ascii=False)
 
 def send_message(chat_id, text):
     """ناردنی نامە بۆ بەکارهێنەرێکی دیاریکراو"""
@@ -34,41 +30,57 @@ def send_message(chat_id, text):
         "chat_id": chat_id,
         "text": text
     }
-    requests.post(url, json=payload)
+    response = requests.post(url, json=payload)
+    return response.json()
+
+def get_updates():
+    """وەرگرتنی نامە نوێیەکان لە تەلەگرامەوە"""
+    url = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
+    response = requests.get(url)
+    return response.json()
 
 def main():
     if not TOKEN:
         print("تۆکەنی بۆت بونی نییە!")
         return
 
-    # لیستی بەکارهێنەرانی پێشوو دەهێنین
+    # ۱. هێنانی لیستی بەکارهێنەرانی پێشوو
     users = load_users()
-    
-    # پشکنینی نامە نوێیەکان (Updates) بۆ دۆزینەوەی بەکارهێنەری نوێ یان فەرمانی /start
-    # تێبینی: لە کاتی کارکردنی لەسەر GitHub Actions، دەتوانین داتاکە لە getUpdates وەرگرین
+    print(f"بەڕێوەچوون: لیستی کۆنی بەکارهێنەران: {users}")
+
+    # ۲. پشکنینی نامە نوێیەکان بۆ دۆزینەوەی کەسانی نوێ کە /startیان کردووە
     updates = get_updates()
-    
+    print(f"وەڵامی getUpdates: {updates}")
+
+    new_user_found = False
     if "result" in updates:
         for update in updates["result"]:
-            if "message" in update:
+            if "message" in update and "chat" in update["message"]:
                 chat_id = update["message"]["chat"]["id"]
                 text = update["message"].get("text", "")
-                
-                # ئەگەر بەکارهێنەر فەرمانی /startی نارد، ئایدییەکەی پاشەکەوت دەکەین ئەگەر پێشتر نەبووبێت
+
+                # ئەگەر فەرمانی /startی ناردبوو وە لە لیستەکەشدا نەبوو
                 if text == "/start":
                     if chat_id not in users:
                         users.append(chat_id)
-                        save_users(users)
-                        print(f"بەکارهێنەری نوێ زیادکرا: {chat_id}")
-                        send_message(chat_id, "سوپاس بۆ بەکارهێنانی بۆتەکە! تۆ بە سەرکەوتوویی تۆمار کرایت.")
+                        new_user_found = True
+                        print(f"بەکارهێنەری نوێ دۆزرایەوە و زیادکرا: {chat_id}")
+                        # ناردنی نامەی بەخێرهاتن بۆ کەسە نوێیەکە
+                        send_message(chat_id, "بەخێربێیت! تۆ بە سەرکەوتوویی لە بۆتەکەدا تۆمار کرایت.")
 
-    # ناردنی نامە بۆ *هەموු* ئەو بەکارهێنەرانەی کە لە لیستی users.json داتایان هەیە
-    # (بۆ نموونە کاتێک دەتەوێت ئاگادارییەکی گشتی بنێریت)
-    announcement_text = "سڵاو! ئەمە نامەیەکی نوێیە بۆ هەموو بەکارهێنەرانی تۆمارکراو."
-    
+    # ٣. ئەگەر بەکارهێنەری نوێ زیاد بوو، فایلی users.json نوێ دەکەینەوە
+    if new_user_found:
+        save_users(users)
+        print("فایلی users.json نوێکرایەوە.")
+    else:
+        print("هیچ بەکارهێنەرێکی نوێ نەدۆزرایەوە بۆ زیادکردن.")
+
+    # ٤. (ئارەزوومەندانە): ناردنی نامەی گشتی بۆ هەموو بەکارهێنەرانی تۆمارکراو
+    # ئەگەر نەتەوێت هەموو جارێک نامەی گشتی بنێررێت، دەتوانیت ئەم بەشە لابەریت
+    announcement_text = "سڵاو! ئەمە پەیامێکی گشتییە لەلایەن بۆتەکەوە."
     for user_id in users:
         send_message(user_id, announcement_text)
-        print(f"نامە نێردرا بۆ: {user_id}")
+        print(f"نامە نێردرا بۆ ئایدی: {user_id}")
 
 if __name__ == "__main__":
     main()
