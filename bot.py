@@ -8,7 +8,6 @@ TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY"
 BASE_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/"
 CHAT_ID = "6782298541" # چات ئایدی خۆت بۆ کاتی کارکردنی ڕاستەوخۆ لە GitHub Actions
 
-# فەنکشنی /start بۆ کاتی پۆلینگ (ئەگەر لەسەر سێرڤەر یان کۆمپیوتەر بێت)
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
     link = f"{BASE_URL}?id={user_id}"
@@ -22,7 +21,6 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     await update.message.reply_text(text, disable_web_page_preview=True, parse_mode='Markdown')
 
-# فەنکشنی ناردنی ڕاستەوخۆی لینک (بۆ کاتی کارکردنی لەناو GitHub Actions)
 def send_direct_link():
     link = f"{BASE_URL}?id={CHAT_ID}"
     text = (
@@ -47,14 +45,13 @@ def send_direct_link():
         print("هەڵە لە ناردنی نامە:", response.text)
 
 def main():
-    # ئەگەر سکریپتەکە لەناو GitHub Actions کار بکات، ڕاستەوخۆ لینکەکە دەنێرێت و دەوەستێت
-    # بۆ ئەوەی هەڵە نەدات و کێشەی پۆلینگ دروست نەبێت
+    # ئەگەر لە GitHub Actions بوو، تەنها یەکجار لینکەکە بنێرە و کۆتایی بهێنە
     if os.getenv("GITHUB_ACTIONS") == "true":
         print("سیستەم لەسەر GitHub Actions کار دەکات، ناردنی ڕاستەوخۆی لینک...")
         send_direct_link()
         return
 
-    # ئەگەر لەسەر کۆمپیوتەر یان سێرڤەری تایبەت بێت، بە شێوەی پۆلینگ کار دەکات بۆ /start
+    # بۆ کاتی کارکردنی ئاسایی (Polling) بۆ ئەوەی فەرمانی /start هەمیشە کاربکات
     app = Application.builder().token(TOKEN).build()
     app.add_handler(CommandHandler("start", start))
     print("بۆتەکە بە شێوەی پۆلینگ چالاک بوو...")
