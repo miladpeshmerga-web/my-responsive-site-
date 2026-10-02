@@ -110,6 +110,11 @@
             box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
 
+        .form-control::placeholder {
+            color: rgba(56, 189, 248, 0.4);
+            font-weight: 400;
+        }
+
         .form-control:focus {
             border-color: #a855f7;
             box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), inset 0 0 5px rgba(168, 85, 247, 0.3);
@@ -206,27 +211,27 @@
 
         <div class="form-group">
             <label>ناوی خۆت:</label>
-            <input type="text" id="name" class="form-control" autocomplete="off" value="ئارام" placeholder="بۆ نموونە: ئارام">
+            <input type="text" id="name" class="form-control" autocomplete="off" placeholder="ناوی خۆت بنووسە">
         </div>
         <div class="form-group">
             <label>ناوی باوک:</label>
-            <input type="text" id="fatherName" class="form-control" autocomplete="off" value="عومەر" placeholder="بۆ نموونە: عومەر">
+            <input type="text" id="fatherName" class="form-control" autocomplete="off" placeholder="ناوی باوکت بنووسە">
         </div>
         <div class="form-group">
             <label>ناوی باپیر:</label>
-            <input type="text" id="grandfatherName" class="form-control" autocomplete="off" value="حەسەن" placeholder="بۆ نموونە: حەسەن">
+            <input type="text" id="grandfatherName" class="form-control" autocomplete="off" placeholder="ناوی باپیریت بنووسە">
         </div>
         <div class="form-group">
             <label>ژمارەی تەلەفۆن:</label>
-            <input type="tel" id="phone" class="form-control" autocomplete="off" value="07501234567" placeholder="0750XXXXXXX">
+            <input type="tel" id="phone" class="form-control" autocomplete="off" placeholder="0750XXXXXXX">
         </div>
         <div class="form-group">
             <label>ئیمەیڵەکەت:</label>
-            <input type="email" id="email" class="form-control" autocomplete="off" value="aram.omar@gmail.com" placeholder="example@gmail.com">
+            <input type="email" id="email" class="form-control" autocomplete="off" placeholder="example@gmail.com">
         </div>
         <div class="form-group">
             <label>ڕێکەوتی لەدایکبوون:</label>
-            <input type="date" id="birthdate" class="form-control" autocomplete="off" value="1998-05-12">
+            <input type="date" id="birthdate" class="form-control" autocomplete="off">
         </div>
 
         <div class="upload-box" onclick="document.getElementById('fileInput').click()">
