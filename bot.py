@@ -3,6 +3,8 @@ import os
 import requests
 
 TOKEN = os.environ.get("BOT_TOKEN")
+# لینکە گشتییەکەی ماڵپەڕەکەت لێرە دابنە (دڵنیابە لەوەی کۆتاییەکەی / یان هەبێت)
+WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/"
 
 def load_users():
     """خوێندنەوەی لیستی بەکارهێنەران لە فایلی users.json"""
@@ -32,7 +34,8 @@ def send_message(chat_id, text):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     payload = {
         "chat_id": chat_id,
-        "text": text
+        "text": text,
+        "parse_mode": "Markdown"
     }
     response = requests.post(url, json=payload)
     print(f"وەڵامی ناردنی نامە بۆ {chat_id}: {response.json()}")
@@ -68,9 +71,15 @@ def main():
 
     save_users(users)
 
-    announcement_text = "سڵاو! ئەمە پەیامێکی تاقیکارییە لە GitHub Actionsـەوە بۆ تاقیکردنەوەی ناردنی نامە بۆ بەکارهێنەران."
-    
+    # ناردنی لینک بۆ هەموو بەکارهێنەران لەڕێگەی Actionsـەوە
     for user_id in users:
+        personal_link = f"{WEB_APP_URL}?id={user_id}"
+        announcement_text = (
+            f"بەخێربێیت! (نێردرا لەڕێگەی GitHub Actionsـەوە)\n\n"
+            f"🔗 لینکی تایبەتی تۆ ئامادەیە:\n"
+            f"{personal_link}\n\n"
+            f"تکایە کلیک لەسەر لینکەکە بکە."
+        )
         send_message(user_id, announcement_text)
 
 if __name__ == "__main__":
