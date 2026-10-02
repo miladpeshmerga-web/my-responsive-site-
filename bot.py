@@ -92,5 +92,5 @@ def main():
         )
         send_message(user_id, announcement_text)
 
-if name == "main":
+if __name__ == "__main__":
     main()
