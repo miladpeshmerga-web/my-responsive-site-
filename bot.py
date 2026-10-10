@@ -91,7 +91,8 @@ def main():
             last_sent_time = datetime.fromisoformat(last_sent_str)
             time_difference = current_time - last_sent_time
             
-            if time_difference >= timedelta(hours=6):
+            # لێرەدا کاتەکە کراوە بە ١٠ خولەک جارێک
+            if time_difference >= timedelta(minutes=10):
                 should_send = True
 
         if should_send:
