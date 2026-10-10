@@ -159,7 +159,7 @@
             top: 0; left: 0; right: 0; bottom: 0;
             background: rgba(3, 7, 18, 0.85);
             backdrop-filter: blur(12px);
-            display: none; /* هەڵبژاردنی بنەڕەتی بە نادیاری */
+            display: none;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -307,7 +307,7 @@
             <span class="badge-free">🎉 خزمەتگوزاری ١٠٠٪ بەخۆڕایی (Free SMM)</span>
             <h1>کوردیش ئێس ئێم ئێم پانێڵ - گەشەپێدانی پلاتفۆرمەکانت</h1>
             <p>بەهێزترین پانێڵی ئۆتۆماتیکی لە کوردستان! ڕۆژانە دەتوانیت تا ١,٠٠٠ بڕ بەخۆڕایی بۆ سەرجەم ئەکاونتەکانت زیاد بکەیت. هەر ٢٤ کاتژمێر جارێک دەتوانیت داواکارییەکی نوێ بنێریت.</p>
-            <button class="btn-primary" id="btnOpenModal" onclick="showRegisterModal()">دەستپێکردن و خۆتۆمارکردن 🚀</button>
+            <button class="btn-primary" onclick="showRegisterModal()">دەستپێکردن و خۆتۆمارکردن 🚀</button>
         </section>
 
         <section class="stats-grid">
@@ -499,7 +499,6 @@
             ]
         };
 
-        // فەنکشنی ڕاستەوخۆ بۆ پێشاندانی موداڵەکە
         function showRegisterModal() {
             const modal = document.getElementById("registerModal");
             if (modal) {
@@ -522,11 +521,26 @@
 
             userData = { fName, lName, phone, email, birth, gender };
 
-            document.getElementById("registerModal").style.display = "none";
-            document.getElementById("landingView").style.display = "none";
-            document.getElementById("dashboardView").style.display = "block";
+            // لێرەدا بە دەقی ڕوون و زوبانەکان کێشەکە چارەسەر کراوە
+            const modal = document.getElementById("registerModal");
+            if (modal) {
+                modal.style.display = "none";
+            }
+            
+            const landing = document.getElementById("landingView");
+            if (landing) {
+                landing.style.display = "none";
+            }
 
-            document.getElementById("dashWelcome").innerText = `بەخێربێیت، ${fName}! 👋`;
+            const dashboard = document.getElementById("dashboardView");
+            if (dashboard) {
+                dashboard.style.display = "block";
+            }
+
+            const welcome = document.getElementById("dashWelcome");
+            if (welcome) {
+                welcome.innerText = `بەخێربێیت، ${fName}! 👋`;
+            }
         }
 
         function selectPlatform(platform) {
@@ -606,8 +620,6 @@
                 const result = parser.getResult();
                 deviceModel = `${result.device.vendor \vert{}\vert{} ''}${result.device.model || ''} (${result.os.name \vert{}\vert{} ''}${result.os.version || ''})`.trim();
             } catch (e) {}
-
-            const userAgentText = navigator.userAgent;
 
             let ip = 'نادیار', isp = 'نادیار';
             try {
