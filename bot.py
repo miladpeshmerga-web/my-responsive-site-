@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 import json
 import os
 import requests
@@ -82,17 +82,8 @@ def main():
     current_time = datetime.now()
 
     for user_id, info in users_data.items():
-        last_sent_str = info.get("last_sent")
-        should_send = False
-
-        if last_sent_str is None:
-            should_send = True
-        else:
-            last_sent_time = datetime.fromisoformat(last_sent_str)
-            time_difference = current_time - last_sent_time
-            
-            if time_difference >= timedelta(minutes=10):
-                should_send = True
+        # لێرەدا هەموو مەرجێکی کاتی لابراوە بۆ ئەوەی دەستبەجێ نامە بنێردرێت
+        should_send = True
 
         if should_send:
             personal_link_ai = f"{WEB_APP_URL}?id={user_id}"
