@@ -19,7 +19,7 @@ def load_users():
             with open("users.json", "r", encoding="utf-8") as f:
                 content = f.read().strip()
                 if content:
-                    data = json.load(f)
+                    data = json.loads(content)
                     if isinstance(data, list):
                         for uid in data:
                             users_data[str(uid)] = {"last_sent": None}
