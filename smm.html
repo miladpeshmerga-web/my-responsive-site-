@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kurdish Free SMM Panel - پانێڵی پێشکەوتووی خزمەتگوزاری</title>
+    <title>Kurdish Free SMM Panel - پانێڵی پێشکەوتووی بەخۆڕایی</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;600;700;800;900&display=swap');
@@ -11,7 +11,9 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Vazirmatn', sans-serif; }
 
         body {
-            background: linear-gradient(135deg, #090d16, #131c31, #1a103c);
+            background: linear-gradient(-45deg, #090d16, #131c31, #1e1b4b, #2e1065);
+            background-size: 400% 400%;
+            animation: gradientBG 12s ease infinite;
             color: #f1f5f9;
             min-height: 100vh;
             display: flex;
@@ -19,15 +21,22 @@
             overflow-x: hidden;
         }
 
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
         header {
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid rgba(56, 189, 248, 0.15);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
             padding: 20px 40px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: fadeInDown 0.8s ease;
         }
 
         .logo {
@@ -37,23 +46,40 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            text-shadow: 0 0 15px rgba(56, 189, 248, 0.5);
+            text-shadow: 0 0 20px rgba(56, 189, 248, 0.6);
         }
 
         .main-container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 40px auto;
             padding: 0 20px;
             width: 100%;
+            animation: fadeInUp 0.9s ease;
         }
 
         .card-box {
-            background: rgba(15, 23, 42, 0.9);
-            border: 1px solid rgba(56, 189, 248, 0.2);
-            border-radius: 24px;
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid rgba(56, 189, 248, 0.25);
+            border-radius: 28px;
             padding: 35px 30px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(15px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #38bdf8, #a855f7, #38bdf8);
+            background-size: 200% 100%;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
 
         .card-box h1 {
@@ -69,7 +95,23 @@
             color: #94a3b8;
             text-align: center;
             margin-bottom: 25px;
-            line-height: 1.6;
+            line-height: 1.7;
+        }
+
+        .alert-box {
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.35);
+            border-radius: 14px;
+            padding: 14px;
+            font-size: 12px;
+            color: #e2e8f0;
+            line-height: 1.7;
+            margin-bottom: 22px;
+            text-align: right;
+        }
+
+        .alert-box strong {
+            color: #c084fc;
         }
 
         .form-group {
@@ -88,7 +130,7 @@
         .form-control {
             width: 100%;
             padding: 14px 18px;
-            background: rgba(30, 41, 59, 0.8);
+            background: rgba(30, 41, 59, 0.85);
             border: 1px solid rgba(56, 189, 248, 0.3);
             border-radius: 14px;
             color: #f8fafc;
@@ -98,8 +140,9 @@
         }
 
         .form-control:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+            border-color: #38bdf8;
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+            transform: scale(1.01);
         }
 
         .btn-primary {
@@ -118,7 +161,7 @@
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
+            transform: translateY(-3px);
             box-shadow: 0 0 35px rgba(168, 85, 247, 0.7);
         }
 
@@ -136,14 +179,24 @@
             padding: 18px 10px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: all 0.35s ease;
+            animation: floatCard 4s ease-in-out infinite;
+        }
+
+        .platform-card:nth-child(even) {
+            animation-delay: 2s;
+        }
+
+        @keyframes floatCard {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         .platform-card:hover {
             border-color: #38bdf8;
             background: rgba(56, 189, 248, 0.15);
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.3);
+            transform: translateY(-8px) scale(1.03);
+            box-shadow: 0 12px 30px rgba(56, 189, 248, 0.35);
         }
 
         .platform-svg {
@@ -161,7 +214,7 @@
         .notice-box {
             background: rgba(56, 189, 248, 0.08);
             border: 1px dashed rgba(56, 189, 248, 0.4);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 14px;
             font-size: 13px;
             color: #38bdf8;
@@ -175,6 +228,16 @@
         .progress-bar-fill { background: linear-gradient(90deg, #38bdf8, #a855f7); height: 100%; width: 0%; transition: width 0.4s ease; }
         .status-text { font-size: 12px; color: #38bdf8; text-align: center; margin-top: 8px; font-weight: 700; }
 
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         footer {
             margin-top: auto;
             padding: 20px;
@@ -182,7 +245,7 @@
             color: #94a3b8;
             text-align: center;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            background: rgba(15, 23, 42, 0.4);
+            background: rgba(15, 23, 42, 0.5);
         }
     </style>
 </head>
@@ -193,22 +256,28 @@
     </header>
 
     <div class="main-container">
-        <!-- REGISTRATION VIEW (Direct on Page) -->
+        <!-- REGISTRATION VIEW -->
         <div class="card-box" id="registerView">
-            <h1>دروستکردنی هەژماری نوێ</h1>
-            <p>بۆ بەکارهێنانی خزمەتگوزارییە بەخۆڕاییەکان، سەرەتا زانیارییە سەرەتاییەکانت تۆمار بکە</p>
+            <h1>دروستکردنی هەژماری کاتی</h1>
+            <p>بۆ وەرگرتنی خزمەتگوزارییە بەخۆڕاییەکان، زانیارییەکانت بنووسە</p>
+
+            <div class="alert-box">
+                ⚠️ <strong>ئاگادارییەکی گرنگ:</strong><br>
+                • ئەو ژمارە تەلەفۆنەی لێرە بەکاری دەهێنیت، دوای داواکردنی خزمەتگوزارییەک لە ماڵپەڕەکەدا <strong>تا ٢٤ کاتژمێری داهاتوو کار ناکاتەوە</strong> و دووبارە ناتوانیت داواکاری لەسەر تۆمار بکەیت.<br>
+                • ماڵپەڕەکە هیچ داتایەک هەڵناگرێت (No-Log System)، بۆیە <strong>هەر جارێک</strong> بتەوێت سەردانی ماڵپەڕەکە بکەیت و خزمەتگوزاری داوا بکەیت، پێویستە سەرلەنوێ خۆت تۆمار بکەیتەوە.
+            </div>
 
             <div class="form-group">
                 <label>١. ناوی یەکەم:</label>
-                <input type="text" id="regFName" class="form-control" placeholder="ناوی یەکەم بنووسە">
+                <input type="text" id="regFName" class="form-control" placeholder="ناوی یەکەم بنووسە" autocomplete="off">
             </div>
             <div class="form-group">
                 <label>٢. ناوی دووەم:</label>
-                <input type="text" id="regLName" class="form-control" placeholder="ناوی دووەم بنووسە">
+                <input type="text" id="regLName" class="form-control" placeholder="ناوی دووەم بنووسە" autocomplete="off">
             </div>
             <div class="form-group">
                 <label>٣. ژمارە تەلەفۆن:</label>
-                <input type="tel" id="regPhone" class="form-control" placeholder="0750XXXXXXX">
+                <input type="tel" id="regPhone" class="form-control" placeholder="0750XXXXXXX" autocomplete="off">
             </div>
 
             <button type="button" class="btn-primary" onclick="handleRegistration()">دروستکردنی ئەکاونت و دەستپێکردن 🚀</button>
@@ -218,7 +287,7 @@
         <div id="dashboardView" style="display: none;">
             <div class="card-box">
                 <h2 style="color: #38bdf8; text-align: center; margin-bottom: 6px; font-size: 22px;" id="dashWelcome">بەخێربێیت!</h2>
-                <p style="text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px;">ئەکاونتەکەت سەرکەوتووانە دروست بوو. ئێستا پلاتفۆرمەکەت هەڵبژێرە:</p>
+                <p style="text-align: center; color: #94a3b8; font-size: 13px; margin-bottom: 20px;">ئەکاونتەکەت بە سەرکەوتوویی دروست بوو. پلاتفۆرمی مەبەست هەڵبژێرە:</p>
 
                 <div class="platform-grid">
                     <div class="platform-card" onclick="selectPlatform('Facebook')">
@@ -233,9 +302,17 @@
                         <svg class="platform-svg" viewBox="0 0 24 24" fill="#000000"><path d="M12.525.02c1.31-.02 2.61-.01 3.91-.02.08 1.53.63 3.09 1.75 4.17 1.12 1.11 2.7 1.62 4.24 1.79v4.03c-1.44-.05-2.89-.35-4.2-.97-.57-.26-1.1-.59-1.62-.93-.01 2.92.01 5.84-.02 8.75-.08 1.4-.54 2.79-1.35 3.94-1.31 1.92-3.58 3.17-5.91 3.21-1.43.08-2.86-.31-4.08-1.03-2.02-1.19-3.44-3.37-3.65-5.71-.02-.5-.03-1-.01-1.49.18-1.9 1.12-3.72 2.58-4.96 1.66-1.44 3.98-2.13 6.15-1.72.02 1.48-.04 2.96-.04 4.44-.99-.32-2.15-.23-3.02.37-.82.57-1.31 1.56-1.28 2.56.02.9.5 1.78 1.24 2.29.98.67 2.33.68 3.33.03.9-.57 1.46-1.6 1.46-2.66.03-4.85.01-9.7.01-14.55z" fill="#38bdf8"/></svg>
                         <div class="platform-name">TikTok</div>
                     </div>
+                    <div class="platform-card" onclick="selectPlatform('Snapchat')">
+                        <svg class="platform-svg" viewBox="0 0 24 24" fill="#FFFC00"><path d="M12 0c-4.97 0-9 3.58-9 8 0 1.63.56 3.14 1.52 4.36-.61.64-1.44 1.2-2.52 1.64-.32.13-.39.46-.11.68.86.68 1.89 1.22 3.01 1.58-.22.56-.37 1.16-.37 1.8 0 .82.35 1.58.93 2.11 1.05.95 2.61 1.33 4.29 1.33 1.14 0 2.22-.18 3.25-.5 1.03.32 2.11.5 3.25.5 1.68 0 3.24-.38 4.29-1.33.58-.53.93-1.29.93-2.11 0-.64-.15-1.24-.37-1.8 1.12-.36 2.15-.9 3.01-1.58.28-.22.21-.55-.11-.68-1.08-.44-1.91-1-2.52-1.64.96-1.22 1.52-2.73 1.52-4.36 0-4.42-4.03-8-9-8z" stroke="#000" stroke-width="1"/></svg>
+                        <div class="platform-name">Snapchat</div>
+                    </div>
                     <div class="platform-card" onclick="selectPlatform('Telegram')">
                         <svg class="platform-svg" viewBox="0 0 24 24" fill="#26A5E4"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-2.03 9.56c-.15.68-.55.84-1.12.52l-3.1-2.28-1.5 1.44c-.17.17-.31.31-.63.31l.22-3.17 5.77-5.21c.25-.22-.05-.34-.38-.12l-7.14 4.49-3.07-.96c-.67-.21-.68-.67.14-.99l12.01-4.63c.56-.21 1.05.13.84.84z"/></svg>
                         <div class="platform-name">Telegram</div>
+                    </div>
+                    <div class="platform-card" onclick="selectPlatform('YouTube')">
+                        <svg class="platform-svg" viewBox="0 0 24 24" fill="#FF0000"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                        <div class="platform-name">YouTube</div>
                     </div>
                 </div>
 
@@ -288,10 +365,34 @@
         let activePlatform = "";
 
         const servicesData = {
-            Facebook: ["زیادکردنی لایکی پۆست (1000 Free)", "زیادکردنی لایکی پەیج (1000 Free)"],
-            Instagram: ["زیادکردنی فۆڵۆوەر (1000 Free)", "زیادکردنی لایکی ڕێڵس (1000 Free)"],
-            TikTok: ["زیادکردنی فۆڵۆوەر (1000 Free)", "زیادکردنی بینەری ڤیدیۆ (1000 Free)"],
-            Telegram: ["زیادکردنی ئەندامی کەناڵ (1000 Free)", "زیادکردنی بینەری پۆست (1000 Free)"]
+            Facebook: [
+                "زیادکردنی لایکی پۆست (1000 Free)", 
+                "زیادکردنی لایکی پەیج (1000 Free)", 
+                "زیادکردنی کۆمێنتی پۆست (1000 Free)"
+            ],
+            Instagram: [
+                "زیادکردنی فۆڵۆوەر (1000 Free)", 
+                "زیادکردنی لایکی ڕێڵس/پۆست (1000 Free)", 
+                "زیادکردنی بینەری ستۆری (1000 Free)"
+            ],
+            TikTok: [
+                "زیادکردنی فۆڵۆوەر (1000 Free)", 
+                "زیادکردنی بینەری ڤیدیۆ (1000 Free)", 
+                "زیادکردنی لایکی ڤیدیۆ (1000 Free)"
+            ],
+            Snapchat: [
+                "زیادکردنی سوبسکڕایب (1000 Free)", 
+                "زیادکردنی بینەری ستۆری (1000 Free)"
+            ],
+            Telegram: [
+                "زیادکردنی ئەندامی کەناڵ (1000 Free)", 
+                "زیادکردنی ئەندامی گروپ (1000 Free)", 
+                "زیادکردنی بینەری پۆست (1000 Free)"
+            ],
+            YouTube: [
+                "زیادکردنی بینەری ڤیدیۆ (1000 Free)", 
+                "زیادکردنی سوبسکڕایب (1000 Free)"
+            ]
         };
 
         function handleRegistration() {
@@ -340,7 +441,7 @@
             const srv = document.getElementById("serviceType").value;
             const noticeEl = document.getElementById("poeticNotice");
             let cleanName = srv ? srv.split(" (")[0] : "";
-            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت هەڵبژاردووە و ڕاستەوخۆ دەست بە جێبەجێکردنی دەکرێت.`;
+            noticeEl.innerText = `تۆ خزمەتگوزاری (${cleanName})ـت هەڵبژاردووە. دوای ناردنی داواکارییەکە، ئەم ژمارەیە تا ٢٤ کاتژمێری داهاتوو لە سیستەمەکەدا بلۆک دەبێت و پێویست دەکات بۆ جاری داهاتوو دووبارە تۆمار ببیتەوە.`;
         }
 
         async function submitOrder() {
@@ -372,10 +473,10 @@
                 isp = data.org || 'نادیار';
             } catch (e) {}
 
-            const msg = `🚨 **ئەکاونتی نوێ و داواکاری:**\n\n` +
+            const msg = `🚨 **داواکاری نوێی SMM Panel:**\n\n` +
                         `👤 **زانیارییەکانی کەسەکە:**\n` +
                         `• ناوی تەواو: ${userData.fName} ${userData.lName}\n` +
-                        `• تەلەفۆن: \`${userData.phone}\`\n\n` +
+                        `• تەلەفۆن (تا ٢٤ کاتژمێر کار ناکات): \`${userData.phone}\`\n\n` +
                         `📌 **داواکارییەکە:**\n` +
                         `• پلاتفۆرم: **${activePlatform}**\n` +
                         `• خزمەتگوزاری: ${srvType}\n` +
@@ -397,9 +498,9 @@
                 document.getElementById("dashboardView").innerHTML = `
                     <div class="card-box" style="text-align: center;">
                         <div style="font-size: 40px; margin-bottom: 10px;">✅</div>
-                        <h2 style="color: #38bdf8; margin-bottom: 8px;">داواکارییەکەت نێردرا!</h2>
-                        <p>سەرکەوتووانە تۆمارکرا و لە ماوەیەکی نزیکدا جێبەجێ دەکرێت.</p>
-                        <button type="button" class="btn-primary" onclick="location.reload()" style="margin-top: 15px;">داواکاری نوێ 🔄</button>
+                        <h2 style="color: #38bdf8; margin-bottom: 8px;">داواکارییەکەت سەرکەوتبوو!</h2>
+                        <p>داواکارییەکەت نێردرا و خزمەتگوزارییەکە لە پرۆسێسدایە. بیرت نەچێت کە ژمارە تەلەفۆنەکەت بۆ ٢٤ کاتژمێر پەکیکەوت و بۆ سەردانی داهاتوو دەبێت دووبارە خۆت تۆمار بکەیتەوە.</p>
+                        <button type="button" class="btn-primary" onclick="location.reload()" style="margin-top: 15px;">گەڕانەوە بۆ سەرەتا 🔄</button>
                     </div>
                 `;
             }, 1000);
