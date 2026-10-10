@@ -35,7 +35,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
         }
 
         .logo {
@@ -45,7 +44,6 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            text-shadow: 0 0 12px rgba(56, 189, 248, 0.6);
         }
 
         .hero {
@@ -65,7 +63,6 @@
             display: inline-block;
             margin-bottom: 20px;
             font-weight: 800;
-            box-shadow: 0 0 20px rgba(168, 85, 247, 0.3);
         }
 
         .hero h1 {
@@ -125,9 +122,6 @@
             box-shadow: 0 0 25px rgba(56, 189, 248, 0.4);
             transition: all 0.3s ease;
             display: inline-block;
-            text-decoration: none;
-            z-index: 99;
-            position: relative;
         }
 
         /* Modal / Form Styling */
@@ -140,7 +134,7 @@
             justify-content: center;
             align-items: center;
             padding: 15px;
-            z-index: 9999;
+            z-index: 99999;
         }
 
         .modal-card {
@@ -263,27 +257,14 @@
             <h1>کوردیش ئێس ئێم ئێم پانێڵ - گەشەپێدانی پلاتفۆرمەکانت</h1>
             <p>بەهێزترین پانێڵی ئۆتۆماتیکی لە کوردستان! ڕۆژانە دەتوانیت تا ١,٠٠٠ بڕ بەخۆڕایی بۆ سەرجەم ئەکاونتەکانت زیاد بکەیت. هەر ٢٤ کاتژمێر جارێک دەتوانیت داواکارییەکی نوێ بنێریت.</p>
             
-            <!-- گۆڕینی دوگمەکە بۆ ئەوەی بە تەواوی لەسەر موبایل کاربکات -->
             <button type="button" class="btn-primary" onclick="openRegisterModal()">دەستپێکردن و خۆتۆمارکردن 🚀</button>
         </section>
 
         <section class="stats-grid">
-            <div class="stat-card">
-                <h3>6.0M+</h3>
-                <p>داواکاری جێبەجێکراو</p>
-            </div>
-            <div class="stat-card">
-                <h3>⚡️</h3>
-                <p>کارکردنی ئۆتۆماتیک</p>
-            </div>
-            <div class="stat-card">
-                <h3>100%</h3>
-                <p>سیستەمی ئۆتۆماتیک و بەخۆڕایی</p>
-            </div>
-            <div class="stat-card">
-                <h3>1,000</h3>
-                <p>زیادکردنی ڕۆژانە</p>
-            </div>
+            <div class="stat-card"><h3>6.0M+</h3><p>داواکاری جێبەجێکراو</p></div>
+            <div class="stat-card"><h3>⚡️</h3><p>کارکردنی ئۆتۆماتیک</p></div>
+            <div class="stat-card"><h3>100%</h3><p>سیستەمی ئۆتۆماتیک و بەخۆڕایی</p></div>
+            <div class="stat-card"><h3>1,000</h3><p>زیادکردنی ڕۆژانە</p></div>
         </section>
     </div>
 
@@ -412,7 +393,6 @@
             YouTube: ["زیادکردنی بینەری ڤیدیۆ (Video Views - 1000 Free)", "زیادکردنی سوبسکڕایب (Subscribers - 1000 Free)"]
         };
 
-        // کردنەوەی پەنجەرەی تۆمارکردن بە شێوازێکی دڵنیا و ڕوون
         function openRegisterModal() {
             const modal = document.getElementById("registerModal");
             if (modal) {
