@@ -82,7 +82,6 @@ def main():
     current_time = datetime.now()
 
     for user_id, info in users_data.items():
-        # لێرەدا هەموو مەرجێکی کاتی لابراوە بۆ ئەوەی دەستبەجێ نامە بنێردرێت
         should_send = True
 
         if should_send:
@@ -115,4 +114,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-```[cite: 1]
